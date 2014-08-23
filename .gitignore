@@ -1,12 +1,32 @@
-*.class
+# Netbeans excludes
+/nbproject/private/
+/dist/
+/build/
+manifest.mf
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# Eclipse excludes
+.project
+.classpath
+/bin/
+/.settings/
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# IntelliJ excludes
+.idea/
+*.iml
+*.iws
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Maven excludes
+/target
+/log
+
+# OS generated files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+
+# Error Logs
+hs_err*.log
