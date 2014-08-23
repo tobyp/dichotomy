@@ -56,9 +56,6 @@ public class ld30 extends BasicGame {
         player = new Player(Integer.parseInt(spawn_location[0]), Integer.parseInt(spawn_location[1]));
         tileOffset = player.loc.add(-tileCountX / 2.f - 0.5f, -tileCountY / 2.f - 0.5f); //half screen to char's foot-center
 
-        logger.info("spawn "+player.loc.toString());
-        logger.info("tileOffset "+tileOffset.toString());
-
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
         player.animation.addFrame(player_sprites.getSprite(0, 0), 1000);
@@ -101,9 +98,20 @@ public class ld30 extends BasicGame {
         int tileOffsetX = (int)tileOffset.x;
         int tileOffsetY = (int)tileOffset.y;
 
-        map.render(-(int)((tileOffset.x-tileOffsetX)*24.f), -(int)((tileOffset.y-tileOffsetY)*24.f), tileOffsetX, tileOffsetY, (gameContainer.getWidth() + 23) / 24, (gameContainer.getHeight() + 23) / 24);
+        int render_offset_x = -(int)((tileOffset.x-tileOffsetX)*24.f);
+        int render_offset_y = -(int)((tileOffset.y-tileOffsetY)*24.f);
+        int render_tile_w = (gameContainer.getWidth() + 23) / 24;
+        int render_tile_h = (gameContainer.getHeight() + 23) / 24;
 
-        player.render(tileOffset.add(0.f, -1.f), gameContainer, graphics);
+        for (int i=0; i<map.getLayerCount(); i++) {
+            String layer_type = map.getLayerProperty(i, "type", "visible");
+            if (layer_type.equals("visible")) {
+                map.render(render_offset_x, render_offset_y, tileOffsetX, tileOffsetY, render_tile_w, render_tile_h, i, false);
+            }
+            else if (layer_type.equals("player")) {
+                player.render(tileOffset.add(0.f, -1.f), gameContainer, graphics);
+            }
+        }
     }
 
     public static void main(String [] args) {
