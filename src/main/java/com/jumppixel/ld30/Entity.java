@@ -1,27 +1,24 @@
 package com.jumppixel.ld30;
 
-import org.lwjgl.util.vector.Vector3f;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.lwjgl.util.vector.Vector;
+import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.Animation;
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 
 /**
  * Created by tobyp on 8/23/14.
  */
 public class Entity {
-    private List<Component> components;
+    public Animation animation = new Animation();
+    public Vector2f loc = new Vector2f();
+    public float rot = 0.0f;
 
-    public Entity(Component... components) {
-        this.components = new ArrayList<Component>(components.length);
-        for (Component comp : components) {
-            this.components.add(comp);
-        }
+    public Entity() {
+
     }
 
-    public <T> T getComponent(Class<T> clazz) {
-        for (Component c : components) {
-            if (clazz.isAssignableFrom(c.getClass())) return (T)c;
-        }
-        return null;
+    public void render(Vector2f view_offset, GameContainer container, Graphics g) {
+        animation.draw(loc.getX() - view_offset.getX(), loc.getY()-view_offset.getY());
     }
 }

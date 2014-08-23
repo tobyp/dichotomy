@@ -73,7 +73,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.jumppixel.ld30.Engine</mainClass>
+                    <mainClass>com.jumppixel.ld30.ld30</mainClass>
                 </configuration>
             </plugin>
         </plugins>
