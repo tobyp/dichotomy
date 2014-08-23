@@ -87,6 +87,7 @@ public class ld30 extends BasicGame {
 
     public boolean tryMove(float x, float y) {
         vec2 new_loc = player.loc.add(x, y);
+        if (Math.floor(new_loc.x) < 0 || Math.floor(new_loc.y) < 0) return false;
         if (blocked[(int)Math.floor(new_loc.x)][(int)Math.floor(new_loc.y)]) {
             return false;
         }else{
@@ -109,7 +110,8 @@ public class ld30 extends BasicGame {
     public static void main(String [] args) {
         Logger logger = Logger.getGlobal();
         try {
-            AppGameContainer c = new AppGameContainer(new ld30(), 800, 600, false);
+            AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 683, 384));
+            c.setDisplayMode(1366, 768, false);
             c.start();
         }
         catch (Exception e) {
