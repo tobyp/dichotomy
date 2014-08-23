@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 public class ld30 extends BasicGame {
     Logger logger = Logger.getLogger("ld30");
 
-    float PLAYER_TILES_PER_MS = 0.0105f;
+    float PLAYER_TILES_PER_MS = 0.005f;
 
     //RESOURCES
     SpriteSheet player_sprites;
@@ -45,10 +45,10 @@ public class ld30 extends BasicGame {
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 1), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 2), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 1), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 2), 200);
 
         gameContainer.setTargetFrameRate(60);
     }
