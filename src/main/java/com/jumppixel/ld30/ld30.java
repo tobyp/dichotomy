@@ -2,10 +2,7 @@ package com.jumppixel.ld30;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
-import org.newdawn.slick.util.Log;
-import org.newdawn.slick.util.ResourceLoader;
 
-import javax.swing.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,7 +18,7 @@ public class ld30 extends BasicGame implements InputListener {
     SpriteSheet player_sprites;
 
     //MAP/WORLD
-    TiledMap map;
+    Map map;
     int walk_layer_index;
 
     //PLAYER
@@ -42,7 +39,7 @@ public class ld30 extends BasicGame implements InputListener {
         int tileCountX = (int)Math.floor(gameContainer.getWidth() / 48.f);
         int tileCountY = (int)Math.floor(gameContainer.getHeight() / 48.f);
 
-        map = new TiledMap("src/main/resources/tmx/level1.tmx");
+        map = new Map("src/main/resources/tmx/level1.tmx");
         walk_layer_index = map.getLayerIndex("walkability");
 
         String[] spawn_location = map.getMapProperty("p-spawn", "0,0").split(",");
@@ -89,7 +86,25 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
+        if (button == 1) { //object interaction
+            int faced = getFacedObject(0);
+            if (faced == -1) return;
+            String type = map.getObjectType(0, faced);
+            if (type.equals("button")) {
+                String state = map.getObjectProperty(0, faced, "state", "false");
+                if (state.equals("true")) {
+                    map.setObjectProperty(0, faced, "state", "false");
+                    executeActions(map.getObjectProperty(0, faced, "disable", ""));
+                }
+                else if (state.equals("false")) {
+                    map.setObjectProperty(0, faced, "state", "true");
+                    executeActions(map.getObjectProperty(0, faced, "enable", ""));
+                }
+            }
+        }
+        else if (button == 0) { //attack
 
+        }
     }
 
     @Override
@@ -105,6 +120,34 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void mouseMoved(int oldx, int oldy, int newx, int newy) {
 
+    }
+
+    public int getFacedObject(int group) {
+        int faced_x = player.loc.getFloorX();
+        int faced_y = player.loc.getFloorY();
+
+        if (player.rot >= 1 && player.rot <= 3) faced_x -= 1;
+        if (player.rot >= 5 && player.rot <= 7) faced_x += 1;
+        if (player.rot >= 3 && player.rot <= 5) faced_y -= 1;
+        if (player.rot <= 1 || player.rot == 7) faced_y += 1;
+
+        for (int oid = 0; oid < map.getObjectCount(group); oid++) {
+            if (Math.floor(map.getObjectX(group, oid)) != faced_x) continue;
+            if (Math.floor(map.getObjectY(group, oid)) != faced_y) continue;
+            return oid;
+        }
+        return -1;
+    }
+
+    public void executeActions(String actions_string) {
+        for (String a : actions_string.split(",")) {
+            if (a.isEmpty()) continue;
+
+            String[] aparts = a.split(":");
+            if (aparts[0].equals("set_tile")) {
+                map.setTileId(Integer.parseInt(aparts[1]), Integer.parseInt(aparts[2]), map.getLayerIndex(aparts[3]), Integer.parseInt(aparts[4]));
+            }
+        }
     }
 
     public boolean tryMove(float x, float y) {
