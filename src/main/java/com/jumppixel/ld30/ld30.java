@@ -1,7 +1,6 @@
 package com.jumppixel.ld30;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.tiled.TiledMap;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +19,7 @@ public class ld30 extends BasicGame implements InputListener {
     //MAP/WORLD
     Map map;
     int walk_layer_index;
+    int objects_group;
 
     //PLAYER
     Player player;
@@ -41,6 +41,7 @@ public class ld30 extends BasicGame implements InputListener {
 
         map = new Map("src/main/resources/tmx/level1.tmx");
         walk_layer_index = map.getLayerIndex("walkability");
+        objects_group = map.getObjectGroupIndex("objects");
 
         String[] spawn_location = map.getMapProperty("p-spawn", "0,0").split(",");
         player = new Player(Integer.parseInt(spawn_location[0]), Integer.parseInt(spawn_location[1]));
@@ -50,28 +51,66 @@ public class ld30 extends BasicGame implements InputListener {
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 1), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 2), 100);
+        for (int rot = 0; rot<8; rot++) {
+            Animation a = new Animation();
+            a.addFrame(player_sprites.getSprite(rot, 0), 200);
+            a.addFrame(player_sprites.getSprite(rot, 1), 200);
+            a.addFrame(player_sprites.getSprite(rot, 0), 200);
+            a.addFrame(player_sprites.getSprite(rot, 2), 200);
+
+            player.animations.add(a);
+        }
 
         gameContainer.setTargetFrameRate(60);
     }
 
     @Override
     public void update(GameContainer gameContainer, int delta_ms) throws SlickException {
-        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
+        int delta_x = 0;
+        int delta_y = 0;
+
+        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
             tryMove(delta_ms * PLAYER_TILES_PER_MS, 0.f);
+            delta_x = delta_x + 1;
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
             tryMove(delta_ms * -PLAYER_TILES_PER_MS, 0.f);
+            delta_x = delta_x - 1;
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
             tryMove(0.f, delta_ms * PLAYER_TILES_PER_MS);
+            delta_y = delta_y - 1;
         }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
             tryMove(0.f, delta_ms * -PLAYER_TILES_PER_MS);
+            delta_y = delta_y + 1;
         }
+
+        if (delta_x == -1 && delta_y == -1) {
+            player.rot = 1;
+        }else
+        if (delta_x == -1 && delta_y == 0) {
+            player.rot = 2;
+        }else
+        if (delta_x == -1 && delta_y == 1) {
+            player.rot = 3;
+        }else
+        if (delta_x == 0 && delta_y == -1) {
+            player.rot = 0;
+        }else
+        if (delta_x == 0 && delta_y == 1) {
+            player.rot = 4;
+        }else
+        if (delta_x == 1 && delta_y == -1) {
+            player.rot = 7;
+        }else
+        if (delta_x == 1 && delta_y == 0) {
+            player.rot = 6;
+        }else
+        if (delta_x == 1 && delta_y == 1) {
+            player.rot = 5;
+        }
+
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
             gameContainer.exit();
         }
@@ -87,18 +126,18 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (button == 1) { //object interaction
-            int faced = getFacedObject(0);
+            int faced = getFacedObject(objects_group);
             if (faced == -1) return;
-            String type = map.getObjectType(0, faced);
+            String type = map.getObjectType(objects_group, faced);
             if (type.equals("button")) {
-                String state = map.getObjectProperty(0, faced, "state", "false");
+                String state = map.getObjectProperty(objects_group, faced, "state", "false");
                 if (state.equals("true")) {
-                    map.setObjectProperty(0, faced, "state", "false");
-                    executeActions(map.getObjectProperty(0, faced, "disable", ""));
+                    map.setObjectProperty(objects_group, faced, "state", "false");
+                    executeActions(map.getObjectProperty(objects_group, faced, "disable", ""));
                 }
                 else if (state.equals("false")) {
-                    map.setObjectProperty(0, faced, "state", "true");
-                    executeActions(map.getObjectProperty(0, faced, "enable", ""));
+                    map.setObjectProperty(objects_group, faced, "state", "true");
+                    executeActions(map.getObjectProperty(objects_group, faced, "enable", ""));
                 }
             }
         }
@@ -109,7 +148,6 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void keyPressed(int key, char c) {
-
     }
 
     @Override
@@ -130,8 +168,14 @@ public class ld30 extends BasicGame implements InputListener {
         if (player.rot >= 5 && player.rot <= 7) faced_x += 1;
         if (player.rot >= 3 && player.rot <= 5) faced_y -= 1;
         if (player.rot <= 1 || player.rot == 7) faced_y += 1;
+        
+        faced_x *= 24;
+        faced_y *= 24;
+
+        logger.info("faced: " + Integer.toString(faced_x)+"; "+Integer.toString(faced_y));
 
         for (int oid = 0; oid < map.getObjectCount(group); oid++) {
+            logger.info(">> "+Integer.toString((int)Math.floor(map.getObjectX(group, oid)))+"; "+Integer.toString((int)Math.floor(map.getObjectY(group, oid))));
             if (Math.floor(map.getObjectX(group, oid)) != faced_x) continue;
             if (Math.floor(map.getObjectY(group, oid)) != faced_y) continue;
             return oid;
@@ -165,6 +209,10 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
+        render(true, gameContainer, graphics);
+    }
+
+    void render(boolean good, GameContainer gameContainer, Graphics graphics) throws SlickException {
         int tileOffsetX = (int)tileOffset.x;
         int tileOffsetY = (int)tileOffset.y;
 
@@ -174,12 +222,15 @@ public class ld30 extends BasicGame implements InputListener {
         int render_tile_h = (gameContainer.getHeight() / 2 + 48) / 24;
 
         for (int i=0; i<map.getLayerCount(); i++) {
-            String layer_type = map.getLayerProperty(i, "type", "visible");
-            if (layer_type.equals("visible")) {
+            String layer_type = map.getLayerProperty(i, "type", "both");
+            if (layer_type.equals("both")  || layer_type.equals(good ? "good" : "bad")) {
                 map.render(render_offset_x, render_offset_y, tileOffsetX, tileOffsetY, render_tile_w, render_tile_h, i, false);
             }
             else if (layer_type.equals("player")) {
                 player.render(tileOffset.add(0.f, -1.f), gameContainer, graphics);
+            }
+            else if (layer_type.equals("mobs")) {
+                //TODO
             }
         }
     }

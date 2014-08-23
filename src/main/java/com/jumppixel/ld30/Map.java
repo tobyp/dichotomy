@@ -1,6 +1,7 @@
 package com.jumppixel.ld30;
 
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMap;
 
 import java.io.InputStream;
@@ -48,5 +49,25 @@ public class Map extends TiledMap {
                 object.props.setProperty(propertyName, value);
             }
         }
+    }
+
+    public String getLayerName(int layerIndex) {
+        Layer layer = (Layer) layers.get(layerIndex);
+        if (layer == null) return null;
+        return layer.name;
+    }
+
+    public int getObjectGroupIndex(String name) {
+        int idx = 0;
+
+        for (int i=0;i<objectGroups.size();i++) {
+            ObjectGroup group = (ObjectGroup) objectGroups.get(i);
+
+            if (group.name.equals(name)) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }
