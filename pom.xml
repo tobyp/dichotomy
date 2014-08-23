@@ -10,6 +10,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.library.path>target/natives</java.library.path>
         <natives.version>0.0.6</natives.version>
         <lwjgl.version>2.8.2</lwjgl.version>
         <slick.version>2.1.0</slick.version>
@@ -61,11 +62,20 @@
                         <id>unpacknatives</id>
                         <phase>generate-resources</phase>
                         <goals>
-                            <!--suppress MavenModelInspection (this line is for IDEA)-->
                             <goal>copy</goal>
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.jumppixel.ld30.Engine</mainClass>
+                    <arguments>
+                        <argument>com.jumppixel.ld30.Engine</argument>
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
