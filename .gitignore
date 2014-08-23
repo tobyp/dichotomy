@@ -1,14 +1,20 @@
-*.class
+# Maven excludes
+/target
+/log
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+# OS generated files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Package Files #
-*.jar
-*.war
-*.ear
+# Error Logs
+hs_err*.log
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-
+# IDEA
 *.iws
+*.iml
+*.ipr
+.idea/
