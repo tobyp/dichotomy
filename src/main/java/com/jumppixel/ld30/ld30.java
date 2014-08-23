@@ -63,7 +63,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void update(GameContainer gameContainer, int delta_ms) throws SlickException {
-        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
             tryMove(delta_ms * PLAYER_TILES_PER_MS, 0.f);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
@@ -72,7 +72,7 @@ public class ld30 extends BasicGame implements InputListener {
         if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
             tryMove(0.f, delta_ms * PLAYER_TILES_PER_MS);
         }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
             tryMove(0.f, delta_ms * -PLAYER_TILES_PER_MS);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
