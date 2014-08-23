@@ -45,10 +45,10 @@ public class ld30 extends BasicGame {
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
-        player.animation.addFrame(player_sprites.getSprite(0, 1), 200);
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
-        player.animation.addFrame(player_sprites.getSprite(0, 2), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 1), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 2), 100);
 
         gameContainer.setTargetFrameRate(60);
     }
