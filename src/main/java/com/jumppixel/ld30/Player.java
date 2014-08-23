@@ -7,6 +7,6 @@ import org.newdawn.slick.Animation;
  */
 public class Player extends Entity {
     public Player(int x, int y) {
-        loc.set(x, y);
+        loc = new vec2(x, y);
     }
 }
