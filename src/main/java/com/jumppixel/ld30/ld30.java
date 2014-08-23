@@ -3,6 +3,7 @@ package com.jumppixel.ld30;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.*;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.ResourceLoader;
 
 import java.util.logging.Level;
@@ -21,8 +22,10 @@ public class ld30 extends BasicGame {
     TiledMap map;
 
     //PLAYER
-    Player player = new Player(2*24, 10*24);
+    Player player;
     Vector2f tileOffset = new Vector2f(0.f, 0.f);
+
+    boolean[][] blocked;
 
     public ld30() {
         super("Ludum Dare 30");
@@ -31,6 +34,23 @@ public class ld30 extends BasicGame {
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
         map = new TiledMap("src/main/resources/tmx/level1.tmx");
+
+        blocked = new boolean[map.getWidth()][map.getHeight()];
+        for (int x = 0; x < map.getWidth(); x++) {
+            for (int y = 0; y < map.getHeight(); y++) {
+                for (int l = 0; l < map.getLayerCount(); l++) {
+                    int tileID = map.getTileId(x, y, l);
+                    String value = map.getTileProperty(tileID, "blocked", "false");
+                    if ("true".equals(value)) {
+                        blocked[x][y] = true;
+                    }
+                }
+            }
+        }
+
+        String[] spawn_location = map.getMapProperty("p-spawn", "2").split(",");
+        player = new Player(Integer.parseInt(spawn_location[0])*24, Integer.parseInt(spawn_location[1])*24);
+
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
         player.animation.addFrame(player_sprites.getSprite(0, 0), 1000);
@@ -41,20 +61,35 @@ public class ld30 extends BasicGame {
     @Override
     public void update(GameContainer gameContainer, int delta_ms) throws SlickException {
         if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
-            player.loc.translate(delta_ms * PLAYER_TILES_PER_MS, 0.f);
+            tryMove(delta_ms * PLAYER_TILES_PER_MS, 0.f);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_LEFT)) {
-            player.loc.translate(delta_ms * -PLAYER_TILES_PER_MS, 0.f);
+            tryMove(delta_ms * -PLAYER_TILES_PER_MS, 0.f);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_DOWN)) {
-            player.loc.translate(0.f, delta_ms * PLAYER_TILES_PER_MS);
+            tryMove(0.f, delta_ms * PLAYER_TILES_PER_MS);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_UP)) {
-            player.loc.translate(0.f, delta_ms * -PLAYER_TILES_PER_MS);
+            tryMove(0.f, delta_ms * -PLAYER_TILES_PER_MS);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
             gameContainer.exit();
         }
+    }
+
+    public boolean blocked(float x, float y) {
+        return blocked[Math.round(x)][Math.round(y)];
+    }
+
+    public boolean tryMove(float x, float y) {
+        float newx = player.loc.getX() + x;
+        float newy = player.loc.getY() + y;
+        if (blocked(newx, newy)) {
+            return false;
+        }else{
+            player.loc.translate(x, y);
+        }
+        return true;
     }
 
     @Override
