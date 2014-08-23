@@ -21,7 +21,6 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class RenderSystem implements System {
     private Map<Entity, RenderComponent> entities = new TreeMap<Entity, RenderComponent>();
-    private Map<Entity, TerrainComponent> terrains = new TreeMap<Entity, TerrainComponent>();
 
     private Logger logger = Logger.getLogger("RenderSystem");
 
@@ -59,7 +58,6 @@ public class RenderSystem implements System {
     @Override
     public void notifyAddEntity(Entity entity) {
         RenderComponent rc = entity.getComponent(RenderComponent.class);
-        TerrainComponent tec = entity.getComponent(TerrainComponent.class);
         TransformComponent tc = entity.getComponent(TransformComponent.class);
         if (rc != null && tc != null) {
             rc.setTransform(tc);
