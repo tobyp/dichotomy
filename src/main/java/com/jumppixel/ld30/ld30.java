@@ -5,16 +5,17 @@ import org.newdawn.slick.tiled.TiledMap;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.ResourceLoader;
 
+import javax.swing.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * Created by tobyp on 8/23/14.
  */
-public class ld30 extends BasicGame {
+public class ld30 extends BasicGame implements InputListener {
     Logger logger = Logger.getLogger("ld30");
 
-    float PLAYER_TILES_PER_MS = 0.0105f;
+    float PLAYER_TILES_PER_MS = 0.005f;
 
     //RESOURCES
     SpriteSheet player_sprites;
@@ -27,12 +28,17 @@ public class ld30 extends BasicGame {
     Player player;
     vec2 tileOffset;
 
+    boolean[] keystatus;
+
     public ld30() {
         super("Ludum Dare 30");
     }
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
+
+        gameContainer.getInput().addListener(this);
+
         int tileCountX = (int)Math.floor(gameContainer.getWidth() / 48.f);
         int tileCountY = (int)Math.floor(gameContainer.getHeight() / 48.f);
 
@@ -57,21 +63,48 @@ public class ld30 extends BasicGame {
 
     @Override
     public void update(GameContainer gameContainer, int delta_ms) throws SlickException {
-        if (gameContainer.getInput().isKeyDown(Input.KEY_RIGHT)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
             tryMove(delta_ms * PLAYER_TILES_PER_MS, 0.f);
         }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_LEFT)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
             tryMove(delta_ms * -PLAYER_TILES_PER_MS, 0.f);
         }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_DOWN)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
             tryMove(0.f, delta_ms * PLAYER_TILES_PER_MS);
         }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_UP)) {
+        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
             tryMove(0.f, delta_ms * -PLAYER_TILES_PER_MS);
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
             gameContainer.exit();
         }
+    }
+
+    @Override
+    public void mousePressed(int button, int x, int y) {
+        //0 = Left
+        //1 = Right
+        //2 = Middle (Refrain from use)
+    }
+
+    @Override
+    public void mouseClicked(int button, int x, int y, int clickCount) {
+
+    }
+
+    @Override
+    public void keyPressed(int key, char c) {
+
+    }
+
+    @Override
+    public void keyReleased(int key, char c) {
+
+    }
+
+    @Override
+    public void mouseMoved(int oldx, int oldy, int newx, int newy) {
+
     }
 
     public boolean tryMove(float x, float y) {
