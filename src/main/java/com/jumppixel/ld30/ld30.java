@@ -41,14 +41,16 @@ public class ld30 extends BasicGame {
 
         String[] spawn_location = map.getMapProperty("p-spawn", "0,0").split(",");
         player = new Player(Integer.parseInt(spawn_location[0]), Integer.parseInt(spawn_location[1]));
+        player.render_offset = new vec2(-12,-48);
+
         tileOffset = player.loc.add(-tileCountX / 2.f - 0.5f, -tileCountY / 2.f - 0.5f); //half screen to char's foot-center
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
-        player.animation.addFrame(player_sprites.getSprite(0, 1), 200);
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
-        player.animation.addFrame(player_sprites.getSprite(0, 2), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 1), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
+        player.animation.addFrame(player_sprites.getSprite(0, 2), 100);
 
         gameContainer.setTargetFrameRate(60);
     }
@@ -74,9 +76,8 @@ public class ld30 extends BasicGame {
 
     public boolean tryMove(float x, float y) {
         vec2 new_loc = player.loc.add(x, y);
-        if (Math.floor(new_loc.x) < 0 || Math.floor(new_loc.y) < 0) return false;
-        int tile_id = map.getTileId((int)Math.floor(new_loc.x), (int)Math.floor(new_loc.y), walk_layer_index);
-        logger.info(Integer.toString(tile_id));
+
+        int tile_id = map.getTileId(new_loc.getFloorX(), new_loc.getFloorY(), walk_layer_index);
         if (tile_id != 61) {
             return false;
         }else{

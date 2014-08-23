@@ -32,6 +32,18 @@ public class vec2 {
         return new vec2(-this.x, -this.y);
     }
 
+    public vec2 floor() {
+        return new vec2((float)Math.floor(this.x), (float)Math.floor(this.y));
+    }
+
+    public int getFloorX() {
+        return (int)Math.floor(this.x);
+    }
+
+    public int getFloorY() {
+        return (int)Math.floor(this.y);
+    }
+
     @Override
     public String toString() {
         return "vec2("+Float.toString(x)+"; "+Float.toString(y)+")";
