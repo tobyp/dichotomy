@@ -14,19 +14,18 @@ import java.util.logging.Logger;
 public class ld30 extends BasicGame {
     Logger logger = Logger.getLogger("ld30");
 
-    float PLAYER_TILES_PER_MS = 0.015f;
+    float PLAYER_TILES_PER_MS = 0.0105f;
 
     //RESOURCES
     SpriteSheet player_sprites;
 
     //MAP/WORLD
     TiledMap map;
+    int walk_layer_index;
 
     //PLAYER
     Player player;
     vec2 tileOffset;
-
-    boolean[][] blocked;
 
     public ld30() {
         super("Ludum Dare 30");
@@ -34,23 +33,11 @@ public class ld30 extends BasicGame {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
-        int tileCountX = (int)Math.floor(gameContainer.getWidth() / 24.f);
-        int tileCountY = (int)Math.floor(gameContainer.getHeight() / 24.f);
+        int tileCountX = (int)Math.floor(gameContainer.getWidth() / 48.f);
+        int tileCountY = (int)Math.floor(gameContainer.getHeight() / 48.f);
 
         map = new TiledMap("src/main/resources/tmx/level1.tmx");
-
-        blocked = new boolean[map.getWidth()][map.getHeight()];
-        for (int x = 0; x < map.getWidth(); x++) {
-            for (int y = 0; y < map.getHeight(); y++) {
-                for (int l = 0; l < map.getLayerCount(); l++) {
-                    int tileID = map.getTileId(x, y, l);
-                    String value = map.getTileProperty(tileID, "blocked", "false");
-                    if ("true".equals(value)) {
-                        blocked[x][y] = true;
-                    }
-                }
-            }
-        }
+        walk_layer_index = map.getLayerIndex("walkability");
 
         String[] spawn_location = map.getMapProperty("p-spawn", "0,0").split(",");
         player = new Player(Integer.parseInt(spawn_location[0]), Integer.parseInt(spawn_location[1]));
@@ -58,7 +45,10 @@ public class ld30 extends BasicGame {
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 1000);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 1), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 0), 200);
+        player.animation.addFrame(player_sprites.getSprite(0, 2), 200);
 
         gameContainer.setTargetFrameRate(60);
     }
@@ -85,7 +75,9 @@ public class ld30 extends BasicGame {
     public boolean tryMove(float x, float y) {
         vec2 new_loc = player.loc.add(x, y);
         if (Math.floor(new_loc.x) < 0 || Math.floor(new_loc.y) < 0) return false;
-        if (blocked[(int)Math.floor(new_loc.x)][(int)Math.floor(new_loc.y)]) {
+        int tile_id = map.getTileId((int)Math.floor(new_loc.x), (int)Math.floor(new_loc.y), walk_layer_index);
+        logger.info(Integer.toString(tile_id));
+        if (tile_id != 61) {
             return false;
         }else{
             player.loc = new_loc;
@@ -101,8 +93,8 @@ public class ld30 extends BasicGame {
 
         int render_offset_x = -(int)((tileOffset.x-tileOffsetX)*24.f);
         int render_offset_y = -(int)((tileOffset.y-tileOffsetY)*24.f);
-        int render_tile_w = (gameContainer.getWidth() + 23) / 24;
-        int render_tile_h = (gameContainer.getHeight() + 23) / 24;
+        int render_tile_w = (gameContainer.getWidth() / 2 + 48) / 24;
+        int render_tile_h = (gameContainer.getHeight() / 2 + 48) / 24;
 
         for (int i=0; i<map.getLayerCount(); i++) {
             String layer_type = map.getLayerProperty(i, "type", "visible");
@@ -118,8 +110,8 @@ public class ld30 extends BasicGame {
     public static void main(String [] args) {
         Logger logger = Logger.getGlobal();
         try {
-            AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 683, 384));
-            c.setDisplayMode(1366, 768, false);
+            AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 400, 300));
+            c.setDisplayMode(800, 600, false);
             c.start();
         }
         catch (Exception e) {
