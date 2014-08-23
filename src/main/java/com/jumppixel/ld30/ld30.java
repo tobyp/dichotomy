@@ -6,6 +6,7 @@ import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.ResourceLoader;
 
 import javax.swing.*;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -53,28 +54,67 @@ public class ld30 extends BasicGame implements InputListener {
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
 
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 1), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 0), 100);
-        player.animation.addFrame(player_sprites.getSprite(0, 2), 100);
+        for (int rot = 0; rot<8; rot++) {
+            Animation a = new Animation();
+            a.addFrame(player_sprites.getSprite(rot, 0), 200);
+            a.addFrame(player_sprites.getSprite(rot, 1), 200);
+            a.addFrame(player_sprites.getSprite(rot, 0), 200);
+            a.addFrame(player_sprites.getSprite(rot, 2), 200);
+
+            player.animations.add(a);
+        }
+
 
         gameContainer.setTargetFrameRate(60);
     }
 
     @Override
     public void update(GameContainer gameContainer, int delta_ms) throws SlickException {
+        int delta_x = 0;
+        int delta_y = 0;
+
         if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
             tryMove(delta_ms * PLAYER_TILES_PER_MS, 0.f);
+            delta_x = delta_x + 1;
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
             tryMove(delta_ms * -PLAYER_TILES_PER_MS, 0.f);
+            delta_x = delta_x - 1;
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
             tryMove(0.f, delta_ms * PLAYER_TILES_PER_MS);
+            delta_y = delta_y - 1;
         }
         if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
             tryMove(0.f, delta_ms * -PLAYER_TILES_PER_MS);
+            delta_y = delta_y + 1;
         }
+
+        if (delta_x == -1 && delta_y == -1) {
+            player.rot = 1;
+        }else
+        if (delta_x == -1 && delta_y == 0) {
+            player.rot = 2;
+        }else
+        if (delta_x == -1 && delta_y == 1) {
+            player.rot = 3;
+        }else
+        if (delta_x == 0 && delta_y == -1) {
+            player.rot = 0;
+        }else
+        if (delta_x == 0 && delta_y == 1) {
+            player.rot = 4;
+        }else
+        if (delta_x == 1 && delta_y == -1) {
+            player.rot = 7;
+        }else
+        if (delta_x == 1 && delta_y == 0) {
+            player.rot = 6;
+        }else
+        if (delta_x == 1 && delta_y == 1) {
+            player.rot = 5;
+        }
+
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
             gameContainer.exit();
         }
@@ -94,7 +134,6 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void keyPressed(int key, char c) {
-
     }
 
     @Override
