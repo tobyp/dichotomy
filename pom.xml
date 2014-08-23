@@ -8,10 +8,22 @@
     <artifactId>ludum-dare-30</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <natives.version>0.0.6</natives.version>
+        <lwjgl.version>2.8.2</lwjgl.version>
+        <slick.version>2.1.0</slick.version>
+        <junit.version>4.10</junit.version>
+    </properties>
+
     <repositories>
         <repository>
-            <id>lwjgl</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
+            <id>mavenNatives</id>
+            <name>Maven Natives Repository</name>
+            <url>http://mavennatives.googlecode.com/svn/repo</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
     </repositories>
 
@@ -19,53 +31,37 @@
         <dependency>
             <groupId>org.lwjgl.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>
-            <version>2.8.4</version>
+            <version>${lwjgl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.lwjgl.lwjgl</groupId>
             <artifactId>lwjgl_util</artifactId>
-            <version>2.8.4</version>
+            <version>${lwjgl.version}</version>
         </dependency>
     </dependencies>
 
     <build>
-        <defaultGoal>clean install</defaultGoal>
+        <defaultGoal>clean compile test</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                    <compilerArguments>
-                        <O>-Xlint:all</O>
-                        <O>-Xlint:-path</O>
-                    </compilerArguments>
-                    <showWarnings>true</showWarnings>
-                    <showDeprecation>true</showDeprecation>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
+
             <plugin>
                 <groupId>com.googlecode.mavennatives</groupId>
                 <artifactId>maven-nativedependencies-plugin</artifactId>
-                <version>0.0.5</version>
+                <version>${natives.version}</version>
                 <executions>
                     <execution>
                         <id>unpacknatives</id>
                         <phase>generate-resources</phase>
                         <goals>
+                            <!--suppress MavenModelInspection (this line is for IDEA)-->
                             <goal>copy</goal>
                         </goals>
                     </execution>

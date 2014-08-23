@@ -2,6 +2,7 @@ package com.jumppixel.ld30; /**
  * Created by tobyp on 8/23/14.
  */
 
+import com.jumppixel.ld30.render.RenderSystem;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
@@ -11,6 +12,8 @@ import org.lwjgl.opengl.DisplayMode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -52,6 +55,17 @@ public class Engine {
     }
 
     public static void main(String[] args) {
-        
+        Logger l = Logger.getGlobal();
+        try {
+            Engine e = new Engine();
+
+            RenderSystem rs = new RenderSystem("Ludum Dare 30", 800, 600);
+
+            e.systems.add(rs);
+            e.run();
+        }
+        catch (Exception e) {
+            l.log(Level.SEVERE, "Game crash.", e);
+        }
     }
 }

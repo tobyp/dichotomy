@@ -2,7 +2,6 @@ package com.jumppixel.ld30.base;
 
 import com.jumppixel.ld30.Component;
 import org.lwjgl.util.vector.Vector2f;
-import org.lwjgl.util.vector.Vector3f;
 
 /**
  * Created by tobyp on 8/23/14.
