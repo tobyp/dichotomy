@@ -22,12 +22,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="ld30" />
         <module name="ludum-dare-30" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="ld30" target="1.7" />
       <module name="ludum-dare-30" target="1.7" />
     </bytecodeTargetLevel>
   </component>
