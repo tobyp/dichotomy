@@ -176,9 +176,9 @@ public class ld30 extends BasicGame implements InputListener {
                 }
                 else if (type.equals("laser-emitter")) {
                     int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
-                    laserDeviceRotate(faced_oid, faced_x, faced_y, type, beams);
+                    laserEmitterToggle(faced_oid, faced_x, faced_y, type, beams);
                 }
-                else if (type.equals("laser-mirror") || type.equals("laser-mirror") || type.equals("laser-prism") || type.equals("laser-diode") || type.equals("laser-receiver")) {
+                else if (type.equals("laser-io") || type.equals("laser-receiver")) {
                     int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
                     laserDeviceRotate(faced_oid, faced_x, faced_y, type, beams);
                 }
@@ -257,6 +257,8 @@ public class ld30 extends BasicGame implements InputListener {
     int BLOCKER_BASE_TILE = 801;
     int DIODE_BASE_TILE = 841;
 
+    int SIDES[] = new int[]{0x1, 0x2, 0x4, 0x8};
+
     private static int complementBeam(int beam) {
         return ((beam >> 2) | (beam << 2)) & 0xF;
     }
@@ -293,17 +295,8 @@ public class ld30 extends BasicGame implements InputListener {
             int complement_beam = complementBeam(beam);
 
             new_beams = setBeams(oid, on ? new_beams | complement_beam : new_beams & ~complement_beam); //update the complimentary one as well
-            logger.info("\tComplement: "+Integer.toBinaryString(complement_beam)+"; ultimate beam "+Integer.toBinaryString(new_beams));
+            logger.info("\tBEAM: complement="+Integer.toBinaryString(complement_beam)+", ultimate="+Integer.toBinaryString(new_beams));
             laserUpdateTowards(x, y, beam, on);
-        }
-        else if (device_type.equals("laser-diode")) {
-            base_tile = DIODE_BASE_TILE;
-            int diode_input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            if (diode_input == beam) { //exactly like a normal beam, except with this extra condition
-                int complement_beam = complementBeam(beam);
-                new_beams = setBeams(oid, on ? new_beams | complement_beam : new_beams & ~complement_beam);
-                laserUpdateTowards(x, y, beam, on);
-            }
         }
         else if (device_type.equals("laser-emitter")) {
             int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
@@ -323,28 +316,30 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             }
         }
-        else if (device_type.equals("laser-mirror")) {
-            int mirror_io = Integer.parseInt(map.getObjectProperty(objects_group, oid, "io", "0000"), 2);
-            if ((mirror_io & beam) > 0) {
-                new_beams = setBeams(oid, new_beams | mirror_io);
-                for (int i=0; i<4; i++) {
-                    int b = 0x1 << i;
-                    if ((new_beams & b) > 0 && b != beam) {
-                        laserUpdateTowards(x, y, b, on);
-                    }
-                }
+        else if (device_type.equals("laser-io")) {
+            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
+            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
+            int primaries = Integer.parseInt(map.getObjectProperty(objects_group, oid, "primaries", "0000"), 2);
+
+            int old_primaries = primaries;
+            primaries = on ? primaries | beam : primaries & ~beam;
+
+            map.setObjectProperty(objects_group, oid, "primaries", Integer.toBinaryString(primaries));
+
+            if ((primaries & input) > 0) { //we have a primary input, so let's put in the outputs!
+                new_beams = setBeams(oid, new_beams | output);
             }
-        }
-        else if (device_type.equals("laser-prism")) {
-            int prism_input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            int prism_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            if (prism_input == beam) {
-                new_beams = setBeams(oid, on ? new_beams | prism_output : new_beams & ~prism_output | prism_input);
-                for (int i=0; i<4; i++) {
-                    int b = 0x1 << i;
-                    if ((new_beams & b) > 0 && b != beam) {
-                        laserUpdateTowards(x, y, b, on);
-                    }
+            else { //we have no primary inputs, remove all non-primary outputs!
+                new_beams = setBeams(oid, new_beams & ~output | primaries);
+            }
+
+            logger.info("\tIOlaser. "+Integer.toString(input)+"->" + Integer.toBinaryString(output) + " primaries="+Integer.toBinaryString(old_primaries)+"->"+Integer.toBinaryString(primaries)+", beams=->"+Integer.toBinaryString(new_beams));
+
+            for (int side : SIDES) {
+                if ((side & new_beams) > 0 && (side & old_beams) == 0 && side != beam) { //it was added
+                    laserUpdateTowards(x, y, complementBeam(side), true);
+                } else if ((side & new_beams) == 0 && (side & old_beams) > 0 && side != beam) { //it was removed
+                    laserUpdateTowards(x, y, complementBeam(side), false);
                 }
             }
         }
@@ -364,7 +359,6 @@ public class ld30 extends BasicGame implements InputListener {
         int device_base_id = (tileid - DEVICE_BASE_TILE) / 4 * 4;
         int device_variant_id = (tileid - DEVICE_BASE_TILE) % 4;
         int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
-        logger.info(Integer.toString(tileid)+"->"+Integer.toString(device_rotated_id));
         return device_rotated_id;
     }
 
@@ -404,14 +398,32 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             }
         }
-        else if (device_type.equals("laser-mirror")) {
+        else if (device_type.equals("laser-io")) {
+            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
+            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
+            int primaries = Integer.parseInt(map.getObjectProperty(objects_group, oid, "primaries", "0000"), 2);
 
-        }
-        else if (device_type.equals("laser-prism")) {
+            //ROTATIONS START
+            input = rotateBeams(input);
+            output = rotateBeams(output);
+            map.setObjectProperty(objects_group, oid, "input", Integer.toBinaryString(input));
+            map.setObjectProperty(objects_group, oid, "output", Integer.toBinaryString(output));
+            map.setTileId(x, y, laser_dev_layer, laserDeviceTileRotate(map.getTileId(x, y, laser_dev_layer)));
+            //ROTATIONS END
 
-        }
-        else if (device_type.equals("laser-diode")) {
+            int new_beams = setBeams(oid, (primaries & input) > 0 ? primaries | output : primaries);
 
+            logger.info("Rotating IO "+Integer.toString(input)+"->"+Integer.toBinaryString(output)+" primaries="+Integer.toBinaryString(primaries)+", beams="+Integer.toBinaryString(beams)+"->"+Integer.toBinaryString(new_beams));
+
+            for (int side : SIDES) {
+                if ((side & new_beams) > 0 && (side & beams) == 0) { //it was added
+                    laserUpdateTowards(x, y, complementBeam(side), true);
+                } else if ((side & new_beams) == 0 && (side & beams) > 0) { //it was removed
+                    laserUpdateTowards(x, y, complementBeam(side), false);
+                }
+            }
+
+            map.setTileId(x, y, laser_beam_layer, BEAM_BASE_TILE+new_beams);
         }
     }
 
