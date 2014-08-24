@@ -35,7 +35,6 @@ public class ld30 extends BasicGame implements InputListener {
     //NOTIFICATIONS
     TrueTypeFont font;
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
-    boolean teleport_instructions_sent = false;
 
     public ld30() {
         super("Ludum Dare 30");
@@ -49,7 +48,7 @@ public class ld30 extends BasicGame implements InputListener {
 
         font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
-        map = new Map("src/main/resources/tmx/level1.tmx");
+        map = new Map("src/main/resources/tmx/level0.tmx");
         objects_group = map.getObjectGroupIndex("objects");
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
@@ -89,13 +88,6 @@ public class ld30 extends BasicGame implements InputListener {
             }
         }else{
             charge_ms = 0;
-        }
-
-        if (player.charge == player.max_charge) {
-            if (!teleport_instructions_sent) {
-                teleport_instructions_sent = true;
-                addNotification(new TimedNotification("To shift, press q when fully charged", 3000, Notification.Type.INFO));
-            }
         }
 
         //TODO entities here!
