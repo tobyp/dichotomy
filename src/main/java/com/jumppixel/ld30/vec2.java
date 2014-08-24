@@ -52,6 +52,16 @@ public class vec2 {
         return (int)Math.floor(this.y);
     }
 
+    public float getMagnitude(vec2 point) {
+        float min_x, min_y, max_x, max_y;
+        if (this.x > point.x) min_x = point.x; else min_x = this.x;
+        if (this.y > point.y) min_y = point.y; else min_y = this.y;
+        if (this.x < point.x) max_x = point.x; else max_x = this.x;
+        if (this.y < point.y) max_y = point.y; else max_y = this.y;
+
+        return (max_x - min_x) + (max_y - min_y);
+    }
+
     public int getRotInt() {
         if (this.x == 0.f) {
             if (this.y == 0.f) {

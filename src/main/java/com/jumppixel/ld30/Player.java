@@ -1,12 +1,11 @@
 package com.jumppixel.ld30;
 
-import org.newdawn.slick.Animation;
 import org.newdawn.slick.SpriteSheet;
 
 /**
  * Created by tobyp on 8/23/14.
  */
-public class Player extends Entity {
+public class Player extends LivingEntity {
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
