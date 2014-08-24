@@ -18,6 +18,8 @@ public class ld30 extends BasicGame implements InputListener {
 
     float PLAYER_TILES_PER_MS = 0.005f;
 
+    GameContainer gameContainer;
+
     //RESOURCES
     SpriteSheet player_sprites;
     SpriteSheet meta_sprites;
@@ -43,6 +45,8 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
+
+        this.gameContainer = gameContainer;
 
         font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
 
@@ -78,8 +82,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         gameContainer.setTargetFrameRate(60);
 
-        notification_buffer.add(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
-        notification_buffer.add(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
+        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
+        addNotification(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
     }
 
     @Override
@@ -179,6 +183,20 @@ public class ld30 extends BasicGame implements InputListener {
                     executeActions(map.getObjectProperty(objects_group, faced, "enable", ""));
                 }
             }
+        }
+        if (key == Input.KEY_F11) { //full screen
+            try {
+                if (gameContainer.isFullscreen()) gameContainer.setFullscreen(false);
+                else gameContainer.setFullscreen(true);
+                addNotification(new TimedNotification("Toggled fullscreen mode", 2000, Notification.Type.INFO));
+            }catch (SlickException e) {
+                e.printStackTrace();
+            }
+        }
+        if (key == Input.KEY_F3) { //debug
+            if (gameContainer.isShowingFPS()) gameContainer.setShowFPS(false);
+            else gameContainer.setShowFPS(true);
+            addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
         }
     }
 
@@ -299,10 +317,15 @@ public class ld30 extends BasicGame implements InputListener {
         try {
             AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 800, 600));
             c.setDisplayMode(800, 600, false);
+            c.setShowFPS(false);
             c.start();
         }
         catch (Exception e) {
             logger.log(Level.SEVERE, "Game error.", e);
         }
+    }
+
+    public void addNotification(Notification notification) {
+        notification_buffer.add(notification);
     }
 }
