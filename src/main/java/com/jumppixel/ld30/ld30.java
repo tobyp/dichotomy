@@ -1,7 +1,12 @@
 package com.jumppixel.ld30;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Graphics;
 
+import java.awt.Font;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,6 +20,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     //RESOURCES
     SpriteSheet player_sprites;
+    SpriteSheet meta_sprites;
 
     //MAP/WORLD
     Map map;
@@ -25,6 +31,10 @@ public class ld30 extends BasicGame implements InputListener {
     Player player;
     vec2 tileOffset;
 
+    TrueTypeFont font;
+
+    public List<Notification> notification_buffer;
+
     boolean[] keystatus;
 
     public ld30() {
@@ -33,6 +43,10 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
+
+        font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
+
+        notification_buffer = new ArrayList<Notification>();
 
         gameContainer.getInput().addListener(this);
 
@@ -50,6 +64,7 @@ public class ld30 extends BasicGame implements InputListener {
         tileOffset = player.loc.add(-tileCountX / 2.f - 0.5f, -tileCountY / 2.f - 0.5f); //half screen to char's foot-center
 
         player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
+        meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
 
         for (int rot = 0; rot<8; rot++) {
             Animation a = new Animation();
@@ -62,6 +77,9 @@ public class ld30 extends BasicGame implements InputListener {
         }
 
         gameContainer.setTargetFrameRate(60);
+
+        notification_buffer.add(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
+        notification_buffer.add(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
     }
 
     @Override
@@ -114,6 +132,21 @@ public class ld30 extends BasicGame implements InputListener {
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
             gameContainer.exit();
         }
+
+        if (notification_buffer.size() > 0) {
+            for (Notification n : new ArrayList<Notification>(notification_buffer)) {
+                int text_width = gameContainer.getGraphics().getFont().getWidth(n.text);
+
+                n.update(delta_ms);
+
+                if (n.dismissed) {
+                    n.offset_x = n.offset_x - 5;
+                }
+                if (gameContainer.getWidth() - n.offset_x - text_width - 72 > gameContainer.getWidth()) {
+                    notification_buffer.remove(n);
+                }
+            }
+        }
     }
 
     @Override
@@ -126,7 +159,7 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (button == 0) { //attack
-            
+
         }
     }
 
@@ -209,8 +242,13 @@ public class ld30 extends BasicGame implements InputListener {
     }
 
     void render(boolean good, GameContainer gameContainer, Graphics graphics) throws SlickException {
+        if (graphics.getFont() != font)
+        graphics.setFont(font);
+
         int tileOffsetX = (int)tileOffset.x;
         int tileOffsetY = (int)tileOffset.y;
+
+        graphics.scale(2, 2);
 
         int render_offset_x = -(int)((tileOffset.x-tileOffsetX)*24.f);
         int render_offset_y = -(int)((tileOffset.y-tileOffsetY)*24.f);
@@ -229,12 +267,37 @@ public class ld30 extends BasicGame implements InputListener {
                 //TODO
             }
         }
+
+        graphics.scale(.5f, .5f);
+
+        if (notification_buffer.size() > 0) {
+            graphics.setColor(Color.black);
+
+            int offset_y = 10;
+
+            for (Notification n : new ArrayList<Notification>(notification_buffer)) {
+                int sprite_offset_x = 0;
+
+                if (n.type == Notification.Type.INFO) sprite_offset_x = 0;
+                else if (n.type == Notification.Type.WARNING) sprite_offset_x = 6;
+                else if (n.type == Notification.Type.OBJECTIVE) sprite_offset_x = 12;
+
+                int text_width = graphics.getFont().getWidth(n.text);
+
+                meta_sprites.getSubImage(sprite_offset_x, 0, 6, 12).draw(gameContainer.getWidth() - n.offset_x - text_width - 72, offset_y, 6);
+                meta_sprites.getSubImage(sprite_offset_x, 12, 1, 12).draw(gameContainer.getWidth() - n.offset_x - text_width - 36, offset_y, text_width, 72);
+                graphics.drawString(n.text, gameContainer.getWidth() - n.offset_x - text_width - 36, offset_y + 36 - graphics.getFont().getHeight(n.text) / 2);
+                meta_sprites.getSubImage(sprite_offset_x, 24, 6, 12).draw(gameContainer.getWidth() - n.offset_x - 36, offset_y, 6);
+
+                offset_y = offset_y + 82;
+            }
+        }
     }
 
     public static void main(String [] args) {
         Logger logger = Logger.getGlobal();
         try {
-            AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 400, 300));
+            AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 800, 600));
             c.setDisplayMode(800, 600, false);
             c.start();
         }
