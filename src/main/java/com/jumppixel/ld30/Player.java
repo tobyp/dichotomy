@@ -9,8 +9,9 @@ public class Player extends LivingEntity {
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
-    boolean allow_charging = true;
+    boolean allow_charging = false;
     boolean charge_holding = false;
+    boolean has_device = false;
 
 
     public Player(vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
