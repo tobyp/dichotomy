@@ -31,7 +31,7 @@ public class Entity {
         vec2 tile_location = loc.add(view_offset.negate());
         vec2 pixel_location = tile_location.mul(24.f);
 
-        image.draw(pixel_location.x+render_offset.x, pixel_location.y+render_offset.y);
+        image.draw(pixel_location.x-render_offset.x, pixel_location.y-render_offset.y);
     }
 
     public void setVelocity(vec2 velocity) {

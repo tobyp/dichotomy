@@ -24,10 +24,10 @@ public class Drop extends Entity {
 
         if (expire_ms <= 2000) {
             if (expire_ms % 100 < 50)
-                image.draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
+                image.draw(pixel_location.x - render_offset.x, pixel_location.y - render_offset.y);
         }
         else
-            image.draw(pixel_location.x+render_offset.x, pixel_location.y+render_offset.y);
+            image.draw(pixel_location.x - render_offset.x, pixel_location.y - render_offset.y);
     }
 
     public void expire() {

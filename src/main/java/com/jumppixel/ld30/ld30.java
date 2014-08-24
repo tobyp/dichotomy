@@ -3,7 +3,6 @@ package com.jumppixel.ld30;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.util.Log;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class ld30 extends BasicGame implements InputListener {
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
-        map = new Map("src/main/resources/tmx/lazers.tmx");
+        map = new Map("src/main/resources/tmx/lasers1.tmx");
         objects_group = map.getObjectGroupIndex("objects");
         laser_beam_layer = map.getLayerIndex("laser-beam");
         laser_dev_layer = map.getLayerIndex("laser-dev");
@@ -94,8 +93,9 @@ public class ld30 extends BasicGame implements InputListener {
         map.update(delta_ms);
         player.update(map, delta_ms);
         for (Drop drop : new ArrayList<Drop>(map.drops)) {
-            if (drop.loc.getMagnitude(player.loc) < 0.5) {
+            if (drop.loc.getDistance(player.loc) < 0.5) {
                 drop.pickup(player);
+                map.drops.remove(drop);
             }
         }
 
@@ -258,7 +258,7 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification(aparts[3], notify_time, notify_type));
             }
             else if (aparts[0].equals("add-drop")) {
-                vec2 loc = new vec2(Integer.parseInt(aparts[2]),Integer.parseInt(aparts[3]));
+                vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
                 if (aparts[1].equals("health-1")) {
                     map.addDrop(new HealthDrop(loc, drop_sprites));
                 }else
