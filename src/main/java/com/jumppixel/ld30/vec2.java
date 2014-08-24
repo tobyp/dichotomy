@@ -94,7 +94,7 @@ public class vec2 {
 
     public vec2 getFaced(vec2 rotation) {
         int faced_x = getFloorX();
-        int faced_y = getFloorY()+1;
+        int faced_y = getFloorY();
 
         faced_x += rotation.x;
         faced_y += rotation.y;
