@@ -116,7 +116,25 @@ public class ld30 extends BasicGame implements InputListener {
             player.charge_hold = 0;
         }
 
+        checkMovements(gameContainer);
+
         //TODO entities here!
+    }
+
+    public void checkMovements(GameContainer gameContainer) {
+        player.setVelocity(vec2.ZERO);
+        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
+            player.setVelocity(player.velocity.add(vec2.RIGHT));
+        }
+        if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
+            player.setVelocity(player.velocity.add(vec2.LEFT));
+        }
+        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
+            player.setVelocity(player.velocity.add(vec2.UP));
+        }
+        if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
+            player.setVelocity(player.velocity.add(vec2.DOWN));
+        }
     }
 
     @Override
@@ -182,22 +200,6 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
             }
             break;
-            case Input.KEY_D: {
-                player.setVelocity(player.velocity.add(vec2.RIGHT));
-            }
-            break;
-            case Input.KEY_A: {
-                player.setVelocity(player.velocity.add(vec2.LEFT));
-            }
-            break;
-            case Input.KEY_S: {
-                player.setVelocity(player.velocity.add(vec2.DOWN));
-            }
-            break;
-            case Input.KEY_W: {
-                player.setVelocity(player.velocity.add(vec2.UP));
-            }
-            break;
             case Input.KEY_ESCAPE: {
                 gameContainer.exit();
             }
@@ -212,22 +214,6 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void keyReleased(int key, char c) {
         switch (key) {
-            case Input.KEY_D: {
-                player.setVelocity(player.velocity.sub(vec2.RIGHT));
-            }
-            break;
-            case Input.KEY_A: {
-                player.setVelocity(player.velocity.sub(vec2.LEFT));
-            }
-            break;
-            case Input.KEY_S: {
-                player.setVelocity(player.velocity.sub(vec2.DOWN));
-            }
-            break;
-            case Input.KEY_W: {
-                player.setVelocity(player.velocity.sub(vec2.UP));
-            }
-            break;
             case Input.KEY_Q: {
                 player.charge_holding = false;
             }
