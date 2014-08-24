@@ -6,12 +6,14 @@ import org.newdawn.slick.tiled.TiledMap;
 
 import java.io.InputStream;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Created by tobyp on 8/24/14.
  */
 public class Map extends TiledMap {
     private int walk_layer_index;
+    public int WALKABLE_BASE = 881;
 
     public Map(String ref) throws SlickException {
         super(ref);
@@ -76,11 +78,54 @@ public class Map extends TiledMap {
         return -1;
     }
 
-    public boolean walkable(vec2 from, vec2 to) {
-        int tile_id = getTileId(to.getFloorX(), to.getFloorY(), walk_layer_index);
-        if (tile_id != 61) { //TODO directional walkability
-            return false;
+    public int getTileObject(int groupID, int x, int y) {
+        x *= 24;
+        y = (y+1) * 24; //some reason, object coords are bottom left
+        ObjectGroup group = (ObjectGroup) objectGroups.get(groupID);
+        if (group == null) return -1;
+
+        for (Object go : group.objects) {
+            GroupObject o = (GroupObject)go;
+
+            if (o.x == x && o.y == y) {
+                return o.index;
+            }
         }
-        return true;
+        return -1;
+    }
+
+    public int getObjectTileX(int gid, int oid) {
+        ObjectGroup group = (ObjectGroup) objectGroups.get(gid);
+        if (group == null) return -1;
+
+        for (Object go : group.objects) {
+            GroupObject o = (GroupObject) go;
+            if (o.index == oid) return o.x / 24;
+        }
+
+        return -1;
+    }
+
+    public int getObjectTileY(int gid, int oid) {
+        ObjectGroup group = (ObjectGroup) objectGroups.get(gid);
+        if (group == null) return -1;
+
+        for (Object go : group.objects) {
+            GroupObject o = (GroupObject) go;
+            if (o.index == oid) return o.y / 24 - 1;
+        }
+
+        return -1;
+    }
+
+    public boolean walkable(vec2 from, vec2 to) {
+        int tile_id = getTileId(to.getFloorX(), to.getFloorY(), walk_layer_index) - WALKABLE_BASE;
+        if (tile_id < 0) tile_id = 0x0; //completely walkable
+        int needed = to.sub(from).walk_dirs();
+        //Logger.getGlobal().info("needed " + Integer.toBinaryString(needed) + " | " + Integer.toBinaryString(~tile_id) + " got");
+        if ((~tile_id & needed) == needed) {
+            return true;
+        }
+        return false;
     }
 }

@@ -102,6 +102,15 @@ public class vec2 {
         return new vec2(faced_x, faced_y);
     }
 
+    public int walk_dirs() {
+        int wd = 0;
+        if (x < 0.f) wd |=0x8;
+        else if (x > 0.f) wd |=0x2;
+        if (y < 0.f) wd |=0x1;
+        else if (y > 0.f) wd |=0x4;
+        return wd;
+    }
+
     public vec2 withX(float x) {
         return new vec2(x, this.y);
     }
