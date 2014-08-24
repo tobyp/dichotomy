@@ -40,6 +40,7 @@ public class Entity {
 
         Animation rot_ani = animations.get(rotation.getRotInt());
         if (velocity.isZero()) {
+            rot_ani.setCurrentFrame(0);
             rot_ani.setAutoUpdate(false);
         }
         else {
