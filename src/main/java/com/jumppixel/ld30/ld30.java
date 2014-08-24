@@ -162,20 +162,17 @@ public class ld30 extends BasicGame implements InputListener {
 
     public int getFacedObject(int group) {
         int faced_x = player.loc.getFloorX();
-        int faced_y = player.loc.getFloorY();
+        int faced_y = player.loc.getFloorY()+1;
 
         if (player.rot >= 1 && player.rot <= 3) faced_x -= 1;
         if (player.rot >= 5 && player.rot <= 7) faced_x += 1;
         if (player.rot >= 3 && player.rot <= 5) faced_y -= 1;
         if (player.rot <= 1 || player.rot == 7) faced_y += 1;
-        
+
         faced_x *= 24;
         faced_y *= 24;
 
-        logger.info("faced: " + Integer.toString(faced_x)+"; "+Integer.toString(faced_y));
-
         for (int oid = 0; oid < map.getObjectCount(group); oid++) {
-            logger.info(">> "+Integer.toString((int)Math.floor(map.getObjectX(group, oid)))+"; "+Integer.toString((int)Math.floor(map.getObjectY(group, oid))));
             if (Math.floor(map.getObjectX(group, oid)) != faced_x) continue;
             if (Math.floor(map.getObjectY(group, oid)) != faced_y) continue;
             return oid;
