@@ -3,6 +3,7 @@ package com.jumppixel.ld30;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.util.Log;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class ld30 extends BasicGame implements InputListener {
 
         font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
-        map = new Map("src/main/resources/tmx/level0.tmx");
+        map = new Map("src/main/resources/tmx/level1.tmx");
         objects_group = map.getObjectGroupIndex("objects");
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
@@ -88,6 +89,18 @@ public class ld30 extends BasicGame implements InputListener {
             }
         }else{
             charge_ms = 0;
+        }
+
+        if (player.charge_holding && player.charge == player.max_charge) {
+            if (player.charge_hold + ((float)delta_ms)/1000 > 1) {
+                player.charge_hold = 1.0f;
+                //TODO: Teleport player
+            }else{
+                player.charge_hold = player.charge_hold + ((float) delta_ms)/1000;
+            }
+        }else{
+            player.charge_holding = false;
+            player.charge_hold = 0;
         }
 
         //TODO entities here!
@@ -162,6 +175,10 @@ public class ld30 extends BasicGame implements InputListener {
                 gameContainer.exit();
             }
             break;
+            case Input.KEY_Q: {
+                if (player.charge == player.max_charge) player.charge_holding = true;
+            }
+            break;
         }
     }
 
@@ -183,6 +200,11 @@ public class ld30 extends BasicGame implements InputListener {
             case Input.KEY_W: {
                 player.setVelocity(player.velocity.sub(vec2.UP));
             }
+            break;
+            case Input.KEY_Q: {
+                player.charge_holding = false;
+            }
+            break;
         }
     }
 
@@ -264,16 +286,16 @@ public class ld30 extends BasicGame implements InputListener {
         int charge_offset_y = gameContainer.getHeight() - 78;
 
         Image teleporter_icon = meta_sprites.getSubImage(40, 7, 14, 17);
-        Image charge_disabled = meta_sprites.getSubImage(19, 10, 20, 2);
-        Image charge_empty = meta_sprites.getSubImage(19, 13, 20, 2);
-        Image charge_full = meta_sprites.getSubImage(19, 19, 20, 2);
+        Image charge_empty = meta_sprites.getSubImage(19, 10, 20, 2);
+        Image charge_full = meta_sprites.getSubImage(19, 13, 20, 2);
+        Image charge_ready = meta_sprites.getSubImage(19, 19, 20, 2);
 
-        teleporter_icon.draw(charge_offset_x, charge_offset_y, 14*4, 17*4);
-
-        //charge_disabled.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
+        teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4);
+        teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4, new Color(.8f, 0f, .8f, player.charge_hold/2));
 
         charge_empty.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
         charge_full.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20*8*player.charge/player.max_charge), 2 * 8);
+        charge_ready.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20*8*player.charge_hold/1), 2 * 8);
 
         if (notification_buffer.size() > 0) {
             graphics.setColor(Color.black);
