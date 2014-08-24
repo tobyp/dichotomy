@@ -8,6 +8,6 @@ import org.newdawn.slick.SpriteSheet;
  */
 public class Player extends Entity {
     public Player(vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
-        super(loc, sprites, render_offset, move_speed, num_ani_frames);
+        super(loc, sprites, render_offset, 1.0f, move_speed, num_ani_frames);
     }
 }

@@ -238,6 +238,10 @@ public class ld30 extends BasicGame implements InputListener {
 
         graphics.scale(.5f, .5f);
 
+        player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);
+        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 36, 20*8, 2*8);
+        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
+
         if (notification_buffer.size() > 0) {
             graphics.setColor(Color.black);
 

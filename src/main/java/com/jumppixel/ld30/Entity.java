@@ -20,11 +20,16 @@ public class Entity {
     public vec2 velocity = new vec2();
     public vec2 rotation = new vec2(1, 0);
 
-    public Entity(vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
+    float health;
+    float max_health = 1.0f;
+
+    public Entity(vec2 loc, SpriteSheet sprites, vec2 render_offset, float max_health, float move_speed, int num_ani_frames) {
         this.loc = loc;
         this.render_offset = render_offset;
         this.move_speed = move_speed;
         this.sprites = sprites;
+        this.max_health = max_health;
+        this.health = max_health;
         for (int rot = 0; rot<8; rot++) {
             Animation a = new Animation();
             for (int i=0; i<num_ani_frames; i++) {
