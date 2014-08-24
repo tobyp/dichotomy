@@ -51,8 +51,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
         vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
-        player = new Player(spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
-        addNotification(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
+        player = new Player(spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
     }
 
     @Override
