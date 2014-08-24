@@ -9,7 +9,7 @@ public class Notification {
     public Type type;
 
     public boolean dismissed = false;
-    public int offset_x = 30;
+    public int offset_x = 20;
 
     public Notification(String text, Type type) {
         this.text = text;

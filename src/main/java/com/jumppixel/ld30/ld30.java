@@ -132,6 +132,14 @@ public class ld30 extends BasicGame implements InputListener {
         if (delta_x == 1 && delta_y == 1) {
             player.rot = 5;
         }
+        /*
+        //TODO: Fix
+        if (delta_x == 0 && delta_y == 0 && player.isRunningAnimation()) {
+            player.stopAnimation();
+        }else {
+            player.startAnimation();
+        }
+        */
 
         if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
             gameContainer.exit();
