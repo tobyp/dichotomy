@@ -40,7 +40,7 @@ public class ld30 extends BasicGame implements InputListener {
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
     public ld30() {
-        super("Ludum Dare 30");
+        super("Dichotomy");
     }
 
     @Override
@@ -58,9 +58,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
         vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
-        player = new Player(spawn_location, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
-        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
-        addNotification(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
+        player = new Player(spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 7500, Notification.Type.INFO));
 
         for (Handler h : logger.getParent().getHandlers()) {
             h.setFormatter(new Formatter() {
@@ -138,21 +137,32 @@ public class ld30 extends BasicGame implements InputListener {
     public void keyPressed(int key, char c) {
         switch (key) {
             case Input.KEY_E: {
-                int faced = getFacedObject(objects_group);
-                if (faced == -1) return;
-                String type = map.getObjectType(objects_group, faced);
+                vec2 faced_tile = player.loc.getFaced(player.rotation);
+                int faced_x = faced_tile.getFloorX();
+                int faced_y = faced_tile.getFloorY();
+                int faced_oid = map.getTileObject(objects_group, faced_x, faced_y);
+                if (faced_oid == -1) return;
+                String type = map.getObjectType(objects_group, faced_oid);
+
+                logger.info("Interaction with "+type+"("+map.getObjectName(objects_group, faced_oid)+")@("+Integer.toString(faced_x)+";"+Integer.toString(faced_y)+")");
+
                 if (type.equals("button")) {
-                    String state = map.getObjectProperty(objects_group, faced, "state", "false");
+                    String state = map.getObjectProperty(objects_group, faced_oid, "state", "false");
                     if (state.equals("true")) {
-                        map.setObjectProperty(objects_group, faced, "state", "false");
-                        executeActions(map.getObjectProperty(objects_group, faced, "disable", ""));
+                        map.setObjectProperty(objects_group, faced_oid, "state", "false");
+                        executeActions(map.getObjectProperty(objects_group, faced_oid, "disable", ""));
                     } else if (state.equals("false")) {
-                        map.setObjectProperty(objects_group, faced, "state", "true");
-                        executeActions(map.getObjectProperty(objects_group, faced, "enable", ""));
+                        map.setObjectProperty(objects_group, faced_oid, "state", "true");
+                        executeActions(map.getObjectProperty(objects_group, faced_oid, "enable", ""));
                     }
                 }
-                else if (type.startsWith("laser-")) {
-                    laserDeviceInteract(map.getObjectTileX(objects_group, faced), map.getObjectTileY(objects_group, faced), faced);
+                else if (type.equals("laser-emitter")) {
+                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
+                    laserDeviceRotate(faced_oid, faced_x, faced_y, type, beams);
+                }
+                else if (type.equals("laser-mirror") || type.equals("laser-mirror") || type.equals("laser-prism") || type.equals("laser-diode") || type.equals("laser-receiver")) {
+                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
+                    laserDeviceRotate(faced_oid, faced_x, faced_y, type, beams);
                 }
             }
             break;
@@ -230,23 +240,6 @@ public class ld30 extends BasicGame implements InputListener {
 
     }
 
-    public int getFacedObject(int group) {
-        vec2 faced = player.loc.getFaced(player.rotation).mul(24.f);
-
-        //logger.info(faced.toString());
-
-        int faced_x = faced.getFloorX();
-        int faced_y = faced.getFloorY();
-
-        for (int oid = 0; oid < map.getObjectCount(group); oid++) {
-            //logger.info(">> " + Float.toString(map.getObjectX(group, oid)) + ";" + Float.toString(map.getObjectY(group, oid)));
-            if (Math.floor(map.getObjectX(group, oid)) != faced_x) continue;
-            if (Math.floor(map.getObjectY(group, oid)) != faced_y) continue;
-            return oid;
-        }
-        return -1;
-    }
-
     public void executeActions(String actions_string) {
         for (String a : actions_string.split(",")) {
             if (a.isEmpty()) continue;
@@ -273,6 +266,7 @@ public class ld30 extends BasicGame implements InputListener {
         }
     }
 
+    int DEVICE_BASE_TILE = 681;
     int BEAM_BASE_TILE = 761;
     int BLOCKER_BASE_TILE = 801;
     int DIODE_BASE_TILE = 841;
@@ -376,13 +370,69 @@ public class ld30 extends BasicGame implements InputListener {
         map.setTileId(x, y, laser_beam_layer, base_tile+new_beams);
     }
 
-    public void laserDeviceInteract(int x, int y, int oid) {
-        int beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
-        String device_type = map.getObjectType(objects_group, oid);
-        logger.info("Interacting with " + device_type + " '" + map.getObjectName(objects_group, oid) + "'@("+Integer.toString(x)+";"+Integer.toString(y)+") - beams were " + Integer.toBinaryString(beams));
+    private int rotateBeams(int beams) {
+        return ((beams >> 3) | (beams << 1)) & 0xF;
+    }
+
+    public int laserDeviceTileRotate(int tileid) {
+        int device_base_id = (tileid - DEVICE_BASE_TILE) / 4 * 4;
+        int device_variant_id = (tileid - DEVICE_BASE_TILE) % 4;
+        int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
+        logger.info(Integer.toString(tileid)+"->"+Integer.toString(device_rotated_id));
+        return device_rotated_id;
+    }
+
+    public void laserDeviceRotate(int oid, int x, int y, String device_type, int beams) {
         if (device_type.equals("laser-emitter")) {
             int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            logger.info("\tlaser-emitter output="+Integer.toBinaryString(emitter_output));
+            boolean was_on = (beams & emitter_output) > 0;
+            logger.info("\trotating emitter, beams="+Integer.toBinaryString(beams)+", output="+Integer.toBinaryString(emitter_output));
+            if (was_on) {
+                laserUpdate(x, y, emitter_output, false);
+            }
+            //ROTATIONS START
+            emitter_output = rotateBeams(emitter_output);
+            map.setObjectProperty(objects_group, oid, "output", Integer.toBinaryString(emitter_output));
+            map.setTileId(x, y, laser_dev_layer, laserDeviceTileRotate(map.getTileId(x, y, laser_dev_layer)));
+            //ROTATIONS END
+            if (was_on) {
+                laserUpdate(x, y, emitter_output, true);
+            }
+            logger.info("\trotated emitter, beams="+Integer.toBinaryString(Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2))+", output="+Integer.toBinaryString(emitter_output));
+        }
+        else if (device_type.equals("laser-receiver")) {
+            int receiver_input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
+            boolean was_on = (beams & receiver_input) > 0;
+            //ROTATIONS START
+            receiver_input = rotateBeams(receiver_input);
+            map.setObjectProperty(objects_group, oid, "input", Integer.toBinaryString(receiver_input));
+            map.setTileId(x, y, laser_dev_layer, laserDeviceTileRotate(map.getTileId(x, y, laser_dev_layer)));
+            //ROTATIONS END
+            boolean now_on = (beams & receiver_input) > 0;
+            if (now_on != was_on) {
+                if (now_on) {
+                    executeActions(map.getObjectProperty(objects_group, oid, "enable", ""));
+                }
+                else {
+                    executeActions(map.getObjectProperty(objects_group, oid, "disable", ""));
+                }
+            }
+        }
+        else if (device_type.equals("laser-mirror")) {
+
+        }
+        else if (device_type.equals("laser-prism")) {
+
+        }
+        else if (device_type.equals("laser-diode")) {
+
+        }
+    }
+
+    public void laserEmitterToggle(int oid, int x, int y, String device_type, int beams) {
+        if (device_type.equals("laser-emitter")) {
+            int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
+            logger.info("\tlaser-emitter beams="+Integer.toBinaryString(beams)+"; output="+Integer.toBinaryString(emitter_output));
             if ((beams & emitter_output) > 0) {
                 laserUpdate(x, y, emitter_output, false);
             }
