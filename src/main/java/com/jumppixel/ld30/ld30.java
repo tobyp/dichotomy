@@ -125,7 +125,14 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
-        if (button == 1) { //object interaction
+        if (button == 0) { //attack
+            
+        }
+    }
+
+    @Override
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_E) { //object interaction
             int faced = getFacedObject(objects_group);
             if (faced == -1) return;
             String type = map.getObjectType(objects_group, faced);
@@ -134,20 +141,12 @@ public class ld30 extends BasicGame implements InputListener {
                 if (state.equals("true")) {
                     map.setObjectProperty(objects_group, faced, "state", "false");
                     executeActions(map.getObjectProperty(objects_group, faced, "disable", ""));
-                }
-                else if (state.equals("false")) {
+                } else if (state.equals("false")) {
                     map.setObjectProperty(objects_group, faced, "state", "true");
                     executeActions(map.getObjectProperty(objects_group, faced, "enable", ""));
                 }
             }
         }
-        else if (button == 0) { //attack
-
-        }
-    }
-
-    @Override
-    public void keyPressed(int key, char c) {
     }
 
     @Override
