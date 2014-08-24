@@ -1,10 +1,14 @@
 package com.jumppixel.ld30;
 
+import org.newdawn.slick.GameContainer;
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMap;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -14,6 +18,8 @@ import java.util.logging.Logger;
 public class Map extends TiledMap {
     private int walk_layer_index;
     public int WALKABLE_BASE = 881;
+
+    public List<Drop> drops = new ArrayList<Drop>();
 
     public Map(String ref) throws SlickException {
         super(ref);
@@ -127,5 +133,34 @@ public class Map extends TiledMap {
             return true;
         }
         return false;
+    }
+
+    public void reset() {
+        for (Drop drop : drops) {
+            drop.expire();
+        }
+        drops.clear();
+    }
+
+    public void update(int delta_ms) {
+        for (Drop drop : new ArrayList<Drop>(drops)) {
+            if (drop.expire_ms - delta_ms <= 0) {
+                drop.expire();
+                drops.remove(drop);
+            }else{
+                drop.expire_ms = drop.expire_ms - delta_ms;
+                drop.update(this, delta_ms);
+            }
+        }
+    }
+
+    public void renderEntities(vec2 view_offset, GameContainer gameContainer, Graphics graphics) {
+        for (Drop drop : drops) {
+            drop.render(view_offset, gameContainer, graphics);
+        }
+    }
+
+    public void addDrop(Drop drop) {
+        drops.add(drop);
     }
 }
