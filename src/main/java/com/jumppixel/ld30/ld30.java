@@ -178,9 +178,11 @@ public class ld30 extends BasicGame implements InputListener {
                     String state = map.getObjectProperty(objects_group, faced_oid, "state", "false");
                     if (state.equals("true")) {
                         map.setObjectProperty(objects_group, faced_oid, "state", "false");
+                        logger.info("\tBUTTON: disabling");
                         executeActions(map.getObjectProperty(objects_group, faced_oid, "disable", ""));
                     } else if (state.equals("false")) {
                         map.setObjectProperty(objects_group, faced_oid, "state", "true");
+                        logger.info("\tBUTTON: enabling");
                         executeActions(map.getObjectProperty(objects_group, faced_oid, "enable", ""));
                     }
                 }
@@ -244,13 +246,36 @@ public class ld30 extends BasicGame implements InputListener {
 
             String[] aparts = a.split(":");
             if (aparts[0].equals("set-tile")) {
-                map.setTileId(Integer.parseInt(aparts[1]), Integer.parseInt(aparts[2]), map.getLayerIndex(aparts[3]), Integer.parseInt(aparts[4]));
+                int tile_x = Integer.parseInt(aparts[1]);
+                int tile_y = Integer.parseInt(aparts[2]);
+                int tile_l = map.getLayerIndex(aparts[3]);
+                int tile_id = Integer.parseInt(aparts[4]);
+                logger.info("ACTION: set tile ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+";"+Integer.toString(tile_l)+") to "+Integer.toString(tile_id));
+                map.setTileId(tile_x, tile_y, tile_l, tile_id);
             }
             else if (aparts[0].equals("laser-dev-rotate")) {
+                int le_x = Integer.parseInt(aparts[1]);
+                int le_y = Integer.parseInt(aparts[2]);
 
+                int oid = map.getTileObject(objects_group, le_x, le_y);
+                if (oid != -1) {
+                    logger.info("ACTION: rotating "+Integer.toString(oid)+"@("+Integer.toString(le_x)+";"+Integer.toString(le_y)+")");
+                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
+                    String type = map.getObjectType(objects_group, oid);
+                    laserDeviceRotate(oid, le_x, le_y, type, beams);
+                }
             }
-            else if (aparts[0].equals("laser-emitter-toggle")) {
+            else if (aparts[0].equals("laser-dev-toggle")) {
+                int le_x = Integer.parseInt(aparts[1]);
+                int le_y = Integer.parseInt(aparts[2]);
 
+                int oid = map.getTileObject(objects_group, le_x, le_y);
+                if (oid != -1) {
+                    logger.info("ACTION: toggling "+Integer.toString(oid)+"@("+Integer.toString(le_x)+";"+Integer.toString(le_y)+")");
+                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
+                    String type = map.getObjectType(objects_group, oid);
+                    laserEmitterToggle(oid, le_x, le_y, type, beams);
+                }
             }
             else if (aparts[0].equals("notify-timed")) {
                 int notify_time = Integer.parseInt(aparts[1]);
