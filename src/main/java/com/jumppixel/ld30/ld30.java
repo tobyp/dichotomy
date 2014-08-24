@@ -3,6 +3,7 @@ package com.jumppixel.ld30;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.util.Log;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class ld30 extends BasicGame implements InputListener {
     //RESOURCES
     SpriteSheet meta_sprites;
     SpriteSheet drop_sprites;
+    Image dark_overlay;
 
     //MAP/WORLD
     Map map;
@@ -51,6 +53,7 @@ public class ld30 extends BasicGame implements InputListener {
         font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
+        dark_overlay = new Image("src/main/resources/dark_overlay.png");
         map = new Map("src/main/resources/tmx/lazers.tmx");
         objects_group = map.getObjectGroupIndex("objects");
         laser_beam_layer = map.getLayerIndex("laser-beam");
@@ -90,6 +93,11 @@ public class ld30 extends BasicGame implements InputListener {
 
         map.update(delta_ms);
         player.update(map, delta_ms);
+        for (Drop drop : new ArrayList<Drop>(map.drops)) {
+            if (drop.loc.getMagnitude(player.loc) < 0.5) {
+                drop.pickup(player);
+            }
+        }
 
         if (player.allow_charging) {
             charge_ms = charge_ms + delta_ms;
@@ -109,8 +117,6 @@ public class ld30 extends BasicGame implements InputListener {
             if (player.charge_hold + ((float)delta_ms)/1000 > 1) {
                 player.charge_hold = 1.0f;
                 player.charge_holding = false;
-                Image image = drop_sprites.getSprite(0, 0);
-                map.addDrop(new Drop(player.loc, image, new vec2(0, -1)));
                 //TODO: Teleport player
             }else{
                 player.charge_hold = player.charge_hold + ((float) delta_ms)/1000;
@@ -470,6 +476,10 @@ public class ld30 extends BasicGame implements InputListener {
         }
 
         graphics.scale(.5f, .5f);
+
+        if (!good) dark_overlay.draw(0, 0);
+
+        //GUI
 
         //Health bar
         player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);

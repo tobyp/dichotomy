@@ -45,13 +45,21 @@ public class LivingEntity extends Entity {
         else {
             rot_ani.setAutoUpdate(true);
         }
-        image = rot_ani.getCurrentFrame();
 
         vec2 new_loc = loc.add(move_speed * velocity.x * delta_ms, move_speed * velocity.y * delta_ms);
 
         if (map.walkable(loc, new_loc)) {
             loc = new_loc;
         }
+    }
+
+    public void render(vec2 view_offset, GameContainer container, Graphics g) {
+        vec2 tile_location = loc.add(view_offset.negate());
+        vec2 pixel_location = tile_location.mul(24.f);
+
+        Animation rot_ani = animations.get(rotation.getRotInt());
+
+        rot_ani.draw(pixel_location.x+render_offset.x, pixel_location.y+render_offset.y);
     }
 
     public void takeDamage(float damage) {

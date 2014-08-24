@@ -9,8 +9,8 @@ import org.newdawn.slick.util.Log;
 public class Drop extends Entity {
     public int expire_ms = 1000*10; //Default: 30 seconds
 
-    public Drop(vec2 loc, Image image, vec2 render_offset) {
-        super(loc, image, render_offset);
+    public Drop(vec2 loc, Image image) {
+        super(loc, image, new vec2(image.getWidth()/2, image.getHeight()/2));
     }
 
     public void setExpireTime(int ms) {
@@ -31,6 +31,14 @@ public class Drop extends Entity {
     }
 
     public void expire() {
+    }
+
+    public void pickup(Player player) {
+        if (player.health + 0.2 > player.max_health) {
+            player.health = player.max_health;
+        }else{
+            player.health = player.health + .2f;
+        }
     }
 
 
