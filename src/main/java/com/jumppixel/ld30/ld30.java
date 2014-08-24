@@ -214,8 +214,9 @@ public class ld30 extends BasicGame implements InputListener {
                 gameContainer.exit();
             }
             break;
+            case Input.KEY_LALT:
             case Input.KEY_Q: {
-                if (player.charge == player.max_charge) player.charge_holding = true;
+                if (player.charge == player.max_charge && player.has_device) player.charge_holding = true;
             }
             break;
         }
@@ -224,6 +225,7 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void keyReleased(int key, char c) {
         switch (key) {
+            case Input.KEY_LALT:
             case Input.KEY_Q: {
                 player.charge_holding = false;
             }
@@ -254,6 +256,15 @@ public class ld30 extends BasicGame implements InputListener {
                 int notify_time = Integer.parseInt(aparts[1]);
                 Notification.Type notify_type = Notification.Type.valueOf(aparts[2]);
                 addNotification(new TimedNotification(aparts[3], notify_time, notify_type));
+            }
+            else if (aparts[0].equals("add-drop")) {
+                vec2 loc = new vec2(Integer.parseInt(aparts[2]),Integer.parseInt(aparts[3]));
+                if (aparts[1].equals("health-1")) {
+                    map.addDrop(new HealthDrop(loc, drop_sprites));
+                }else
+                if (aparts[1].equals("health-2")) {
+                    map.addDrop(new HealthDrop(loc, drop_sprites));
+                }
             }
             else if (aparts[0].equals("notify")) {
                 Notification.Type notify_type = Notification.Type.valueOf(aparts[1]);
@@ -487,20 +498,22 @@ public class ld30 extends BasicGame implements InputListener {
         meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
 
         //Charge bar
-        int charge_offset_x = 10;
-        int charge_offset_y = gameContainer.getHeight() - 78;
+        if (player.has_device) {
+            int charge_offset_x = 10;
+            int charge_offset_y = gameContainer.getHeight() - 78;
 
-        Image teleporter_icon = meta_sprites.getSubImage(40, 7, 14, 17);
-        Image charge_empty = meta_sprites.getSubImage(19, 10, 20, 2);
-        Image charge_full = meta_sprites.getSubImage(19, 13, 20, 2);
-        Image charge_ready = meta_sprites.getSubImage(19, 19, 20, 2);
+            Image teleporter_icon = meta_sprites.getSubImage(40, 7, 14, 17);
+            Image charge_empty = meta_sprites.getSubImage(19, 10, 20, 2);
+            Image charge_full = meta_sprites.getSubImage(19, 13, 20, 2);
+            Image charge_ready = meta_sprites.getSubImage(19, 19, 20, 2);
 
-        teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4);
-        teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4, new Color(.8f, 0f, .8f, player.charge_hold/2));
+            teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4);
+            teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4, new Color(.8f, 0f, .8f, player.charge_hold / 2));
 
-        charge_empty.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
-        charge_full.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20*8*player.charge/player.max_charge), 2 * 8);
-        charge_ready.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20*8*player.charge_hold/1), 2 * 8);
+            charge_empty.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
+            charge_full.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20 * 8 * player.charge / player.max_charge), 2 * 8);
+            charge_ready.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20 * 8 * player.charge_hold / 1), 2 * 8);
+        }
 
         if (notification_buffer.size() > 0) {
             graphics.setColor(Color.black);
