@@ -11,26 +11,31 @@ import java.util.Properties;
  * Created by tobyp on 8/24/14.
  */
 public class Map extends TiledMap {
-
+    private int walk_layer_index;
 
     public Map(String ref) throws SlickException {
         super(ref);
+        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(String ref, boolean loadTileSets) throws SlickException {
         super(ref, loadTileSets);
+        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(String ref, String tileSetsLocation) throws SlickException {
         super(ref, tileSetsLocation);
+        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(InputStream in) throws SlickException {
         super(in);
+        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(InputStream in, String tileSetsLocation) throws SlickException {
         super(in, tileSetsLocation);
+        walk_layer_index = getLayerIndex("walkability");
     }
 
     public void setObjectProperty(int groupID, int objectID, String propertyName, String value) {
@@ -69,5 +74,13 @@ public class Map extends TiledMap {
         }
 
         return -1;
+    }
+
+    public boolean walkable(vec2 from, vec2 to) {
+        int tile_id = getTileId(to.getFloorX(), to.getFloorY(), walk_layer_index);
+        if (tile_id != 61) { //TODO directional walkability
+            return false;
+        }
+        return true;
     }
 }

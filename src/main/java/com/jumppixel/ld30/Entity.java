@@ -1,9 +1,6 @@
 package com.jumppixel.ld30;
 
-import org.newdawn.slick.Animation;
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
+import org.newdawn.slick.*;
 import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
@@ -15,36 +12,54 @@ import java.util.logging.Logger;
  */
 public class Entity {
     public List<Animation> animations = new ArrayList<Animation>();
-    int rot = 0;
+    SpriteSheet sprites;
+    float move_speed;
 
-    public vec2 loc = new vec2();
-    public vec2 render_offset = new vec2();
+    public vec2 loc;
+    public vec2 render_offset;
+    public vec2 velocity = new vec2();
+    public vec2 rotation = new vec2(1, 0);
 
-    public Entity() {
-
+    public Entity(vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
+        this.loc = loc;
+        this.render_offset = render_offset;
+        this.move_speed = move_speed;
+        this.sprites = sprites;
+        for (int rot = 0; rot<8; rot++) {
+            Animation a = new Animation();
+            for (int i=0; i<num_ani_frames; i++) {
+                a.addFrame(sprites.getSprite(rot, i), 200);
+            }
+            animations.add(a);
+        }
     }
 
     public void render(vec2 view_offset, GameContainer container, Graphics g) {
         vec2 tile_location = loc.add(view_offset.negate());
         vec2 pixel_location = tile_location.mul(24.f);
-        animations.get(rot).draw(pixel_location.x+render_offset.x, pixel_location.y+render_offset.y);
+
+        Animation rot_ani = animations.get(rotation.getRotInt());
+        if (velocity.isZero()) {
+            rot_ani.setAutoUpdate(false);
+        }
+        else {
+            rot_ani.setAutoUpdate(true);
+        }
+        rot_ani.draw(pixel_location.x+render_offset.x, pixel_location.y+render_offset.y);
     }
 
-    public void startAnimation() {
-        for (Animation a : animations) {
-            a.start();
+    public void setVelocity(vec2 velocity) {
+        this.velocity = velocity;
+        if (!velocity.isZero()) {
+            this.rotation = velocity.getRot();
         }
-    }
-    public void stopAnimation() {
-        for (Animation a : animations) {
-            a.stopAt(0);
-        }
-    }
-    public boolean isRunningAnimation() {
-        return !animations.get(rot).isStopped();
     }
 
-    public Image getStillImage() {
-        return animations.get(rot).getImage(0);
+    public void update(Map map, int delta_ms) {
+        vec2 new_loc = loc.add(move_speed * velocity.x * delta_ms, move_speed * velocity.y * delta_ms);
+
+        if (map.walkable(loc, new_loc)) {
+            loc = new_loc;
+        }
     }
 }

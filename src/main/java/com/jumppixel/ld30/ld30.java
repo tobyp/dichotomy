@@ -21,23 +21,18 @@ public class ld30 extends BasicGame implements InputListener {
     GameContainer gameContainer;
 
     //RESOURCES
-    SpriteSheet player_sprites;
     SpriteSheet meta_sprites;
 
     //MAP/WORLD
     Map map;
-    int walk_layer_index;
     int objects_group;
 
     //PLAYER
     Player player;
-    vec2 tileOffset;
 
+    //NOTIFICATIONS
     TrueTypeFont font;
-
-    public List<Notification> notification_buffer;
-
-    boolean[] keystatus;
+    public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
     public ld30() {
         super("Ludum Dare 30");
@@ -45,106 +40,23 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
-
         this.gameContainer = gameContainer;
-
-        font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
-
-        notification_buffer = new ArrayList<Notification>();
-
+        gameContainer.setTargetFrameRate(60);
         gameContainer.getInput().addListener(this);
 
-        int tileCountX = (int)Math.floor(gameContainer.getWidth() / 48.f);
-        int tileCountY = (int)Math.floor(gameContainer.getHeight() / 48.f);
-
+        font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
+        meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         map = new Map("src/main/resources/tmx/level1.tmx");
-        walk_layer_index = map.getLayerIndex("walkability");
         objects_group = map.getObjectGroupIndex("objects");
 
-        String[] spawn_location = map.getMapProperty("p-spawn", "0,0").split(",");
-        player = new Player(Integer.parseInt(spawn_location[0]), Integer.parseInt(spawn_location[1]));
-        player.render_offset = new vec2(-12,-48);
-
-        tileOffset = player.loc.add(-tileCountX / 2.f - 0.5f, -tileCountY / 2.f - 0.5f); //half screen to char's foot-center
-
-        player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
-        meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
-
-        for (int rot = 0; rot<8; rot++) {
-            Animation a = new Animation();
-            a.addFrame(player_sprites.getSprite(rot, 0), 200);
-            a.addFrame(player_sprites.getSprite(rot, 1), 200);
-            a.addFrame(player_sprites.getSprite(rot, 0), 200);
-            a.addFrame(player_sprites.getSprite(rot, 2), 200);
-
-            player.animations.add(a);
-        }
-
-        gameContainer.setTargetFrameRate(60);
-
-        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
+        String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
+        vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
+        player = new Player(spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
         addNotification(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
     }
 
     @Override
     public void update(GameContainer gameContainer, int delta_ms) throws SlickException {
-        int delta_x = 0;
-        int delta_y = 0;
-
-        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
-            tryMove(delta_ms * PLAYER_TILES_PER_MS, 0.f);
-            delta_x = delta_x + 1;
-        }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
-            tryMove(delta_ms * -PLAYER_TILES_PER_MS, 0.f);
-            delta_x = delta_x - 1;
-        }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
-            tryMove(0.f, delta_ms * PLAYER_TILES_PER_MS);
-            delta_y = delta_y - 1;
-        }
-        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
-            tryMove(0.f, delta_ms * -PLAYER_TILES_PER_MS);
-            delta_y = delta_y + 1;
-        }
-
-        if (delta_x == -1 && delta_y == -1) {
-            player.rot = 1;
-        }else
-        if (delta_x == -1 && delta_y == 0) {
-            player.rot = 2;
-        }else
-        if (delta_x == -1 && delta_y == 1) {
-            player.rot = 3;
-        }else
-        if (delta_x == 0 && delta_y == -1) {
-            player.rot = 0;
-        }else
-        if (delta_x == 0 && delta_y == 1) {
-            player.rot = 4;
-        }else
-        if (delta_x == 1 && delta_y == -1) {
-            player.rot = 7;
-        }else
-        if (delta_x == 1 && delta_y == 0) {
-            player.rot = 6;
-        }else
-        if (delta_x == 1 && delta_y == 1) {
-            player.rot = 5;
-        }
-        /*
-        //TODO: Fix
-        if (delta_x == 0 && delta_y == 0 && player.isRunningAnimation()) {
-            player.stopAnimation();
-        }else {
-            player.startAnimation();
-        }
-        */
-
-        if (gameContainer.getInput().isKeyDown(Input.KEY_ESCAPE)) {
-            gameContainer.exit();
-        }
-
         if (notification_buffer.size() > 0) {
             for (Notification n : new ArrayList<Notification>(notification_buffer)) {
                 int text_width = gameContainer.getGraphics().getFont().getWidth(n.text);
@@ -159,6 +71,10 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             }
         }
+
+        player.update(map, delta_ms);
+
+        //TODO entities here!
     }
 
     @Override
@@ -177,40 +93,81 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void keyPressed(int key, char c) {
-        if (key == Input.KEY_E) { //object interaction
-            int faced = getFacedObject(objects_group);
-            if (faced == -1) return;
-            String type = map.getObjectType(objects_group, faced);
-            if (type.equals("button")) {
-                String state = map.getObjectProperty(objects_group, faced, "state", "false");
-                if (state.equals("true")) {
-                    map.setObjectProperty(objects_group, faced, "state", "false");
-                    executeActions(map.getObjectProperty(objects_group, faced, "disable", ""));
-                } else if (state.equals("false")) {
-                    map.setObjectProperty(objects_group, faced, "state", "true");
-                    executeActions(map.getObjectProperty(objects_group, faced, "enable", ""));
+        switch (key) {
+            case Input.KEY_E: {
+                int faced = getFacedObject(objects_group);
+                if (faced == -1) return;
+                String type = map.getObjectType(objects_group, faced);
+                if (type.equals("button")) {
+                    String state = map.getObjectProperty(objects_group, faced, "state", "false");
+                    if (state.equals("true")) {
+                        map.setObjectProperty(objects_group, faced, "state", "false");
+                        executeActions(map.getObjectProperty(objects_group, faced, "disable", ""));
+                    } else if (state.equals("false")) {
+                        map.setObjectProperty(objects_group, faced, "state", "true");
+                        executeActions(map.getObjectProperty(objects_group, faced, "enable", ""));
+                    }
                 }
             }
-        }
-        if (key == Input.KEY_F11) { //full screen
-            try {
-                if (gameContainer.isFullscreen()) gameContainer.setFullscreen(false);
-                else gameContainer.setFullscreen(true);
-                addNotification(new TimedNotification("Toggled fullscreen mode", 2000, Notification.Type.INFO));
-            }catch (SlickException e) {
-                e.printStackTrace();
+            break;
+            case Input.KEY_F11: { //full screen
+                try {
+                    if (gameContainer.isFullscreen()) gameContainer.setFullscreen(false);
+                    else gameContainer.setFullscreen(true);
+                    addNotification(new TimedNotification("Toggled fullscreen mode", 2000, Notification.Type.INFO));
+                } catch (SlickException e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        if (key == Input.KEY_F3) { //debug
-            if (gameContainer.isShowingFPS()) gameContainer.setShowFPS(false);
-            else gameContainer.setShowFPS(true);
-            addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
+            break;
+            case Input.KEY_F3: { //debug
+                if (gameContainer.isShowingFPS()) gameContainer.setShowFPS(false);
+                else gameContainer.setShowFPS(true);
+                addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
+            }
+            break;
+            case Input.KEY_D: {
+                player.setVelocity(player.velocity.add(vec2.RIGHT));
+            }
+            break;
+            case Input.KEY_A: {
+                player.setVelocity(player.velocity.add(vec2.LEFT));
+            }
+            break;
+            case Input.KEY_S: {
+                player.setVelocity(player.velocity.add(vec2.DOWN));
+            }
+            break;
+            case Input.KEY_W: {
+                player.setVelocity(player.velocity.add(vec2.UP));
+            }
+            break;
+            case Input.KEY_ESCAPE: {
+                gameContainer.exit();
+            }
+            break;
         }
     }
 
     @Override
     public void keyReleased(int key, char c) {
-
+        switch (key) {
+            case Input.KEY_D: {
+                player.setVelocity(player.velocity.sub(vec2.RIGHT));
+            }
+            break;
+            case Input.KEY_A: {
+                player.setVelocity(player.velocity.sub(vec2.LEFT));
+            }
+            break;
+            case Input.KEY_S: {
+                player.setVelocity(player.velocity.sub(vec2.DOWN));
+            }
+            break;
+            case Input.KEY_W: {
+                player.setVelocity(player.velocity.sub(vec2.UP));
+            }
+        }
     }
 
     @Override
@@ -219,16 +176,10 @@ public class ld30 extends BasicGame implements InputListener {
     }
 
     public int getFacedObject(int group) {
-        int faced_x = player.loc.getFloorX();
-        int faced_y = player.loc.getFloorY()+1;
+        vec2 faced = player.loc.getFaced(player.rotation).mul(24.f);
 
-        if (player.rot >= 1 && player.rot <= 3) faced_x -= 1;
-        if (player.rot >= 5 && player.rot <= 7) faced_x += 1;
-        if (player.rot >= 3 && player.rot <= 5) faced_y -= 1;
-        if (player.rot <= 1 || player.rot == 7) faced_y += 1;
-
-        faced_x *= 24;
-        faced_y *= 24;
+        int faced_x = faced.getFloorX();
+        int faced_y = faced.getFloorY();
 
         for (int oid = 0; oid < map.getObjectCount(group); oid++) {
             if (Math.floor(map.getObjectX(group, oid)) != faced_x) continue;
@@ -249,19 +200,6 @@ public class ld30 extends BasicGame implements InputListener {
         }
     }
 
-    public boolean tryMove(float x, float y) {
-        vec2 new_loc = player.loc.add(x, y);
-
-        int tile_id = map.getTileId(new_loc.getFloorX(), new_loc.getFloorY(), walk_layer_index);
-        if (tile_id != 61) {
-            return false;
-        }else{
-            player.loc = new_loc;
-            tileOffset = tileOffset.add(x, y);
-        }
-        return true;
-    }
-
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
         render(true, gameContainer, graphics);
@@ -271,8 +209,12 @@ public class ld30 extends BasicGame implements InputListener {
         if (graphics.getFont() != font)
         graphics.setFont(font);
 
-        int tileOffsetX = (int)tileOffset.x;
-        int tileOffsetY = (int)tileOffset.y;
+        int tileCountX = (int)Math.floor(gameContainer.getWidth() / 48.f);
+        int tileCountY = (int)Math.floor(gameContainer.getHeight() / 48.f);
+        vec2 tileOffset = player.loc.add(-tileCountX / 2.f - 0.5f, -tileCountY / 2.f - 0.5f); //half screen to char's foot-center
+
+        int tileOffsetX = tileOffset.getFloorX();
+        int tileOffsetY = tileOffset.getFloorY();
 
         graphics.scale(2, 2);
 
