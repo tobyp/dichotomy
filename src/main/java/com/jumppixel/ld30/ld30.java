@@ -29,10 +29,13 @@ public class ld30 extends BasicGame implements InputListener {
 
     //PLAYER
     Player player;
+    int charge_ms = 0;
+    int charge_interval = 100; //+0.01 charge every interval
 
     //NOTIFICATIONS
     TrueTypeFont font;
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
+    boolean teleport_instructions_sent = false;
 
     public ld30() {
         super("Ludum Dare 30");
@@ -73,6 +76,27 @@ public class ld30 extends BasicGame implements InputListener {
         }
 
         player.update(map, delta_ms);
+
+        if (player.allow_charging) {
+            charge_ms = charge_ms + delta_ms;
+            if (charge_ms >= charge_interval) {
+                if (player.charge + 0.01f > player.max_charge && player.charge != player.max_charge) {
+                    player.charge = player.max_charge;
+                } else if (player.charge < player.max_charge) {
+                    player.charge = player.charge + 0.01f;
+                }
+                charge_ms = 0;
+            }
+        }else{
+            charge_ms = 0;
+        }
+
+        if (player.charge == player.max_charge) {
+            if (!teleport_instructions_sent) {
+                teleport_instructions_sent = true;
+                addNotification(new TimedNotification("To shift, press q when fully charged", 3000, Notification.Type.INFO));
+            }
+        }
 
         //TODO entities here!
     }
@@ -238,14 +262,31 @@ public class ld30 extends BasicGame implements InputListener {
 
         graphics.scale(.5f, .5f);
 
+        //Health bar
         player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);
         meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 36, 20*8, 2*8);
         meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
 
+        //Charge bar
+        int charge_offset_x = 10;
+        int charge_offset_y = gameContainer.getHeight() - 78;
+
+        Image teleporter_icon = meta_sprites.getSubImage(40, 7, 14, 17);
+        Image charge_disabled = meta_sprites.getSubImage(19, 10, 20, 2);
+        Image charge_empty = meta_sprites.getSubImage(19, 13, 20, 2);
+        Image charge_full = meta_sprites.getSubImage(19, 19, 20, 2);
+
+        teleporter_icon.draw(charge_offset_x, charge_offset_y, 14*4, 17*4);
+
+        //charge_disabled.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
+
+        charge_empty.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
+        charge_full.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20*8*player.charge/player.max_charge), 2 * 8);
+
         if (notification_buffer.size() > 0) {
             graphics.setColor(Color.black);
 
-            int offset_y = 10;
+            int sprite_offset_y = 10;
 
             for (Notification n : new ArrayList<Notification>(notification_buffer)) {
                 int sprite_offset_x = 0;
@@ -256,12 +297,12 @@ public class ld30 extends BasicGame implements InputListener {
 
                 int text_width = graphics.getFont().getWidth(n.text);
 
-                meta_sprites.getSubImage(sprite_offset_x, 0, 6, 12).draw(gameContainer.getWidth() - n.offset_x - text_width - 72, offset_y, 6);
-                meta_sprites.getSubImage(sprite_offset_x, 12, 1, 12).draw(gameContainer.getWidth() - n.offset_x - text_width - 36, offset_y, text_width, 72);
-                graphics.drawString(n.text, gameContainer.getWidth() - n.offset_x - text_width - 36, offset_y + 36 - graphics.getFont().getHeight(n.text) / 2);
-                meta_sprites.getSubImage(sprite_offset_x, 24, 6, 12).draw(gameContainer.getWidth() - n.offset_x - 36, offset_y, 6);
+                meta_sprites.getSubImage(sprite_offset_x, 0, 6, 12).draw(gameContainer.getWidth() - n.offset_x - text_width - 72, sprite_offset_y, 6);
+                meta_sprites.getSubImage(sprite_offset_x, 12, 1, 12).draw(gameContainer.getWidth() - n.offset_x - text_width - 36, sprite_offset_y, text_width, 72);
+                graphics.drawString(n.text, gameContainer.getWidth() - n.offset_x - text_width - 36, sprite_offset_y + 36 - graphics.getFont().getHeight(n.text) / 2);
+                meta_sprites.getSubImage(sprite_offset_x, 24, 6, 12).draw(gameContainer.getWidth() - n.offset_x - 36, sprite_offset_y, 6);
 
-                offset_y = offset_y + 82;
+                sprite_offset_y = sprite_offset_y + 82;
             }
         }
     }
