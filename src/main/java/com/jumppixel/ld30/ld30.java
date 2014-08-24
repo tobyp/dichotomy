@@ -58,7 +58,7 @@ public class ld30 extends BasicGame implements InputListener {
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
         vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
-        player = new Player(spawn_location, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+        player = new Player(spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
         addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
         addNotification(new Notification("Objective: Explore!", Notification.Type.OBJECTIVE));
 
@@ -117,7 +117,25 @@ public class ld30 extends BasicGame implements InputListener {
             player.charge_hold = 0;
         }
 
+        checkMovements(gameContainer);
+
         //TODO entities here!
+    }
+
+    public void checkMovements(GameContainer gameContainer) {
+        player.setVelocity(vec2.ZERO);
+        if (gameContainer.getInput().isKeyDown(Input.KEY_D)) {
+            player.setVelocity(player.velocity.add(vec2.RIGHT));
+        }
+        if (gameContainer.getInput().isKeyDown(Input.KEY_A)) {
+            player.setVelocity(player.velocity.add(vec2.LEFT));
+        }
+        if (gameContainer.getInput().isKeyDown(Input.KEY_W)) {
+            player.setVelocity(player.velocity.add(vec2.UP));
+        }
+        if (gameContainer.getInput().isKeyDown(Input.KEY_S)) {
+            player.setVelocity(player.velocity.add(vec2.DOWN));
+        }
     }
 
     @Override
@@ -172,22 +190,6 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
             }
             break;
-            case Input.KEY_D: {
-                player.setVelocity(player.velocity.add(vec2.RIGHT));
-            }
-            break;
-            case Input.KEY_A: {
-                player.setVelocity(player.velocity.add(vec2.LEFT));
-            }
-            break;
-            case Input.KEY_S: {
-                player.setVelocity(player.velocity.add(vec2.DOWN));
-            }
-            break;
-            case Input.KEY_W: {
-                player.setVelocity(player.velocity.add(vec2.UP));
-            }
-            break;
             case Input.KEY_ESCAPE: {
                 gameContainer.exit();
             }
@@ -202,22 +204,6 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void keyReleased(int key, char c) {
         switch (key) {
-            case Input.KEY_D: {
-                player.setVelocity(player.velocity.sub(vec2.RIGHT));
-            }
-            break;
-            case Input.KEY_A: {
-                player.setVelocity(player.velocity.sub(vec2.LEFT));
-            }
-            break;
-            case Input.KEY_S: {
-                player.setVelocity(player.velocity.sub(vec2.DOWN));
-            }
-            break;
-            case Input.KEY_W: {
-                player.setVelocity(player.velocity.sub(vec2.UP));
-            }
-            break;
             case Input.KEY_Q: {
                 player.charge_holding = false;
             }
