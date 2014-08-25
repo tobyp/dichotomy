@@ -560,8 +560,8 @@ public class ld30 extends BasicGame implements InputListener {
         //Narration
         if (current_narration_queue != null) {
             if (current_narration_queue.current() != null) {
-                Image nbg = meta_sprites.getSubImage(57, 26, 44, 12);
-                Image nsk = meta_sprites.getSubImage(103, 26, 25, 6);
+                Image nbg = meta_sprites.getSubImage(57, 26, 61, 12);
+                Image nsk = meta_sprites.getSubImage(61, 39, 25, 6);
                 int scale = 7;
 
                 nbg.draw(gameContainer.getWidth()/2 - (nbg.getWidth() * scale) / 2, gameContainer.getHeight() - nbg.getHeight()*scale - 10, nbg.getWidth()*scale, nbg.getHeight()*scale);
