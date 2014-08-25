@@ -48,6 +48,6 @@ public class Monster extends LivingEntity implements Mover {
         g.setColor(Color.red);
         g.fillRect(pixel_location.x + render_offset.x + 3, pixel_location.y + render_offset.y + 6, 18, 1);
         g.setColor(Color.green);
-        g.fillRect(pixel_location.x + render_offset.x + 3, pixel_location.y + render_offset.y + 6, Math.round(10 * health / max_health), 1);
+        g.fillRect(pixel_location.x + render_offset.x + 3, pixel_location.y + render_offset.y + 6, Math.round(18 * health / max_health), 1);
     }
 }
