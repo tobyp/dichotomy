@@ -1,10 +1,41 @@
 package com.jumppixel.ld30;
 
+import org.newdawn.slick.SlickException;
+import org.newdawn.slick.Sound;
+
+import java.io.File;
+import java.util.Iterator;
+
 /**
  * Created by Tom on 25/08/2014.
  */
 public class Narration {
-    public void add(String sound_name, String text) {
+    String text;
+    Sound sound;
 
+    public Narration(String text, String sound_file_name) {
+        this.text = text;
+        this.sound = null;
+        if (sound_file_name != null) {
+            try {
+                this.sound = new Sound("src/main/resources/narration/" + sound_file_name);
+            } catch (SlickException e) {
+                //It's already null
+            }
+        }
+    }
+
+    public void playSound() {
+        if (sound != null)
+        sound.play();
+    }
+
+    public boolean isSoundPlaying() {
+        return sound != null ? sound.playing() : false;
+    }
+
+    public void stopSound() {
+        if (sound != null)
+        sound.stop();
     }
 }
