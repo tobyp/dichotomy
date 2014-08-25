@@ -162,10 +162,12 @@ public class ld30 extends BasicGame implements InputListener {
                         faced.setProperty("state", "false");
                         logger.info("\tBUTTON: disabling");
                         executeActions(faced.getProperty("disable", ""));
+                        GameSound.BUTTON_UP.play(0, 0);
                     } else if (state.equals("false")) {
                         faced.setProperty("state", "true");
                         logger.info("\tBUTTON: enabling");
                         executeActions(faced.getProperty("enable", ""));
+                        GameSound.BUTTON_DOWN.play(0, 0);
                     }
                 }
                 else if (type.equals("laser-emitter")) {
@@ -193,9 +195,11 @@ public class ld30 extends BasicGame implements InputListener {
                             faced.setPropertyBool("state", !state);
                             if (state) {
                                 executeActions(faced.getProperty("lock", ""));
+                                GameSound.KEYCARD_LOCK.play(1, 1);
                             }
                             else {
                                 executeActions(faced.getProperty("unlock", ""));
+                                GameSound.KEYCARD_UNLOCK.play(1, 1);
                             }
                         }
                     }
@@ -222,9 +226,10 @@ public class ld30 extends BasicGame implements InputListener {
                 gameContainer.exit();
             }
             break;
-            case Input.KEY_LALT:
-            case Input.KEY_Q: {
+            case Input.KEY_LSHIFT:
+            case Input.KEY_RSHIFT: {
                 if (player.charge == player.max_charge && player.has_device) player.charge_holding = true;
+                else if (player.has_device) GameSound.CHARGE_INCOMPLETE.play(1, 1);
             }
             break;
             case Input.KEY_L: {
@@ -251,8 +256,8 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void keyReleased(int key, char c) {
         switch (key) {
-            case Input.KEY_LALT:
-            case Input.KEY_Q: {
+            case Input.KEY_LSHIFT:
+            case Input.KEY_RSHIFT: {
                 player.charge_holding = false;
             }
             break;
@@ -426,8 +431,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         //Health bar
         player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);
-        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 20, 20*8, 2*8);
-        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 20, Math.round(20*8*player.health/player.max_health), 2*8);
+        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 36, 20*8, 2*8);
+        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
 
         //KEYCARDS
         int keycard_x = gameContainer.getWidth() - 60;
@@ -508,6 +513,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     public void switchWorld() {
         world = (world == wgood) ? wevil : wgood;
+        GameSound.WORLD_CHANGE.play(1, 1);
     }
 
     public static void main(String [] args) {
