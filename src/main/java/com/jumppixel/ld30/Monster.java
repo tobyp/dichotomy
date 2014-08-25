@@ -20,7 +20,7 @@ public class Monster extends LivingEntity implements Mover {
     int recalc_ms = 0;
     int try_move_ms = 0;
 
-    float attack_strength = 0.075f;
+    float attack_strength = 0.05f;
     float attack_distance = 1.1f;
     int attack_duration = 1000;
     //time since last attack

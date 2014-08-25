@@ -15,6 +15,7 @@ import java.util.Random;
 public enum GameSound {
 
     PLAYER_HURT("player_hurt", "player_hurt_2", "player_hurt_3"),
+    PLAYER_HIT("player_hit", "player_hit_2"),
     PLAYER_DIE("player_die"),
     DROP_PICKUP("drop_pickup", "drop_pickup_2"),
     BUTTON_DOWN("button_down"),

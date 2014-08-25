@@ -114,6 +114,7 @@ public class Player extends LivingEntity {
         if (e == null || !(e instanceof LivingEntity)) return;
         attack_timer_ms = 0;
         ((LivingEntity)e).takeDamage(attack_strength);
+        GameSound.PLAYER_HIT.play(0, 0);
     }
 
     @Override
@@ -127,7 +128,14 @@ public class Player extends LivingEntity {
     }
 
     @Override
+    public void takeDamage(float attack_strength) {
+        super.takeDamage(attack_strength);
+        GameSound.PLAYER_HURT.play(1, 1);
+    }
+
+    @Override
     public void die() {
+        GameSound.PLAYER_DIE.play(1, 1);
         game.reset();
     }
 }
