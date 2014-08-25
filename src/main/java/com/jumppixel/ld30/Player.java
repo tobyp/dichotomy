@@ -17,9 +17,9 @@ public class Player extends LivingEntity {
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
-    boolean allow_charging = true;
+    boolean allow_charging = false;
     boolean charge_holding = false;
-    boolean has_device = true;
+    boolean has_device = false;
     int charge_ms = 0;
     int charge_interval = 100; //+0.01 charge every interval
     int keycards = 0;
