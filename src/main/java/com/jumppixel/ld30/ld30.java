@@ -209,6 +209,10 @@ public class ld30 extends BasicGame implements InputListener {
                 if (player.charge == player.max_charge && player.has_device) player.charge_holding = true;
             }
             break;
+            case Input.KEY_L: {
+                world = (world == wgood) ? wevil : wgood;
+            }
+            break;
         }
     }
 
@@ -226,6 +230,12 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void mouseMoved(int oldx, int oldy, int newx, int newy) {
 
+    }
+
+    public World getWorld(String name) {
+        if (name.equals("good")) return wgood;
+        else if (name.equals("evil")) return wevil;
+        return null;
     }
 
     public void executeActions(String actions_string) {

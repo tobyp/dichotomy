@@ -119,6 +119,13 @@ public class World implements TileBasedMap {
             base_tile = BLOCKER_BASE_TILE;
             propagate_mask = 0;
 
+            int complement_beams = ((new_primaries >> 3) | (new_primaries << 1)) & 0xF;
+
+            World target = game.getWorld(object.getProperty("target", ""));
+
+            if (target != null && target != this) { //hopefully prevents infinite recursion, since this is a portal calling laserUpdate on a portal at the same coords...
+                target.laserUpdate(target.map.getObject(object.getX(), object.getY()), complement_beams, true);
+            }
         }
 
         object.setPropertyBeams("beams", new_beams);
