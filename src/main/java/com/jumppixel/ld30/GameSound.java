@@ -26,7 +26,8 @@ public enum GameSound {
     LASER_CATCH("laser_catch"),
     ROTATE("rotate"),
     CHARGE_COMPLETE("charge_complete"),
-    CHARGE_INCOMPLETE("charge_incomplete");
+    CHARGE_INCOMPLETE("charge_incomplete"),
+    NARRATION_ADVANCE("narration_advance");
 
     private Random random = new Random();
     private String[] sound;

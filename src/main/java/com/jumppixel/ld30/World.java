@@ -207,8 +207,8 @@ public class World implements TileBasedMap {
             object.setPropertyBool("state", !state);
             laserUpdate(object, 0x0, 0x0, false);
 
-            if (state) GameSound.LASER_ON.play(1, 1);
-            else GameSound.LASER_OFF.play(1, 1);
+            if (state) GameSound.LASER_OFF.play(1, 1);
+            else GameSound.LASER_ON.play(1, 1);
         }
     }
 

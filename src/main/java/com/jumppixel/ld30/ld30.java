@@ -36,6 +36,8 @@ public class ld30 extends BasicGame implements InputListener {
     //PLAYER
     Player player;
 
+    int darkness_ms = 0;
+
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
     public ld30() {
@@ -104,6 +106,10 @@ public class ld30 extends BasicGame implements InputListener {
                 current_narration_queue.next();
                 current_narration_queue.current().playSound();
             }
+        }
+
+        if (darkness_ms > 1) {
+            darkness_ms--;
         }
     }
 
@@ -233,6 +239,7 @@ public class ld30 extends BasicGame implements InputListener {
             case Input.KEY_SPACE: {
                 if (current_narration_queue != null) {
                     if (current_narration_queue.current() != null) {
+                        GameSound.NARRATION_ADVANCE.play(1, 0.5f);
                         current_narration_queue.current().stopSound();
                         if (current_narration_queue.hasNext()) {
                             current_narration_queue.next();
@@ -444,7 +451,9 @@ public class ld30 extends BasicGame implements InputListener {
             Image charge_ready = meta_sprites.getSubImage(19, 19, 20, 2);
 
             teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4);
+
             teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4, new Color(.8f, 0f, .8f, player.charge_hold / 2));
+            teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4, new Color(.8f, 0f, .0f, player.charge_hold / 2));
 
             charge_empty.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
             charge_full.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20 * 8 * player.charge / player.max_charge), 2 * 8);

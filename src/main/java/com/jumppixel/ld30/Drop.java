@@ -7,7 +7,7 @@ import org.newdawn.slick.util.Log;
  * Created by Tom on 24/08/2014.
  */
 public class Drop extends Entity {
-    int expire_ms = 1000*10; //Default: 30 seconds
+    int expire_ms = 1000*10; //Default: 10 seconds
     Player player;
 
     public Drop(vec2 loc, Image image, Player player) {
