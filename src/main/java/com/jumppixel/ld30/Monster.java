@@ -114,11 +114,15 @@ public class Monster extends LivingEntity implements Mover {
         if (player.debug_mode) {
             if (pathfinder_ms <= 10) {
                 g.setColor(Color.yellow);
-                g.fillRect(pixel_location.x + render_offset.x + 3, pixel_location.y + render_offset.y + 4, 8, 1);
+                g.fillRect(pixel_location.x + render_offset.x + 3, pixel_location.y + render_offset.y + 4, 2, 1);
             }
             if (player.loc.getFloorX() != loc.getFloorX() && player.loc.getFloorY() != loc.getFloorY()) {
+                g.setColor(Color.green);
+                g.fillRect(pixel_location.x + render_offset.x + 3 + 4, pixel_location.y + render_offset.y + 4, 8, 1);
+            }
+            if (current_path == null) {
                 g.setColor(Color.red);
-                g.fillRect(pixel_location.x + render_offset.x + 3 + 10, pixel_location.y + render_offset.y + 4, 8, 1);
+                g.fillRect(pixel_location.x + render_offset.x + 3 + 12, pixel_location.y + render_offset.y + 4, 6, 1);
             }
         }
     }
