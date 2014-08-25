@@ -2,7 +2,6 @@ package com.jumppixel.ld30;
 
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.openal.Audio;
-import org.newdawn.slick.util.Log;
 
 /**
  * Created by tobyp on 8/23/14.
