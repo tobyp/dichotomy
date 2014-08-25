@@ -74,9 +74,9 @@ public class Monster extends LivingEntity implements Mover {
             }
         }
 
-        attack_timer_ms = Math.max(attack_timer_ms + delta_ms, attack_duration);
-        if (attack_timer_ms >= attack_duration && loc.getDistance(player.loc) <= attack_distance && world == player.game.world) {
-            attack_timer_ms = 0;
+        attack_timer_ms = attack_timer_ms - (attack_timer_ms - delta_ms < 0 ? attack_timer_ms : delta_ms);
+        if (attack_timer_ms == 0 && loc.getDistance(player.loc) <= attack_distance && world == player.game.world) {
+            attack_timer_ms = attack_duration;
             player.takeDamage(attack_strength);
         }
     }
