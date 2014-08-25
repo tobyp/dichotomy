@@ -9,10 +9,17 @@ import org.newdawn.slick.util.Log;
 public class Drop extends Entity {
     int expire_ms = 1000*10; //Default: 10 seconds
     Player player;
+    boolean expires = true;
 
     public Drop(vec2 loc, Image image, Player player) {
         super(loc, image, new vec2(0-image.getWidth()/2, 0-image.getHeight()/2), player);
         this.player = player;
+    }
+
+    public Drop(vec2 loc, Image image, Player player, boolean expires) {
+        super(loc, image, new vec2(0-image.getWidth()/2, 0-image.getHeight()/2), player);
+        this.player = player;
+        this.expires = false;
     }
 
     public void setExpireTime(int ms) {
@@ -41,11 +48,13 @@ public class Drop extends Entity {
             GameSound.DROP_PICKUP.play(1, 1);
             world.entities.remove(this);
         }
-        else if (expire_ms - delta_ms <= 0) {
-            expire();
-            world.entities.remove(this);
-        }else{
-            expire_ms -= delta_ms;
+        else if (expires) {
+            if (expire_ms - delta_ms <= 0) {
+                expire();
+                world.entities.remove(this);
+            } else {
+                expire_ms -= delta_ms;
+            }
         }
     }
 

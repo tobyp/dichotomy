@@ -234,7 +234,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             break;
             case Input.KEY_L: {
-                //switchWorld();
+                if (player.debug_mode) switchWorld();
             }
             break;
             case Input.KEY_SPACE: {
@@ -300,23 +300,25 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification(aparts[3], notify_time, notify_type));
             }
             else if (aparts[0].equals("laser-dev-toggle")) {
-                int le_x = Integer.parseInt(aparts[1]);
-                int le_y = Integer.parseInt(aparts[2]);
+                World w = getWorld(aparts[1]);
+                int le_x = Integer.parseInt(aparts[2]);
+                int le_y = Integer.parseInt(aparts[3]);
 
-                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
+                Map.MapObject object = map.getObject(w.ogroup, le_x, le_y);
                 if (object != null) {
                     logger.info("ACTION: toggling "+object.toString());
-                    world.laserEmitterToggle(object);
+                    w.laserEmitterToggle(object);
                 }
             }
             else if (aparts[0].equals("laser-dev-rotate")) {
-                int le_x = Integer.parseInt(aparts[1]);
-                int le_y = Integer.parseInt(aparts[2]);
-                //TODO cross-world actions
-                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
+                World w = getWorld(aparts[1]);
+                int le_x = Integer.parseInt(aparts[2]);
+                int le_y = Integer.parseInt(aparts[3]);
+
+                Map.MapObject object = map.getObject(w.ogroup, le_x, le_y);
                 if (object != null) {
                     logger.info("ACTION: rotating "+object.toString());
-                    world.laserDeviceRotate(object);
+                    w.laserDeviceRotate(object);
                 }
             }
             else if (aparts[0].equals("keycard-add")) {
@@ -332,21 +334,24 @@ public class ld30 extends BasicGame implements InputListener {
                 player.keycards = 0;
             }
             else if (aparts[0].equals("keycard-drop")) {
-                int cards = Integer.parseInt(aparts[2], 2);
+                int cards = Integer.parseInt(aparts[1], 2);
+                World w = getWorld(aparts[2]);
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
-                world.addEntity(new KeycardDrop(loc, drop_sprites, player, cards));
-                logger.info("ACTION: Dropping Keycard.");
+                logger.info("ACTION: Dropping Keycard in "+w.name+" "+loc.toString());
+                w.addEntity(new KeycardDrop(loc, drop_sprites, player, cards));
             }
             else if (aparts[0].equals("health-drop")) {
-                float health = Float.parseFloat(aparts[2]);
+                float health = Float.parseFloat(aparts[1]);
+                World w = getWorld(aparts[2]);
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
-                logger.info("ACTION: Dropping Healthpack.");
-                world.addEntity(new HealthDrop(loc, drop_sprites, player, health));
+                logger.info("ACTION: Dropping Healthpack in "+w.name+" "+loc.toString());
+                w.addEntity(new HealthDrop(loc, drop_sprites, player, health));
             }
             else if (aparts[0].equals("device-drop")) {
+                World w = getWorld(aparts[1]);
                 vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
-                logger.info("ACTION: Dropping Device.");
-                world.addEntity(new DeviceDrop(loc, drop_sprites, player));
+                logger.info("ACTION: Dropping Device in "+w.name+" "+loc.toString());
+                w.addEntity(new DeviceDrop(loc, drop_sprites, player));
             }
             else if (aparts[0].equals("device-give")) {
                 logger.info("ACTION: Giving Device.");
@@ -354,10 +359,11 @@ public class ld30 extends BasicGame implements InputListener {
                 player.allow_charging = true;
             }
             else if (aparts[0].equals("set-prop")) {
-                Map.MapObject mo = world.getObject(aparts[1]);
+                World w = getWorld(aparts[1]);
+                Map.MapObject mo = w.getObject(aparts[2]);
                 if (mo != null) {
-                    logger.info("ACTION: Setting "+mo.toString()+"."+aparts[2]+"="+aparts[3]);
-                    mo.setProperty(aparts[2], aparts[3]);
+                    logger.info("ACTION: Setting "+mo.toString()+"."+aparts[3]+"="+aparts[4]);
+                    mo.setProperty(aparts[3], aparts[4]);
                 }
             }
             else if (aparts[0].equals("narration-queue")) {

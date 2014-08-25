@@ -27,7 +27,7 @@ public class KeycardDrop extends Drop {
     }
 
     public KeycardDrop(vec2 loc, SpriteSheet spriteSheet, Player player, int keycard) {
-        super(loc, spriteSheet.getSprite(spriteForCard(keycard), 1), player);
+        super(loc, spriteSheet.getSprite(spriteForCard(keycard), 1), player, false);
         this.keycard = keycard;
     }
 
