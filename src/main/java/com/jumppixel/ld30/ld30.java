@@ -29,6 +29,9 @@ public class ld30 extends BasicGame implements InputListener {
     World world;
     World wgood, wevil;
 
+    //NARRATION
+    NarrationQueue current_narration_queue = null;
+
     //PLAYER
     Player player;
 
@@ -69,6 +72,11 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             });
         }
+
+        current_narration_queue = new NarrationQueue();
+        current_narration_queue.add(new Narration("Hello there", null));
+        current_narration_queue.add(new Narration("How are yo-", null));
+        current_narration_queue.add(new Narration("oh... goodbye :(", null));
 
         world.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world, player));
     }
@@ -351,6 +359,18 @@ public class ld30 extends BasicGame implements InputListener {
 
                 sprite_offset_y = sprite_offset_y + 82;
             }
+        }
+
+        //Narration
+        if (current_narration_queue != null) {
+            Image nbg = meta_sprites.getSubImage(57, 26, 44, 12);
+            Image nsk = meta_sprites.getSubImage(103, 26, 25, 6);
+            int scale = 7;
+
+            nbg.draw(gameContainer.getWidth()/2 + nbg.getWidth()*scale/2 - 12, gameContainer.getHeight() + nbg.getHeight()*scale - 10, nbg.getWidth()*scale, nbg.getHeight()*scale);
+            int nsk_width = Math.round((float)nsk.getWidth()*scale/2);
+            int nsk_height = Math.round((float)nsk.getHeight()*scale/2);
+            nsk.draw(gameContainer.getWidth() / 2 + nbg.getWidth() * scale / 2 - nsk_width - 2 * scale, gameContainer.getHeight() + nbg.getHeight() * scale - nsk_height - 2 * scale, nsk_width, nsk_height);
         }
 
         //DEBUG
