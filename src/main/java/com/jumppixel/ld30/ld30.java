@@ -157,10 +157,12 @@ public class ld30 extends BasicGame implements InputListener {
                         faced.setProperty("state", "false");
                         logger.info("\tBUTTON: disabling");
                         executeActions(faced.getProperty("disable", ""));
+                        GameSound.BUTTON_UP.play(0, 0);
                     } else if (state.equals("false")) {
                         faced.setProperty("state", "true");
                         logger.info("\tBUTTON: enabling");
                         executeActions(faced.getProperty("enable", ""));
+                        GameSound.BUTTON_DOWN.play(0, 0);
                     }
                 }
                 else if (type.equals("laser-emitter")) {
@@ -188,9 +190,11 @@ public class ld30 extends BasicGame implements InputListener {
                             faced.setPropertyBool("state", !state);
                             if (state) {
                                 executeActions(faced.getProperty("lock", ""));
+                                GameSound.KEYCARD_LOCK.play(1, 1);
                             }
                             else {
                                 executeActions(faced.getProperty("unlock", ""));
+                                GameSound.KEYCARD_UNLOCK.play(1, 1);
                             }
                         }
                     }
@@ -499,6 +503,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     public void switchWorld() {
         world = (world == wgood) ? wevil : wgood;
+        GameSound.WORLD_CHANGE.play(1, 1);
     }
 
     public static void main(String [] args) {

@@ -22,7 +22,8 @@ public enum GameSound {
     KEYCARD_UNLOCK("keycard_unlock"),
     LASER_CREATE("laser_create"),
     WORLD_CHANGE("world_change"),
-    LASER_RECEIVE("laser_receive");
+    LASER_RECEIVE("laser_receive"),
+    CHARGE_COMPLETE("charge_complete");
 
     private Random random = new Random();
     private String[] sound;

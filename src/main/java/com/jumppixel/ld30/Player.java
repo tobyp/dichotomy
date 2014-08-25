@@ -38,6 +38,7 @@ public class Player extends LivingEntity {
             if (charge_ms >= charge_interval) {
                 if (this.charge + 0.01f > this.max_charge && this.charge != this.max_charge) {
                     this.charge = this.max_charge;
+                    GameSound.CHARGE_COMPLETE.play(1, 1);
                 } else if (this.charge < this.max_charge) {
                     this.charge = this.charge + 0.01f;
                 }

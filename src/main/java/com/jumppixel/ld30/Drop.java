@@ -38,6 +38,7 @@ public class Drop extends Entity {
 
         if (loc.getDistance(player.loc) < 0.5) {
             pickup();
+            GameSound.DROP_PICKUP.play(1, 1);
             world.entities.remove(this);
         }
         else if (expire_ms - delta_ms <= 0) {
