@@ -3,6 +3,7 @@ package com.jumppixel.ld30;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.openal.Audio;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,9 @@ public class ld30 extends BasicGame implements InputListener {
     Player player;
     String checkpoint = null;
 
+    //MUSIC
+    Audio music;
+
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
     public ld30() {
@@ -46,6 +50,10 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
+
+        music = GameSound.MUSIC_CONSTANCE.getAudio();
+        music.playAsMusic(1, .5f, true);
+
         this.gameContainer = gameContainer;
         gameContainer.setTargetFrameRate(60);
 
@@ -363,7 +371,7 @@ public class ld30 extends BasicGame implements InputListener {
                 World w = getWorld(aparts[2]);
                 if (w == null) continue;
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
-                logger.info("ACTION: Dropping Keycard in "+w.name+" "+loc.toString());
+                logger.info("ACTION: Dropping Keycard in " + w.name + " " + loc.toString());
                 w.addEntity(new KeycardDrop(loc, drop_sprites, player, cards));
             }
             else if (aparts[0].equals("health-drop")) {

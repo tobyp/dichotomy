@@ -1,7 +1,6 @@
 package com.jumppixel.ld30;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.util.Log;
 
 /**
  * Created by Tom on 24/08/2014.

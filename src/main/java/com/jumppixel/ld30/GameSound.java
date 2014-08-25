@@ -1,7 +1,5 @@
 package com.jumppixel.ld30;
 
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.Sound;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
 import org.newdawn.slick.util.Log;
@@ -14,7 +12,10 @@ import java.util.Random;
  */
 public enum GameSound {
 
+    MUSIC_CONSTANCE("music/constance"),
+    MUSIC_HITMAN("music/hitman"),
     PLAYER_HURT("player_hurt", "player_hurt_2", "player_hurt_3"),
+    PLAYER_HIT("player_hit", "player_hit_2"),
     PLAYER_DIE("player_die"),
     DROP_PICKUP("drop_pickup", "drop_pickup_2"),
     BUTTON_DOWN("button_down"),

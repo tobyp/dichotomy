@@ -2,7 +2,6 @@ package com.jumppixel.ld30;
 
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.openal.Audio;
-import org.newdawn.slick.util.Log;
 
 /**
  * Created by tobyp on 8/23/14.
@@ -17,9 +16,9 @@ public class Player extends LivingEntity {
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
-    boolean allow_charging = true;
+    boolean allow_charging = false;
     boolean charge_holding = false;
-    boolean has_device = true;
+    boolean has_device = false;
     int charge_ms = 0;
     int charge_interval = 100; //+0.01 charge every interval
     int keycards = 0;
@@ -114,6 +113,7 @@ public class Player extends LivingEntity {
         if (e == null || !(e instanceof LivingEntity)) return;
         attack_timer_ms = 0;
         ((LivingEntity)e).takeDamage(attack_strength);
+        GameSound.PLAYER_HIT.play(1, 1);
     }
 
     @Override
@@ -127,7 +127,14 @@ public class Player extends LivingEntity {
     }
 
     @Override
+    public void takeDamage(float attack_strength) {
+        super.takeDamage(attack_strength);
+        GameSound.PLAYER_HURT.play(1, 1);
+    }
+
+    @Override
     public void die() {
+        GameSound.PLAYER_DIE.play(1, 1);
         game.reset();
     }
 }
