@@ -48,17 +48,17 @@ public class World implements TileBasedMap {
     //update a laser device/block.
     //warning: recursive with exactly ZERO protection
     //beam=0 for just a refresh
-    private void laserUpdate(Map.MapObject object, int beam, boolean on) {
+    private void laserUpdate(Map.MapObject object, int beam, int beam_mask, boolean crossed) {
         if (object == null) return; //TODO auto-add laser-beam objects where needed
 
         String device_type = object.getType();
         int old_beams = object.getPropertyBeams("beams", "0000");
         int primaries = object.getPropertyBeams("primaries", "0000");
 
-        int new_primaries = on ? primaries | beam : primaries & ~beam;
+        int new_primaries = (primaries & ~beam_mask) | (beam & beam_mask);
         object.setPropertyBeams("primaries", new_primaries);
 
-        logger.info("LASER "+object.toString()+" primaries="+Integer.toBinaryString(primaries)+"->"+Integer.toBinaryString(new_primaries)+", beams="+Integer.toBinaryString(old_beams));
+        logger.info("LASER "+Integer.toBinaryString(beam)+":"+Integer.toBinaryString(beam_mask)+" "+object.toString()+" primaries="+Integer.toBinaryString(primaries)+"->"+Integer.toBinaryString(new_primaries)+", beams="+Integer.toBinaryString(old_beams));
 
         int base_tile = BEAM_BASE_TILE;
         int propagate_mask = 0xF;
@@ -121,14 +121,16 @@ public class World implements TileBasedMap {
         }
         else if (device_type.equals("laser-portal")) {
             base_tile = BLOCKER_BASE_TILE;
-            propagate_mask = 0;
+            if (!crossed) propagate_mask = 0;
 
-            int complement_beams = ((new_primaries >> 3) | (new_primaries << 1)) & 0xF;
+            int complement_beams = ((new_primaries >> 2) | (new_primaries << 2)) & 0xF;
+            int complement_changes = ((beam_mask >> 2) | (beam_mask << 2)) & 0xF;
 
             World target = game.getWorld(object.getProperty("target", ""));
 
             if (target != null && target != this) { //hopefully prevents infinite recursion, since this is a portal calling laserUpdate on a portal at the same coords...
-                target.laserUpdate(target.map.getObject(object.getX(), object.getY()), complement_beams, true);
+                logger.info("\tPORTAL "+name+"->"+target.name+" "+Integer.toBinaryString(complement_beams)+":"+Integer.toBinaryString(complement_changes));
+                target.laserUpdate(target.map.getObject(target.ogroup, object.getX(), object.getY()), complement_beams, complement_changes, true);
             }
         }
 
@@ -136,21 +138,25 @@ public class World implements TileBasedMap {
         map.setTileId(object.getX(), object.getY(), lbeams, base_tile+new_beams);
 
         for (int side : SIDES) {
+            int cside = ((side >> 2) | (side << 2)) & 0xF;
+            int cside_x = object.getX() + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0));
+            int cside_y = object.getY() + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0));
+            //logger.info("side="+Integer.toBinaryString(side)+" cside="+Integer.toBinaryString(cside)+" | old="+Integer.toBinaryString(old_beams)+" new="+Integer.toBinaryString(new_beams)+" | prop="+Integer.toBinaryString(propagate_mask));
             if ((side & new_beams) > 0 && (side & old_beams) == 0 && (side & propagate_mask) > 0) { //it was added
                 //we find the complimentary beam, and the space it would be in, and turn that on too via update.
-                laserUpdate(object.getGroup(), object.getX() + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0)), object.getY() + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0)), ((side >> 2) | (side << 2)) & 0xF, true);
+                laserUpdate(object.getGroup(), cside_x, cside_y, cside, cside, false);
 
             } else if ((side & new_beams) == 0 && (side & old_beams) > 0 && (side & propagate_mask) > 0) { //it was removed
                 //we find the complimentary beam, and the space it would be in, and turn that off too via update.
-                laserUpdate(object.getGroup(), object.getX() + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0)), object.getY() + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0)), ((side >> 2) | (side << 2)) & 0xF, false);
+                laserUpdate(object.getGroup(), cside_x, cside_y, 0, cside, false);
             }
         }
     }
 
-    private void laserUpdate(int groupID, int x, int y, int beam, boolean on) {
+    private void laserUpdate(int groupID, int x, int y, int beam, int beam_mask, boolean crossed) {
         Map.MapObject propagate_to = map.getObject(groupID, x, y);
         //logger.info("propagating to "+propagate_to.toString());
-        laserUpdate(propagate_to, beam, on);
+        laserUpdate(propagate_to, beam, beam_mask, crossed);
     }
 
     public void laserDeviceRotate(Map.MapObject object) {
@@ -184,7 +190,7 @@ public class World implements TileBasedMap {
         int device_variant_id = (tileid - DEVICE_BASE_TILE) % 4;
         int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
         map.setTileId(object.getX(), object.getY(), ldevs, device_rotated_id);
-        laserUpdate(object, 0, true);
+        laserUpdate(object, 0x0, 0x0, false);
     }
 
     public void laserEmitterToggle(Map.MapObject object) {
@@ -195,7 +201,7 @@ public class World implements TileBasedMap {
             boolean state = object.getPropertyBool("state", "false");
             logger.info("TOGGLE "+object.toString()+" to "+ !state);
             object.setPropertyBool("state", !state);
-            laserUpdate(object, emitter_output, !state);
+            laserUpdate(object, 0x0, 0x0, false);
         }
     }
 

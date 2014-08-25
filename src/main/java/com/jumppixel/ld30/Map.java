@@ -101,14 +101,13 @@ public class Map extends TiledMap {
     public MapObject getObject(int groupID, int x, int y) {
         x *= 24;
         y = (y+1) * 24; //some reason, object coords are bottom left
-        ObjectGroup group = (ObjectGroup) objectGroups.get(groupID);
-
-        if (group != null) {
+        if (groupID >= 0 && groupID < objectGroups.size()) {
+            ObjectGroup group = (ObjectGroup) objectGroups.get(groupID);
             for (Object go : group.objects) {
-                GroupObject o = (GroupObject)go;
+                GroupObject object = (GroupObject)go;
 
-                if (o.x == x && o.y == y) {
-                    return new MapObject(group, o);
+                if (object.x == x && object.y == y) {
+                    return new MapObject(group, object);
                 }
             }
         }
