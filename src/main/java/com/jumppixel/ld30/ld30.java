@@ -163,6 +163,25 @@ public class ld30 extends BasicGame implements InputListener {
                         world.laserDeviceRotate(faced);
                     }
                 }
+                else if (type.equals("keycard-reader")) {
+                    boolean state = faced.getPropertyBool("state", "false");
+                    boolean closeable = faced.getPropertyBool("closeable", "false");
+                    int card = faced.getPropertyBeams("card", "00000");
+                    if (!state || state && closeable) {
+                        if ((player.keycards & card) > 0) {
+                            if (faced.getPropertyBool("consumes", "false")) {
+                                player.keycards &= ~card;
+                            }
+                            faced.setPropertyBool("state", !state);
+                            if (state) {
+                                executeActions(faced.getProperty("lock", ""));
+                            }
+                            else {
+                                executeActions(faced.getProperty("unlock", ""));
+                            }
+                        }
+                    }
+                }
             }
             break;
             case Input.KEY_F11: { //full screen
@@ -222,25 +241,9 @@ public class ld30 extends BasicGame implements InputListener {
                 logger.info("ACTION: set tile ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+";"+Integer.toString(tile_l)+") to "+Integer.toString(tile_id));
                 map.setTileId(tile_x, tile_y, tile_l, tile_id);
             }
-            else if (aparts[0].equals("laser-dev-rotate")) {
-                int le_x = Integer.parseInt(aparts[1]);
-                int le_y = Integer.parseInt(aparts[2]);
-                //TODO cross-world actions
-                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
-                if (object != null) {
-                    logger.info("ACTION: rotating "+object.toString());
-                    world.laserDeviceRotate(object);
-                }
-            }
-            else if (aparts[0].equals("laser-dev-toggle")) {
-                int le_x = Integer.parseInt(aparts[1]);
-                int le_y = Integer.parseInt(aparts[2]);
-
-                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
-                if (object != null) {
-                    logger.info("ACTION: toggling "+object.toString());
-                    world.laserEmitterToggle(object);
-                }
+            else if (aparts[0].equals("notify")) {
+                Notification.Type notify_type = Notification.Type.valueOf(aparts[1]);
+                addNotification(new Notification(aparts[2], notify_type));
             }
             else if (aparts[0].equals("notify-timed")) {
                 int notify_time = Integer.parseInt(aparts[1]);
@@ -256,9 +259,34 @@ public class ld30 extends BasicGame implements InputListener {
                     world.addEntity(new MegaHealthDrop(loc, drop_sprites, player));
                 }
             }
-            else if (aparts[0].equals("notify")) {
-                Notification.Type notify_type = Notification.Type.valueOf(aparts[1]);
-                addNotification(new Notification(aparts[2], notify_type));
+            else if (aparts[0].equals("laser-dev-toggle")) {
+                int le_x = Integer.parseInt(aparts[1]);
+                int le_y = Integer.parseInt(aparts[2]);
+
+                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
+                if (object != null) {
+                    logger.info("ACTION: toggling "+object.toString());
+                    world.laserEmitterToggle(object);
+                }
+            }
+            else if (aparts[0].equals("laser-dev-rotate")) {
+                int le_x = Integer.parseInt(aparts[1]);
+                int le_y = Integer.parseInt(aparts[2]);
+                //TODO cross-world actions
+                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
+                if (object != null) {
+                    logger.info("ACTION: rotating "+object.toString());
+                    world.laserDeviceRotate(object);
+                }
+            }
+            else if (aparts[0].equals("keycard-add")) {
+                player.keycards |= Integer.parseInt(aparts[1], 2);
+            }
+            else if (aparts[0].equals("keycard-remove")) {
+                player.keycards &= ~Integer.parseInt(aparts[1], 2);
+            }
+            else if (aparts[0].equals("keycards-clear")) {
+                player.keycards = 0;
             }
         }
     }
@@ -289,14 +317,15 @@ public class ld30 extends BasicGame implements InputListener {
         int render_tile_h = (gameContainer.getHeight() / 2 + 48) / 24;
 
         for (int i=0; i<map.getLayerCount(); i++) {
-            String layer_type = map.getLayerProperty(i, "type", "both");
-            if (layer_type.equals("both")  || layer_type.equals(w.name)) {
+            String layer_visibility = map.getLayerProperty(i, "world", "");
+            String layer_name = map.getLayerName(i);
+            if (layer_visibility.contains(w.name)) {
                 map.render(render_offset_x, render_offset_y, tileOffsetX, tileOffsetY, render_tile_w, render_tile_h, i, false);
             }
-            else if (layer_type.equals("player")) {
+            else if (layer_name.equals("player")) {
                 player.render(tileOffset.add(0.f, -1.f), gameContainer, graphics);
             }
-            else if (layer_type.equals("mobs")) {
+            else if (layer_name.equals("mobs")) {
                 w.renderEntities(tileOffset, gameContainer, graphics);
             }
         }
@@ -311,6 +340,15 @@ public class ld30 extends BasicGame implements InputListener {
         player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);
         meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 36, 20*8, 2*8);
         meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
+
+        //KEYCARDS
+        int keycard_x = gameContainer.getWidth() - 60;
+        int keycard_y = gameContainer.getHeight() - 60;
+        if ((player.keycards & Player.KEYCARD_BLUE) > 0) { meta_sprites.getSubImage(54+24*4, 0, 24, 24).draw(keycard_x, keycard_y, 48, 48); keycard_x -= 48; }
+        if ((player.keycards & Player.KEYCARD_PINK) > 0) { meta_sprites.getSubImage(54+24*3, 0, 24, 24).draw(keycard_x, keycard_y, 48, 48); keycard_x -= 48; }
+        if ((player.keycards & Player.KEYCARD_ORANGE) > 0) { meta_sprites.getSubImage(54+24*2, 0, 24, 24).draw(keycard_x, keycard_y, 48, 48); keycard_x -= 48; }
+        if ((player.keycards & Player.KEYCARD_GREEN) > 0) { meta_sprites.getSubImage(54+24, 0, 24, 24).draw(keycard_x, keycard_y, 48, 48); keycard_x -= 48; }
+        if ((player.keycards & Player.KEYCARD_CYAN) > 0) { meta_sprites.getSubImage(54, 0, 24, 24).draw(keycard_x, keycard_y, 48, 48); keycard_x -= 48; }
 
         //Charge bar
         if (player.has_device) {

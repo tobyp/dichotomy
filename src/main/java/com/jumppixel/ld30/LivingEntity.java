@@ -51,8 +51,16 @@ public class LivingEntity extends Entity {
         vec2 new_loc = loc.add(move_speed * velocity.x * delta_ms, move_speed * velocity.y * delta_ms);
 
         if (world.walkable(loc, new_loc)) {
+            vec2 old_loc = new vec2(loc);
             loc = new_loc;
+            if (new_loc.getFloorX() != old_loc.getFloorX() || new_loc.getFloorY() != old_loc.getFloorY()) {
+                onTileChange(world, old_loc, new_loc);
+            }
         }
+    }
+
+    public void onTileChange(World world, vec2 old_loc, vec2 new_loc) {
+
     }
 
     @Override
