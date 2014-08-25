@@ -224,6 +224,12 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
             }
             break;
+            case Input.KEY_M: { //music
+                if (!music.isPlaying()) music.playAsMusic(1, 0.5f, true);
+                else music.stop();
+                addNotification(new TimedNotification("Toggled music", 2000, Notification.Type.INFO));
+            }
+            break;
             case Input.KEY_ESCAPE: {
                 gameContainer.exit();
             }
