@@ -77,8 +77,8 @@ for i in range(4, len(argv), 3):
 			for obj in e:
 				oname = obj.get('name', None)
 				otype = obj.get('type')
-				ox = int(obj.get('x')) // 24 * 24 + offset_ox
-				oy = int(obj.get('y')) // 24 * 24 + offset_oy
+				ox = int(obj.get('x')) + offset_ox
+				oy = int(obj.get('y')) + offset_oy
 				obj_n = (oname, otype, ox, oy, obj.get('gid'), [])
 				og[1].append(obj_n)
 				for obj_child in obj:
