@@ -402,7 +402,7 @@ public class ld30 extends BasicGame implements InputListener {
         }
     }
 
-    public void laserDeviceRotate(int oid, int x, int y, String device_type, int beams) {
+    private void laserDeviceRotate(int oid, int x, int y, String device_type, int beams) {
         if (device_type.equals("laser-emitter")) {
             int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
             emitter_output = ((emitter_output >> 3) | (emitter_output << 1)) & 0xF;
@@ -434,7 +434,7 @@ public class ld30 extends BasicGame implements InputListener {
         laserUpdate(x, y, 0, true);
     }
 
-    public void laserEmitterToggle(int oid, int x, int y, String device_type, int beams) {
+    private void laserEmitterToggle(int oid, int x, int y, String device_type, int beams) {
         if (device_type.equals("laser-emitter")) {
             int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
             boolean state = map.getObjectProperty(objects_group, oid, "state", "false").equals("true") ? true : false;

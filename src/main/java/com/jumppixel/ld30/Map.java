@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 /**
  * Created by tobyp on 8/24/14.
@@ -188,11 +189,15 @@ public class Map extends TiledMap implements TileBasedMap {
 
     @Override
     public boolean blocked(PathFindingContext context, int tx, int ty) {
-        return (getTileId(tx, ty, walk_layer_index) != WALKABLE_BASE);
+        int tile_id = getTileId(tx, ty, walk_layer_index);
+        if (tile_id < WALKABLE_BASE) tile_id = WALKABLE_BASE;
+        //Logger.getLogger("AI").info("Tile at ("+Integer.toString(tx)+";"+Integer.toString(ty)+") is "+Integer.toString(tile_id)+" ("+(tile_id==WALKABLE_BASE ? "free" : "blocked")+")");
+        return (tile_id != WALKABLE_BASE);
     }
 
     @Override
     public float getCost(PathFindingContext context, int tx, int ty) {
-        return (getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE ? 0 : 1);
+        return 1.f;
+        //return (getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE ? 0 : 1);
     }
 }

@@ -7,6 +7,8 @@ import org.newdawn.slick.util.pathfinding.Mover;
 import org.newdawn.slick.util.pathfinding.Path;
 import org.newdawn.slick.util.pathfinding.PathFinder;
 
+import java.util.logging.Logger;
+
 /**
  * Created by Tom on 24/08/2014.
  */
@@ -40,10 +42,11 @@ public class Monster extends LivingEntity implements Mover {
 
             setVelocity(vec2.ZERO);
 
-            vec2 difference = loc.sub(new vec2(step.getX() + .5f, step.getY() + .5f));
+            vec2 vstep = new vec2(step.getX()+.5f, step.getY()+.5f);
+            vec2 difference = vstep.sub(loc);
 
-            Log.info(difference.x + ", " + difference.y);
-
+            setVelocity(velocity.add(difference));
+            /*
             switch (difference.getFloorX()) {
                 case 1: {
                     setVelocity(velocity.add(vec2.RIGHT));
@@ -55,15 +58,15 @@ public class Monster extends LivingEntity implements Mover {
                 break;
             }
             switch (difference.getFloorY()) {
-                case 1: {
+                case -1: {
                     setVelocity(velocity.add(vec2.UP));
                 }
                 break;
-                case -1: {
+                case 1: {
                     setVelocity(velocity.add(vec2.DOWN));
                 }
                 break;
-            }
+            }*/
 
             if (loc.getFloorX() == step.getX() && loc.getFloorY() == step.getY() && current_step < current_path.getLength() - 1) {
                 advanceStep();
@@ -74,7 +77,15 @@ public class Monster extends LivingEntity implements Mover {
     public void updatePathFinder(int tx, int ty) {
         current_step = 0;
 
+        //Logger.getLogger("AI").info("Pathfinding from "+loc.toString()+" to ("+Integer.toString(tx)+";"+Integer.toString(ty)+")");
         current_path = path_finder.findPath(this, loc.getFloorX(), loc.getFloorY(), tx, ty);
+        if (current_path != null) {
+            int length = current_path.getLength();
+            System.out.println("Path " + length);
+            for(int i = 0; i < length; i++) {
+                System.out.println("\t" + current_path.getX(i) + "," + current_path.getY(i));
+            }
+        }
     }
 
     public void advanceStep() {
