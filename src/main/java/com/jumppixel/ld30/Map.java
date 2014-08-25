@@ -5,21 +5,22 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.tiled.Layer;
 import org.newdawn.slick.tiled.TiledMap;
+import org.newdawn.slick.util.pathfinding.PathFindingContext;
+import org.newdawn.slick.util.pathfinding.TileBasedMap;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  * Created by tobyp on 8/24/14.
  */
-public class Map extends TiledMap {
+public class Map extends TiledMap implements TileBasedMap {
     private int walk_layer_index;
     public int WALKABLE_BASE = 881;
 
-    public List<Drop> drops = new ArrayList<Drop>();
+    public List<Entity> entities = new ArrayList<Entity>();
 
     public Map(String ref) throws SlickException {
         super(ref);
@@ -136,31 +137,63 @@ public class Map extends TiledMap {
     }
 
     public void reset() {
-        for (Drop drop : drops) {
-            drop.expire();
+        for (Entity entity : entities) {
+            entity.expire();
         }
-        drops.clear();
+        entities.clear();
     }
 
     public void update(int delta_ms) {
-        for (Drop drop : new ArrayList<Drop>(drops)) {
-            if (drop.expire_ms - delta_ms <= 0) {
-                drop.expire();
-                drops.remove(drop);
-            }else{
-                drop.expire_ms = drop.expire_ms - delta_ms;
-                drop.update(this, delta_ms);
+        for (Entity entity : new ArrayList<Entity>(entities)) {
+            if (entity instanceof Drop) {
+                Drop drop = (Drop) entity;
+                if (drop.expire_ms - delta_ms <= 0) {
+                    drop.expire();
+                    entities.remove(drop);
+                }else{
+                    drop.expire_ms = drop.expire_ms - delta_ms;
+                    drop.update(this, delta_ms);
+                }
             }
         }
     }
 
     public void renderEntities(vec2 view_offset, GameContainer gameContainer, Graphics graphics) {
-        for (Drop drop : drops) {
-            drop.render(view_offset, gameContainer, graphics);
+        for (Entity entity : entities) {
+            entity.render(view_offset, gameContainer, graphics);
         }
     }
 
-    public void addDrop(Drop drop) {
-        drops.add(drop);
+    public void addEntity(Entity entity) {
+        entities.add(entity);
+        entity.spawn();
+    }
+
+    //Pathfinder stuff
+
+    @Override
+    public int getWidthInTiles() {
+        return getWidth();
+    }
+
+    @Override
+    public int getHeightInTiles() {
+        return getHeight();
+    }
+
+    @Override
+    public void pathFinderVisited(int x, int y) {
+
+    }
+
+    @Override
+    public boolean blocked(PathFindingContext context, int tx, int ty) {
+        return (!(getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE));
+    }
+
+    @Override
+    public float getCost(PathFindingContext context, int tx, int ty) {
+        if (getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE) return 0;
+        return 1;
     }
 }

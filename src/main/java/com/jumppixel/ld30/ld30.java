@@ -71,6 +71,8 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             });
         }
+
+        map.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, map));
     }
 
     @Override
@@ -92,10 +94,13 @@ public class ld30 extends BasicGame implements InputListener {
 
         map.update(delta_ms);
         player.update(map, delta_ms);
-        for (Drop drop : new ArrayList<Drop>(map.drops)) {
-            if (drop.loc.getDistance(player.loc) < 0.5) {
-                drop.pickup(player);
-                map.drops.remove(drop);
+        for (Entity entity : new ArrayList<Entity>(map.entities)) {
+            if (entity instanceof Drop) {
+                Drop drop = (Drop) entity;
+                if (drop.loc.getDistance(player.loc) < 0.5) {
+                    drop.pickup(player);
+                    map.entities.remove(drop);
+                }
             }
         }
 
@@ -107,7 +112,7 @@ public class ld30 extends BasicGame implements InputListener {
                 } else if (player.charge < player.max_charge) {
                     player.charge = player.charge + 0.01f;
                 }
-                charge_ms = 0;
+                charge_ms = charge_ms - charge_interval;
             }
         }else{
             charge_ms = 0;
@@ -260,10 +265,10 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("add-drop")) {
                 vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
                 if (aparts[1].equals("health-1")) {
-                    map.addDrop(new HealthDrop(loc, drop_sprites));
+                    map.addEntity(new HealthDrop(loc, drop_sprites));
                 }else
                 if (aparts[1].equals("health-2")) {
-                    map.addDrop(new HealthDrop(loc, drop_sprites));
+                    map.addEntity(new HealthDrop(loc, drop_sprites));
                 }
             }
             else if (aparts[0].equals("notify")) {

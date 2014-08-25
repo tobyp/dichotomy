@@ -10,7 +10,7 @@ public class Drop extends Entity {
     public int expire_ms = 1000*10; //Default: 30 seconds
 
     public Drop(vec2 loc, Image image) {
-        super(loc, image, new vec2(image.getWidth()/2, image.getHeight()/2));
+        super(loc, image, new vec2(0-image.getWidth()/2, 0-image.getHeight()/2));
     }
 
     public void setExpireTime(int ms) {
@@ -24,10 +24,10 @@ public class Drop extends Entity {
 
         if (expire_ms <= 2000) {
             if (expire_ms % 100 < 50)
-                image.draw(pixel_location.x - render_offset.x, pixel_location.y - render_offset.y);
+                image.draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
         }
         else
-            image.draw(pixel_location.x - render_offset.x, pixel_location.y - render_offset.y);
+            image.draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
     }
 
     public void expire() {

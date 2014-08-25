@@ -4,6 +4,7 @@ import org.newdawn.slick.Animation;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SpriteSheet;
+import org.newdawn.slick.util.pathfinding.Mover;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,13 +54,12 @@ public class LivingEntity extends Entity {
         }
     }
 
+    @Override
     public void render(vec2 view_offset, GameContainer container, Graphics g) {
         vec2 tile_location = loc.add(view_offset.negate());
         vec2 pixel_location = tile_location.mul(24.f);
 
-        Animation rot_ani = animations.get(rotation.getRotInt());
-
-        rot_ani.draw(pixel_location.x+render_offset.x, pixel_location.y+render_offset.y);
+        animations.get(rotation.getRotInt()).draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
     }
 
     public void takeDamage(float damage) {
