@@ -21,6 +21,8 @@ public class LivingEntity extends Entity {
     float health;
     float max_health = 1.0f;
 
+    int rot = 0;
+
     public LivingEntity(vec2 loc, SpriteSheet sprites, vec2 render_offset, float max_health, float move_speed, int num_ani_frames, Player player) {
         super(loc, sprites, render_offset, player);
         this.max_health = max_health;
@@ -39,7 +41,10 @@ public class LivingEntity extends Entity {
 
     @Override
     public void update(World world, int delta_ms) {
-        Animation rot_ani = animations.get(rotation.getRotInt());
+        if (rotation.getRotInt() > -1) {
+            rot = rotation.getRotInt();
+        }
+        Animation rot_ani = animations.get(rot);
         if (velocity.isZero()) {
             rot_ani.setCurrentFrame(0);
             rot_ani.setAutoUpdate(false);
@@ -68,7 +73,7 @@ public class LivingEntity extends Entity {
         vec2 tile_location = loc.add(view_offset.negate());
         vec2 pixel_location = tile_location.mul(24.f);
 
-        animations.get(rotation.getRotInt()).draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
+        animations.get(rot).draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
     }
 
     public void takeDamage(float damage) {
