@@ -151,10 +151,17 @@ public class ld30 extends BasicGame implements InputListener {
                     }
                 }
                 else if (type.equals("laser-emitter")) {
-                    world.laserEmitterToggle(faced);
+                    if (faced.getPropertyBool("manual", "false")) {
+                        world.laserEmitterToggle(faced);
+                    }
+                    else if (faced.getPropertyBool("rotateable", "false")) {
+                        world.laserDeviceRotate(faced);
+                    }
                 }
                 else if (type.equals("laser-io") || type.equals("laser-io-inverse") || type.equals("laser-receiver")) {
-                    world.laserDeviceRotate(faced);
+                    if (faced.getPropertyBool("rotateable", "false")) {
+                        world.laserDeviceRotate(faced);
+                    }
                 }
             }
             break;

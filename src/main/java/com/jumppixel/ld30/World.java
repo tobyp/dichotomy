@@ -115,6 +115,11 @@ public class World implements TileBasedMap {
             base_tile = BLOCKER_BASE_TILE;
             propagate_mask = 0;
         }
+        else if (device_type.equals("laser-portal")) {
+            base_tile = BLOCKER_BASE_TILE;
+            propagate_mask = 0;
+
+        }
 
         object.setPropertyBeams("beams", new_beams);
         map.setTileId(object.getX(), object.getY(), lbeams, base_tile+new_beams);
@@ -172,6 +177,7 @@ public class World implements TileBasedMap {
     }
 
     public void laserEmitterToggle(Map.MapObject object) {
+
         int beams = object.getPropertyBeams("beams", "0000");
         if (object.getType().equals("laser-emitter")) {
             int emitter_output = object.getPropertyBeams("output", "0000");
