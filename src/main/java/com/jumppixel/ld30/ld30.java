@@ -23,6 +23,7 @@ public class ld30 extends BasicGame implements InputListener {
     SpriteSheet meta_sprites;
     SpriteSheet drop_sprites;
     Image dark_overlay;
+    SpriteSheetFont font;
 
     //MAP/WORLD
     Map map;
@@ -35,8 +36,6 @@ public class ld30 extends BasicGame implements InputListener {
     //PLAYER
     Player player;
 
-    //NOTIFICATIONS
-    TrueTypeFont font;
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
     public ld30() {
@@ -49,7 +48,7 @@ public class ld30 extends BasicGame implements InputListener {
         gameContainer.setTargetFrameRate(60);
         gameContainer.getInput().addListener(this);
 
-        font = new TrueTypeFont(new Font("Verdana", 0, 20), false);
+        font = new SpriteSheetFont(new SpriteSheet("src/main/resources/font.png", 15, 21), ' ');
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
@@ -342,9 +341,36 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             }
             else if (aparts[0].equals("narration-queue")) {
-                current_narration_queue.add(new Narration(aparts[2], aparts[1]));
+                NarrationQueue q = new NarrationQueue();
+                int i = 0;
+                for (String s : aparts) {
+                    if (i>0) {
+                        String[] split = s.split("|");
+                        String text = split[0];
+                        String sound = null;
+                        if (split.length == 2) {
+                            sound = split[1];
+                        }
+                        Narration narration = new Narration(text, sound);
+                        q.add(narration);
+                    }
+                    i++;
+                }
+                setCurrentNarrationQueue(q);
+            }
+            else if (aparts[0].equals("narration-clear")) {
+                setCurrentNarrationQueue(null);
             }
         }
+    }
+
+    public void setCurrentNarrationQueue(NarrationQueue queue) {
+        if (current_narration_queue != null) {
+            if (current_narration_queue.current() != null) {
+                current_narration_queue.current().stopSound();
+            }
+        }
+        current_narration_queue = queue;
     }
 
 
@@ -394,8 +420,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         //Health bar
         player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);
-        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 36, 20*8, 2*8);
-        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
+        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 20, 20*8, 2*8);
+        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 20, Math.round(20*8*player.health/player.max_health), 2*8);
 
         //KEYCARDS
         int keycard_x = gameContainer.getWidth() - 60;
@@ -462,7 +488,7 @@ public class ld30 extends BasicGame implements InputListener {
                 int text_width = graphics.getFont().getWidth(current_narration_queue.current().text);
                 int text_height = graphics.getFont().getHeight(current_narration_queue.current().text);
                 graphics.setColor(Color.black);
-                graphics.drawString(current_narration_queue.current().text, gameContainer.getWidth()/2 - text_width / 2, gameContainer.getHeight() - (nbg.getHeight()*scale)/2 - text_height / 2 - 10);
+                graphics.drawString(current_narration_queue.current().text.toUpperCase(), gameContainer.getWidth()/2 - text_width / 2, gameContainer.getHeight() - (nbg.getHeight()*scale)/2 - text_height / 2 - 10);
             }
         }
 
