@@ -6,6 +6,11 @@ import org.newdawn.slick.SpriteSheet;
  * Created by tobyp on 8/23/14.
  */
 public class Player extends LivingEntity {
+    public final static int KEYCARD_CYAN = 0x1;
+    public final static int KEYCARD_GREEN = 0x2;
+    public final static int KEYCARD_ORANGE = 0x4;
+    public final static int KEYCARD_PINK = 0x8;
+    public final static int KEYCARD_BLUE = 0x10;
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
@@ -14,6 +19,7 @@ public class Player extends LivingEntity {
     boolean has_device = false;
     int charge_ms = 0;
     int charge_interval = 100; //+0.01 charge every interval
+    int keycards = 0;
 
     boolean debug_mode = false;
 
@@ -50,6 +56,16 @@ public class Player extends LivingEntity {
         }else{
             this.charge_holding = false;
             this.charge_hold = 0;
+        }
+    }
+
+    @Override
+    public void onTileChange(World world, vec2 old_loc, vec2 new_loc) {
+        Map.MapObject mo = world.map.getObject(world.ogroup, new_loc);
+        if (mo != null && mo.getType().equals("trigger")) {
+            if (mo.getPropertyBool("consumed", "false")) return;
+            if (mo.getPropertyBool("onetime", "false")) mo.setPropertyBool("consumed", true);
+            world.game.executeActions(mo.getProperty("actions", ""));
         }
     }
 

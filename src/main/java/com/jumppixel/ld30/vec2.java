@@ -16,6 +16,11 @@ public class vec2 {
         this.y = y;
     }
 
+    public vec2(vec2 o) {
+        this.x = o.x;
+        this.y = o.y;
+    }
+
     public vec2 add(vec2 o) {
         return new vec2(this.x + o.x, this.y + o.y);
     }
