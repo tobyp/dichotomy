@@ -496,6 +496,9 @@ public class ld30 extends BasicGame implements InputListener {
             Image charge_full = meta_sprites.getSubImage(19, 13, 20, 2);
             Image charge_ready = meta_sprites.getSubImage(19, 19, 20, 2);
 
+            Image charge_inst = meta_sprites.getSubImage(19, 38, 25, 6);
+            Image charge_status = meta_sprites.getSubImage(19, player.allow_charging ? 44 : 50, 38, 6);
+
             teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4);
 
             teleporter_icon.draw(charge_offset_x, charge_offset_y, 14 * 4, 17 * 4, new Color(.8f, 0f, .8f, player.charge_hold / 2));
@@ -503,6 +506,13 @@ public class ld30 extends BasicGame implements InputListener {
             charge_empty.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, 20 * 8, 2 * 8);
             charge_full.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20 * 8 * player.charge / player.max_charge), 2 * 8);
             charge_ready.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 - (2 * 8) / 2, Math.round(20 * 8 * player.charge_hold / 1), 2 * 8);
+
+            if (player.charge == player.max_charge && !player.charge_holding) {
+                charge_inst.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 + 10, 38 * 2, 6 * 2);
+            }else
+            if (player.charge < player.max_charge) {
+                charge_status.draw(charge_offset_x + 14 * 5, charge_offset_y + (17 * 4) / 2 + 10, 38 * 2, 6 * 2);
+            }
         }
 
         if (notification_buffer.size() > 0) {
