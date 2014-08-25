@@ -191,7 +191,7 @@ public class ld30 extends BasicGame implements InputListener {
                     int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
                     laserEmitterToggle(faced_oid, faced_x, faced_y, type, beams);
                 }
-                else if (type.equals("laser-io") || type.equals("laser-receiver")) {
+                else if (type.equals("laser-io") || type.equals("laser-io-inverse") || type.equals("laser-receiver")) {
                     int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
                     laserDeviceRotate(faced_oid, faced_x, faced_y, type, beams);
                 }
@@ -366,6 +366,17 @@ public class ld30 extends BasicGame implements InputListener {
             logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
             propagate_mask &= ~beam;
         }
+        else if (device_type.equals("laser-io-inverse")) {
+            base_tile = BEAM_BASE_TILE;
+            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
+            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
+
+            if ((new_primaries & input) == 0) { //we have no primary input, so let's put in the outputs!
+                new_beams |= output;
+            }
+            logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
+            propagate_mask &= ~beam;
+        }
         else if (device_type.equals("laser-blocker")) {
             base_tile = BLOCKER_BASE_TILE;
             propagate_mask = 0;
@@ -401,7 +412,7 @@ public class ld30 extends BasicGame implements InputListener {
 
             logger.info("\trotated receiver, input="+Integer.toBinaryString(receiver_input));
         }
-        else if (device_type.equals("laser-io")) {
+        else if (device_type.equals("laser-io") || device_type.equals("laser-io-inverse")) {
             int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
             int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
             input = ((input >> 3) | (input << 1)) & 0xF;
