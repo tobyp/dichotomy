@@ -11,6 +11,7 @@ public class Player extends LivingEntity {
     public final static int KEYCARD_ORANGE = 0x4;
     public final static int KEYCARD_PINK = 0x8;
     public final static int KEYCARD_BLUE = 0x10;
+    ld30 game;
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
@@ -23,8 +24,9 @@ public class Player extends LivingEntity {
 
     boolean debug_mode = false;
 
-    public Player(vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
+    public Player(ld30 game, vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
         super(loc, sprites, render_offset, 1.0f, move_speed, num_ani_frames, null);
+        this.game = game;
     }
 
     @Override
@@ -49,7 +51,8 @@ public class Player extends LivingEntity {
             if (this.charge_hold + ((float)delta_ms)/1000 > 1) {
                 this.charge_hold = 1.0f;
                 this.charge_holding = false;
-                //TODO: Teleport player
+                this.charge = 0.f;
+                game.switchWorld();
             }else{
                 this.charge_hold = this.charge_hold + ((float) delta_ms)/1000;
             }
