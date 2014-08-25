@@ -74,9 +74,10 @@ for i in range(4, len(argv), 7):
 						layer[1].append((layer_prop.get('name'), layer_prop.get('value')))
 				elif layer_child.tag == "data":
 					data = decompress(b64decode(layer_child.text))
-					for y in range(src_y, src_h):
-						for x in range(src_x, src_w):
+					for y in range(src_y, src_y+src_h):
+						for x in range(src_x, src_x+src_w):
 							old_index = 4*((layer_w*y)+x)
+							#print(x, y, data[old_index:old_index+4], x-src_x+offset_x, y-src_y+offset_y)
 							new_index = 4*((new_map_width*(y-src_y+offset_y))+(x-src_x+offset_x))
 							if unpack('<I', data[old_index:old_index+4])[0] != 0:
 								layer[2][new_index:new_index+4] = data[old_index:old_index+4]
@@ -97,7 +98,6 @@ for i in range(4, len(argv), 7):
 							prop_name = obj_prop.get('name')
 							prop_val = obj_prop.get('value')
 							if prop_name in ('enable', 'disable', 'lock', 'unlock'):
-								print(x, y, prop_val)
 								actions = prop_val.split(',')
 								for i, a in enumerate(actions):
 									parts = a.split(':')
