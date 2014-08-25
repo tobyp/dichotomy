@@ -124,6 +124,16 @@ public class Map extends TiledMap {
         }
         return null;
     }
+    public MapObject getObject(int groupID, String name) {
+        if (groupID >= 0 && groupID < objectGroups.size()) {
+            ObjectGroup grp = (ObjectGroup) objectGroups.get(groupID);
+            for (Object o : grp.objects) {
+                GroupObject object = (GroupObject) grp.objects.get(objectID);
+                if (object.name.equals(name)) return new Map(grp, object);
+            }
+        }
+        return null;
+    }
 
     public String getLayerName(int layerIndex) {
         Layer layer = (Layer) layers.get(layerIndex);

@@ -139,6 +139,8 @@ public class ld30 extends BasicGame implements InputListener {
                 logger.info("Interaction with "+faced.toString());
 
                 if (type.equals("button")) {
+                    if (faced.getPropertyBool("blocked", "false")) return;;
+
                     String state = faced.getProperty("state", "false");
                     if (state.equals("true")) {
                         faced.setProperty("state", "false");
@@ -169,7 +171,7 @@ public class ld30 extends BasicGame implements InputListener {
                     int card = faced.getPropertyBeams("card", "00000");
                     if (!state || state && closeable) {
                         if ((player.keycards & card) > 0) {
-                            if (faced.getPropertyBool("consumes", "false")) {
+                            if (faced.getPropertyBool("consumes", "true")) {
                                 player.keycards &= ~card;
                             }
                             faced.setPropertyBool("state", !state);
@@ -260,15 +262,6 @@ public class ld30 extends BasicGame implements InputListener {
                 Notification.Type notify_type = Notification.Type.valueOf(aparts[2]);
                 addNotification(new TimedNotification(aparts[3], notify_time, notify_type));
             }
-            else if (aparts[0].equals("add-drop")) {
-                vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
-                if (aparts[1].equals("health-1")) {
-                    world.addEntity(new HealthDrop(loc, drop_sprites, player));
-                }else
-                if (aparts[1].equals("health-2")) {
-                    world.addEntity(new MegaHealthDrop(loc, drop_sprites, player));
-                }
-            }
             else if (aparts[0].equals("laser-dev-toggle")) {
                 int le_x = Integer.parseInt(aparts[1]);
                 int le_y = Integer.parseInt(aparts[2]);
@@ -297,6 +290,27 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("keycards-clear")) {
                 player.keycards = 0;
+            }
+            else if (aparts[0].equals("keycard-drop")) {
+                int cards = Integer.parseInt(aparts[2], 2);
+                vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
+                world.addEntity(new KeycardDrop(loc, drop_sprites, player, cards));
+            }
+            else if (aparts[0].equals("health-drop")) {
+                float health = Float.parseFloat(aparts[2]);
+                vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
+                world.addEntity(new HealthDrop(loc, drop_sprites, player, health));
+            }
+            else if (aparts[0].equals("device-drop")) {
+                vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
+                world.addEntity(new DeviceDrop(loc, drop_sprites, player));
+            }
+            else if (aparts[0].equals("set-prop")) {
+                Map.MapObject mo = world.getObject(aparts[1]);
+                if (mo != null) {
+                    logger.info("Setting "+mo.toString()+"."+aparts[2]+"="+aparts[3]);
+                    mo.setProperty(aparts[2], aparts[3]);
+                }
             }
         }
     }

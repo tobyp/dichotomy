@@ -34,6 +34,10 @@ public class World implements TileBasedMap {
         ogroup = map.getObjectGroupIndex(name+"-objects");
     }
 
+    Map.MapObject getObject(String name) {
+        return map.getObject(ogroup, name);
+    }
+
     int DEVICE_BASE_TILE = 681;
     int BEAM_BASE_TILE = 761;
     int BLOCKER_BASE_TILE = 801;
