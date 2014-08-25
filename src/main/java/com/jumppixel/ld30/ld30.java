@@ -4,7 +4,6 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.*;
@@ -39,8 +38,6 @@ public class ld30 extends BasicGame implements InputListener {
     Player player;
     vec2 player_spawn = null;
     String player_spawn_world = null;
-
-    int darkness_ms = 0;
 
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
@@ -119,10 +116,6 @@ public class ld30 extends BasicGame implements InputListener {
                 current_narration_queue.next();
                 current_narration_queue.current().playSound();
             }
-        }
-
-        if (darkness_ms > 1) {
-            darkness_ms--;
         }
     }
 
@@ -431,6 +424,12 @@ public class ld30 extends BasicGame implements InputListener {
         }
 
         graphics.scale(.5f, .5f);
+
+        if (player.fade_ms > 0) {
+            if (w != wgood) graphics.setColor(new Color(0.4f, 0, 0.4f, ((float)player.fade_ms)/1000));
+            else graphics.setColor(new Color(0.7f, 0.7f, 0.7f, ((float) player.fade_ms) / 1000));
+            graphics.fillRect(0, 0, gameContainer.getWidth(), gameContainer.getHeight());
+        }
 
         if (w != wgood) dark_overlay.draw(0, 0);
 
