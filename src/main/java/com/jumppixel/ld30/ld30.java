@@ -60,7 +60,9 @@ public class ld30 extends BasicGame implements InputListener {
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
         vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
-        player = new Player(spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+        player = new Player(this, spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+        player.has_device = true;
+        player.allow_charging = true;
         addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 7500, Notification.Type.INFO));
 
         for (Handler h : logger.getParent().getHandlers()) {
@@ -72,12 +74,7 @@ public class ld30 extends BasicGame implements InputListener {
             });
         }
 
-        current_narration_queue = new NarrationQueue();
-        current_narration_queue.add(new Narration("Hello there", "meow1.ogg"));
-        current_narration_queue.add(new Narration("How are yo-", "meow2.ogg"));
-        current_narration_queue.add(new Narration("oh... goodbye :(", "meow3.ogg"));
-
-        world.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world, player));
+        wevil.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world, player));
     }
 
     @Override
@@ -226,7 +223,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             break;
             case Input.KEY_L: {
-                world = (world == wgood) ? wevil : wgood;
+                switchWorld();
             }
             break;
             case Input.KEY_SPACE: {
@@ -498,6 +495,10 @@ public class ld30 extends BasicGame implements InputListener {
             graphics.setColor(Color.white);
             graphics.drawString("FPS: " + gameContainer.getFPS(), gameContainer.getWidth() - 150, gameContainer.getHeight() - 30);
         }
+    }
+
+    public void switchWorld() {
+        world = (world == wgood) ? wevil : wgood;
     }
 
     public static void main(String [] args) {
