@@ -341,6 +341,9 @@ public class ld30 extends BasicGame implements InputListener {
                     mo.setProperty(aparts[2], aparts[3]);
                 }
             }
+            else if (aparts[0].equals("narration-queue")) {
+                current_narration_queue.add(new Narration(aparts[2], aparts[1]));
+            }
         }
     }
 
