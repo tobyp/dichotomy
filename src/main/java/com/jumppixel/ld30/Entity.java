@@ -41,7 +41,11 @@ public class Entity {
         }
     }
 
-    public void update(Player player, Map map, int delta_ms) {
+    public void update(Player player, World world, int delta_ms) {
+    }
+
+    public vec2 getFaced() {
+        return this.loc.getFaced(this.rotation);
     }
 
     public void spawn() {

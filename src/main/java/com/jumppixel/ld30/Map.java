@@ -17,53 +17,112 @@ import java.util.logging.Logger;
 /**
  * Created by tobyp on 8/24/14.
  */
-public class Map extends TiledMap implements TileBasedMap {
-    private int walk_layer_index;
-    public int WALKABLE_BASE = 881;
+public class Map extends TiledMap {
+    public class MapObject {
+        ObjectGroup group;
+        GroupObject object;
 
-    public List<Entity> entities = new ArrayList<Entity>();
+        public MapObject(ObjectGroup grp, GroupObject obj) {
+            this.group = grp;
+            this.object = obj;
+        }
+
+        public String getProperty(String name, String def) {
+            if (object.props == null) return def;
+            return object.props.getProperty(name, def);
+        }
+        public int getPropertyInt(String name, String def) {
+            return Integer.parseInt(getProperty(name, def));
+        }
+        public int getPropertyBeams(String name, String def) {
+            return Integer.parseInt(getProperty(name, def), 2);
+        }
+        public boolean getPropertyBool(String name, String def) {
+            return getProperty(name, def).equals("true");
+        }
+        public void setProperty(String name, String value) {
+            if (object.props == null) object.props = new Properties();
+            object.props.setProperty(name, value);
+        }
+        public void setPropertyInt(String name, int value) {
+            setProperty(name, Integer.toString(value));
+        }
+        public void setPropertyBeams(String name, int value) {
+            setProperty(name, Integer.toBinaryString(value));
+        }
+        public void setPropertyBool(String name, boolean value) {
+            setProperty(name, value ? "true" : "false");
+        }
+        public int getX() {
+            return (int)Math.floor(object.x / 24.f);
+        }
+        public int getY() {
+            return (int)Math.floor(object.y / 24.f - 1.f);
+        }
+        public String getName() {
+            return object.name;
+        }
+        public String getType() {
+            return object.type;
+        }
+        public int getGroup() {
+            return group.index;
+        }
+        public String toString() {
+            return object.type + (object.name.isEmpty() ? "" : ("('"+object.name+"')")) + "@(" + getX() + ";" + getY() + ")";
+        }
+    }
+
+
 
     public Map(String ref) throws SlickException {
         super(ref);
-        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(String ref, boolean loadTileSets) throws SlickException {
         super(ref, loadTileSets);
-        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(String ref, String tileSetsLocation) throws SlickException {
         super(ref, tileSetsLocation);
-        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(InputStream in) throws SlickException {
         super(in);
-        walk_layer_index = getLayerIndex("walkability");
     }
 
     public Map(InputStream in, String tileSetsLocation) throws SlickException {
         super(in, tileSetsLocation);
-        walk_layer_index = getLayerIndex("walkability");
     }
 
-    public void setObjectProperty(int groupID, int objectID, String propertyName, String value) {
+    public MapObject getObject(int groupID, vec2 pos) {
+        return  getObject(groupID, pos.getFloorX(), pos.getFloorY());
+    }
+    public MapObject getObject(int groupID, int x, int y) {
+        x *= 24;
+        y = (y+1) * 24; //some reason, object coords are bottom left
+        ObjectGroup group = (ObjectGroup) objectGroups.get(groupID);
+
+        if (group != null) {
+            for (Object go : group.objects) {
+                GroupObject o = (GroupObject)go;
+
+                if (o.x == x && o.y == y) {
+                    return new MapObject(group, o);
+                }
+            }
+        }
+        return null;
+    }
+    public MapObject getObject(int groupID, int objectID) {
         if (groupID >= 0 && groupID < objectGroups.size()) {
             ObjectGroup grp = (ObjectGroup) objectGroups.get(groupID);
             if (objectID >= 0 && objectID < grp.objects.size()) {
                 GroupObject object = (GroupObject) grp.objects.get(objectID);
-
-                if (object == null) {
-                    return;
-                }
-                if (object.props == null) {
-                    object.props = new Properties();
-                }
-
-                object.props.setProperty(propertyName, value);
+                return new MapObject(grp, object);
             }
         }
+        return null;
     }
 
     public String getLayerName(int layerIndex) {
@@ -84,120 +143,5 @@ public class Map extends TiledMap implements TileBasedMap {
         }
 
         return -1;
-    }
-
-    public int getTileObject(int groupID, int x, int y) {
-        x *= 24;
-        y = (y+1) * 24; //some reason, object coords are bottom left
-        ObjectGroup group = (ObjectGroup) objectGroups.get(groupID);
-        if (group == null) return -1;
-
-        for (Object go : group.objects) {
-            GroupObject o = (GroupObject)go;
-
-            if (o.x == x && o.y == y) {
-                return o.index;
-            }
-        }
-        return -1;
-    }
-
-    public int getObjectTileX(int gid, int oid) {
-        ObjectGroup group = (ObjectGroup) objectGroups.get(gid);
-        if (group == null) return -1;
-
-        for (Object go : group.objects) {
-            GroupObject o = (GroupObject) go;
-            if (o.index == oid) return o.x / 24;
-        }
-
-        return -1;
-    }
-
-    public int getObjectTileY(int gid, int oid) {
-        ObjectGroup group = (ObjectGroup) objectGroups.get(gid);
-        if (group == null) return -1;
-
-        for (Object go : group.objects) {
-            GroupObject o = (GroupObject) go;
-            if (o.index == oid) return o.y / 24 - 1;
-        }
-
-        return -1;
-    }
-
-    public boolean walkable(vec2 from, vec2 to) {
-        int tile_id = getTileId(to.getFloorX(), to.getFloorY(), walk_layer_index) - WALKABLE_BASE;
-        if (tile_id < 0) tile_id = 0x0; //completely walkable
-        int needed = to.sub(from).walk_dirs();
-        //Logger.getGlobal().info("needed " + Integer.toBinaryString(needed) + " | " + Integer.toBinaryString(~tile_id) + " got");
-        if ((~tile_id & needed) == needed) {
-            return true;
-        }
-        return false;
-    }
-
-    public void reset() {
-        for (Entity entity : entities) {
-            entity.expire();
-        }
-        entities.clear();
-    }
-
-    public void update(Player player, int delta_ms) {
-        for (Entity entity : new ArrayList<Entity>(entities)) {
-            if (entity instanceof Drop) {
-                Drop drop = (Drop) entity;
-                if (drop.expire_ms - delta_ms <= 0) {
-                    drop.expire();
-                    entities.remove(drop);
-                }else{
-                    drop.expire_ms = drop.expire_ms - delta_ms;
-                }
-            }
-            entity.update(player, this, delta_ms);
-        }
-    }
-
-    public void renderEntities(vec2 view_offset, GameContainer gameContainer, Graphics graphics) {
-        for (Entity entity : entities) {
-            entity.render(view_offset, gameContainer, graphics);
-        }
-    }
-
-    public void addEntity(Entity entity) {
-        entities.add(entity);
-        entity.spawn();
-    }
-
-    //Pathfinder stuff
-
-    @Override
-    public int getWidthInTiles() {
-        return getWidth();
-    }
-
-    @Override
-    public int getHeightInTiles() {
-        return getHeight();
-    }
-
-    @Override
-    public void pathFinderVisited(int x, int y) {
-
-    }
-
-    @Override
-    public boolean blocked(PathFindingContext context, int tx, int ty) {
-        int tile_id = getTileId(tx, ty, walk_layer_index);
-        if (tile_id < WALKABLE_BASE) tile_id = WALKABLE_BASE;
-        //Logger.getLogger("AI").info("Tile at ("+Integer.toString(tx)+";"+Integer.toString(ty)+") is "+Integer.toString(tile_id)+" ("+(tile_id==WALKABLE_BASE ? "free" : "blocked")+")");
-        return (tile_id != WALKABLE_BASE);
-    }
-
-    @Override
-    public float getCost(PathFindingContext context, int tx, int ty) {
-        return 1.f;
-        //return (getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE ? 0 : 1);
     }
 }

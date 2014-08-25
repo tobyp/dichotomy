@@ -21,15 +21,15 @@ public class Monster extends LivingEntity implements Mover {
     int pathfinder_interval = 100;
     int pathfinder_ms = 0;
 
-    public Monster(vec2 loc, SpriteSheet sprites, vec2 render_offset, float max_health, float walk_speed, int num_ani_frames, Map map) {
+    public Monster(vec2 loc, SpriteSheet sprites, vec2 render_offset, float max_health, float walk_speed, int num_ani_frames, World world) {
         super(loc, sprites, render_offset, max_health, walk_speed, num_ani_frames);
 
-        path_finder = new AStarPathFinder(map, 10, true);
+        path_finder = new AStarPathFinder(world, 10, true);
     }
 
     @Override
-    public void update(Player player, Map map, int delta_ms) {
-        super.update(player, map, delta_ms);
+    public void update(Player player, World world, int delta_ms) {
+        super.update(player, world, delta_ms);
 
         pathfinder_ms = pathfinder_ms + delta_ms;
         if (pathfinder_ms >= pathfinder_interval) {

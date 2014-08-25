@@ -37,7 +37,7 @@ public class LivingEntity extends Entity {
     }
 
     @Override
-    public void update(Player player, Map map, int delta_ms) {
+    public void update(Player player, World world, int delta_ms) {
         Animation rot_ani = animations.get(rotation.getRotInt());
         if (velocity.isZero()) {
             rot_ani.setCurrentFrame(0);
@@ -49,7 +49,7 @@ public class LivingEntity extends Entity {
 
         vec2 new_loc = loc.add(move_speed * velocity.x * delta_ms, move_speed * velocity.y * delta_ms);
 
-        if (map.walkable(loc, new_loc)) {
+        if (world.walkable(loc, new_loc)) {
             loc = new_loc;
         }
     }

@@ -26,9 +26,8 @@ public class ld30 extends BasicGame implements InputListener {
 
     //MAP/WORLD
     Map map;
-    int objects_group;
-    int laser_dev_layer; //for the laser device tiles
-    int laser_beam_layer; //for the laser beam tiles
+    World world;
+    World wgood, wevil;
 
     //PLAYER
     Player player;
@@ -55,9 +54,9 @@ public class ld30 extends BasicGame implements InputListener {
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
         map = new Map("src/main/resources/tmx/lazers.tmx");
 
-        objects_group = map.getObjectGroupIndex("objects");
-        laser_beam_layer = map.getLayerIndex("laser-beam");
-        laser_dev_layer = map.getLayerIndex("laser-dev");
+        wgood = new World(this, map, "good");
+        wevil = new World(this, map, "evil");
+        world = wgood;
 
         String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
         vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
@@ -73,7 +72,7 @@ public class ld30 extends BasicGame implements InputListener {
             });
         }
 
-        map.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, map));
+        world.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world));
     }
 
     @Override
@@ -93,14 +92,14 @@ public class ld30 extends BasicGame implements InputListener {
             }
         }
 
-        map.update(player, delta_ms);
-        player.update(player, map, delta_ms);
-        for (Entity entity : new ArrayList<Entity>(map.entities)) {
+        world.update(player, delta_ms);
+        player.update(player, world, delta_ms);
+        for (Entity entity : new ArrayList<Entity>(world.entities)) {
             if (entity instanceof Drop) {
                 Drop drop = (Drop) entity;
                 if (drop.loc.getDistance(player.loc) < 0.5) {
                     drop.pickup(player);
-                    map.entities.remove(drop);
+                    world.entities.remove(drop);
                 }
             }
         }
@@ -171,34 +170,30 @@ public class ld30 extends BasicGame implements InputListener {
     public void keyPressed(int key, char c) {
         switch (key) {
             case Input.KEY_E: {
-                vec2 faced_tile = player.loc.getFaced(player.rotation);
-                int faced_x = faced_tile.getFloorX();
-                int faced_y = faced_tile.getFloorY();
-                int faced_oid = map.getTileObject(objects_group, faced_x, faced_y);
-                if (faced_oid == -1) return;
-                String type = map.getObjectType(objects_group, faced_oid);
+                vec2 faced_tile = player.getFaced();
+                Map.MapObject faced = map.getObject(world.ogroup, faced_tile);
+                if (faced == null) return;
+                String type = faced.getType();
 
-                logger.info("Interaction with "+type+"("+map.getObjectName(objects_group, faced_oid)+")@("+Integer.toString(faced_x)+";"+Integer.toString(faced_y)+")");
+                logger.info("Interaction with "+faced.toString());
 
                 if (type.equals("button")) {
-                    String state = map.getObjectProperty(objects_group, faced_oid, "state", "false");
+                    String state = faced.getProperty("state", "false");
                     if (state.equals("true")) {
-                        map.setObjectProperty(objects_group, faced_oid, "state", "false");
+                        faced.setProperty("state", "false");
                         logger.info("\tBUTTON: disabling");
-                        executeActions(map.getObjectProperty(objects_group, faced_oid, "disable", ""));
+                        executeActions(faced.getProperty("disable", ""));
                     } else if (state.equals("false")) {
-                        map.setObjectProperty(objects_group, faced_oid, "state", "true");
+                        faced.setProperty("state", "true");
                         logger.info("\tBUTTON: enabling");
-                        executeActions(map.getObjectProperty(objects_group, faced_oid, "enable", ""));
+                        executeActions(faced.getProperty("enable", ""));
                     }
                 }
                 else if (type.equals("laser-emitter")) {
-                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
-                    laserEmitterToggle(faced_oid, faced_x, faced_y, type, beams);
+                    world.laserEmitterToggle(faced);
                 }
                 else if (type.equals("laser-io") || type.equals("laser-io-inverse") || type.equals("laser-receiver")) {
-                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, faced_oid, "beams", "0000"), 2);
-                    laserDeviceRotate(faced_oid, faced_x, faced_y, type, beams);
+                    world.laserDeviceRotate(faced);
                 }
             }
             break;
@@ -262,25 +257,21 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("laser-dev-rotate")) {
                 int le_x = Integer.parseInt(aparts[1]);
                 int le_y = Integer.parseInt(aparts[2]);
-
-                int oid = map.getTileObject(objects_group, le_x, le_y);
-                if (oid != -1) {
-                    logger.info("ACTION: rotating "+Integer.toString(oid)+"@("+Integer.toString(le_x)+";"+Integer.toString(le_y)+")");
-                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
-                    String type = map.getObjectType(objects_group, oid);
-                    laserDeviceRotate(oid, le_x, le_y, type, beams);
+                //TODO cross-world actions
+                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
+                if (object != null) {
+                    logger.info("ACTION: rotating "+object.toString());
+                    world.laserDeviceRotate(object);
                 }
             }
             else if (aparts[0].equals("laser-dev-toggle")) {
                 int le_x = Integer.parseInt(aparts[1]);
                 int le_y = Integer.parseInt(aparts[2]);
 
-                int oid = map.getTileObject(objects_group, le_x, le_y);
-                if (oid != -1) {
-                    logger.info("ACTION: toggling "+Integer.toString(oid)+"@("+Integer.toString(le_x)+";"+Integer.toString(le_y)+")");
-                    int beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
-                    String type = map.getObjectType(objects_group, oid);
-                    laserEmitterToggle(oid, le_x, le_y, type, beams);
+                Map.MapObject object = map.getObject(world.ogroup, le_x, le_y);
+                if (object != null) {
+                    logger.info("ACTION: toggling "+object.toString());
+                    world.laserEmitterToggle(object);
                 }
             }
             else if (aparts[0].equals("notify-timed")) {
@@ -291,10 +282,10 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("add-drop")) {
                 vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
                 if (aparts[1].equals("health-1")) {
-                    map.addEntity(new HealthDrop(loc, drop_sprites));
+                    world.addEntity(new HealthDrop(loc, drop_sprites));
                 }else
                 if (aparts[1].equals("health-2")) {
-                    map.addEntity(new HealthDrop(loc, drop_sprites));
+                    world.addEntity(new MegaHealthDrop(loc, drop_sprites));
                 }
             }
             else if (aparts[0].equals("notify")) {
@@ -304,145 +295,7 @@ public class ld30 extends BasicGame implements InputListener {
         }
     }
 
-    int DEVICE_BASE_TILE = 681;
-    int BEAM_BASE_TILE = 761;
-    int BLOCKER_BASE_TILE = 801;
-    int DIODE_BASE_TILE = 841;
 
-    int SIDES[] = new int[]{0x1, 0x2, 0x4, 0x8};
-
-    //update a laser device/block.
-    //warning: recursive with exactly ZERO protection
-    //beam=0 for just a refresh
-    private void laserUpdate(int x, int y, int beam, boolean on) {
-        int oid = map.getTileObject(objects_group, x, y);
-        if (oid == -1) return;
-
-        String device_type = map.getObjectType(objects_group, oid);
-        int old_beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
-        int primaries = Integer.parseInt(map.getObjectProperty(objects_group, oid, "primaries", "0000"), 2);
-
-        int new_primaries = on ? primaries | beam : primaries & ~beam;
-        map.setObjectProperty(objects_group, oid, "primaries", Integer.toBinaryString(new_primaries));
-
-        logger.info("LASER "+device_type+"("+map.getObjectName(objects_group, oid)+")@("+Integer.toString(x)+";"+Integer.toString(y)+") primaries="+Integer.toBinaryString(primaries)+"->"+Integer.toBinaryString(new_primaries)+", beams="+Integer.toBinaryString(old_beams));
-
-        int base_tile = BEAM_BASE_TILE;
-        int propagate_mask = 0xF;
-
-        //primaries -> beams here
-        int new_beams = new_primaries;
-        if (device_type.equals("laser-beam")) {
-            new_beams = ((new_primaries & (0x1 | 0x4)) > 0 ? (0x1 | 0x4) : 0) | ((new_primaries & (0x2 | 0x8)) > 0 ? (0x2 | 0x8) : 0);
-            logger.info("\tBEAM beams->"+Integer.toBinaryString(new_beams));
-            propagate_mask &= ~beam;
-        }
-        else if (device_type.equals("laser-emitter")) {
-            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            String state = map.getObjectProperty(objects_group, oid, "state", "false");
-            if (state == "true") {
-                new_beams |= output;
-            }
-            logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
-        }
-        else if (device_type.equals("laser-receiver")) {
-            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            String state = map.getObjectProperty(objects_group, oid, "state", "false");
-            if ((new_beams & input) > 0 && state.equals("false")) {
-                logger.info("\tRECEIVER enable");
-                map.setObjectProperty(objects_group, oid, "state", "true");
-                executeActions(map.getObjectProperty(objects_group, oid, "enable", ""));
-            }
-            else if ((new_beams & input) == 0 && state.equals("true")) {
-                executeActions(map.getObjectProperty(objects_group, oid, "disable", ""));
-                map.setObjectProperty(objects_group, oid, "state", "false");
-                logger.info("\tRECEIVER disable");
-            }
-            propagate_mask = 0;
-        }
-        else if (device_type.equals("laser-io")) {
-            base_tile = BEAM_BASE_TILE;
-            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-
-            if ((new_primaries & input) > 0) { //we have a primary input, so let's put in the outputs!
-                new_beams |= output;
-            }
-            logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
-            propagate_mask &= ~beam;
-        }
-        else if (device_type.equals("laser-io-inverse")) {
-            base_tile = BEAM_BASE_TILE;
-            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-
-            if ((new_primaries & input) == 0) { //we have no primary input, so let's put in the outputs!
-                new_beams |= output;
-            }
-            logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
-            propagate_mask &= ~beam;
-        }
-        else if (device_type.equals("laser-blocker")) {
-            base_tile = BLOCKER_BASE_TILE;
-            propagate_mask = 0;
-        }
-
-        map.setObjectProperty(objects_group, oid, "beams", Integer.toBinaryString(new_beams));
-        map.setTileId(x, y, laser_beam_layer, base_tile+new_beams);
-
-        for (int side : SIDES) {
-            if ((side & new_beams) > 0 && (side & old_beams) == 0 && (side & propagate_mask) > 0) { //it was added
-                //we find the complimentary beam, and the space it would be in, and turn that on too via update.
-                laserUpdate(x + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0)), y + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0)), ((side >> 2) | (side << 2)) & 0xF, true);
-
-            } else if ((side & new_beams) == 0 && (side & old_beams) > 0 && (side & propagate_mask) > 0) { //it was removed
-                //we find the complimentary beam, and the space it would be in, and turn that off too via update.
-                laserUpdate(x + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0)), y + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0)), ((side >> 2) | (side << 2)) & 0xF, false);
-            }
-        }
-    }
-
-    private void laserDeviceRotate(int oid, int x, int y, String device_type, int beams) {
-        if (device_type.equals("laser-emitter")) {
-            int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            emitter_output = ((emitter_output >> 3) | (emitter_output << 1)) & 0xF;
-            map.setObjectProperty(objects_group, oid, "output", Integer.toBinaryString(emitter_output));
-
-            logger.info("\trotated emitter, output="+Integer.toBinaryString(emitter_output));
-        }
-        else if (device_type.equals("laser-receiver")) {
-            int receiver_input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            receiver_input = ((receiver_input >> 3) | (receiver_input << 1)) & 0xF;
-            map.setObjectProperty(objects_group, oid, "input", Integer.toBinaryString(receiver_input));
-
-            logger.info("\trotated receiver, input="+Integer.toBinaryString(receiver_input));
-        }
-        else if (device_type.equals("laser-io") || device_type.equals("laser-io-inverse")) {
-            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            input = ((input >> 3) | (input << 1)) & 0xF;
-            output = ((output >> 3) | (output << 1)) & 0xF;
-            map.setObjectProperty(objects_group, oid, "input", Integer.toBinaryString(input));
-            map.setObjectProperty(objects_group, oid, "output", Integer.toBinaryString(output));
-        }
-
-        int tileid = map.getTileId(x, y, laser_dev_layer);
-        int device_base_id = (tileid - DEVICE_BASE_TILE) / 4 * 4;
-        int device_variant_id = (tileid - DEVICE_BASE_TILE) % 4;
-        int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
-        map.setTileId(x, y, laser_dev_layer, device_rotated_id);
-        laserUpdate(x, y, 0, true);
-    }
-
-    private void laserEmitterToggle(int oid, int x, int y, String device_type, int beams) {
-        if (device_type.equals("laser-emitter")) {
-            int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            boolean state = map.getObjectProperty(objects_group, oid, "state", "false").equals("true") ? true : false;
-            logger.info("TOGGLE ("+Integer.toString(x)+";"+Integer.toString(y)+") to "+(state ? "false" : "true"));
-            map.setObjectProperty(objects_group, oid, "state", state ? "false" : "true");
-            laserUpdate(x, y, emitter_output, !state);
-        }
-    }
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
@@ -473,11 +326,10 @@ public class ld30 extends BasicGame implements InputListener {
                 map.render(render_offset_x, render_offset_y, tileOffsetX, tileOffsetY, render_tile_w, render_tile_h, i, false);
             }
             else if (layer_type.equals("player")) {
-                map.renderEntities(tileOffset, gameContainer, graphics);
                 player.render(tileOffset.add(0.f, -1.f), gameContainer, graphics);
             }
             else if (layer_type.equals("mobs")) {
-                //TODO
+                world.renderEntities(tileOffset, gameContainer, graphics);
             }
         }
 
@@ -543,6 +395,7 @@ public class ld30 extends BasicGame implements InputListener {
             c.start();
         }
         catch (Exception e) {
+            e.printStackTrace();
             logger.log(Level.SEVERE, "Game error.", e);
         }
     }

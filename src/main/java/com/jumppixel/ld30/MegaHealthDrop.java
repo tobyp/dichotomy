@@ -7,7 +7,7 @@ import org.newdawn.slick.SpriteSheet;
  */
 public class MegaHealthDrop extends Drop {
 
-    public MegaHealthDrop(vec2 loc, vec2 render_offset, SpriteSheet sheet) {
+    public MegaHealthDrop(vec2 loc, SpriteSheet sheet) {
         super(loc, sheet.getSprite(1, 0));
     }
 

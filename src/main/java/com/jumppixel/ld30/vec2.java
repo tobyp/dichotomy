@@ -106,11 +106,6 @@ public class vec2 {
         return (float)Math.atan2(this.y, this.x) - (float)(Math.PI/2.f);
     }
 
-    public float getRotAngleInt() {
-        float ra = getRotAngle();
-        Math.PI/8.0
-    }
-
     public vec2 getFaced(vec2 rotation) {
         int faced_x = getFloorX();
         int faced_y = getFloorY();
