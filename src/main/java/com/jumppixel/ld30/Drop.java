@@ -7,10 +7,12 @@ import org.newdawn.slick.util.Log;
  * Created by Tom on 24/08/2014.
  */
 public class Drop extends Entity {
-    public int expire_ms = 1000*10; //Default: 30 seconds
+    int expire_ms = 1000*10; //Default: 30 seconds
+    Player player;
 
-    public Drop(vec2 loc, Image image) {
-        super(loc, image, new vec2(0-image.getWidth()/2, 0-image.getHeight()/2));
+    public Drop(vec2 loc, Image image, Player player) {
+        super(loc, image, new vec2(0-image.getWidth()/2, 0-image.getHeight()/2), player);
+        this.player = player;
     }
 
     public void setExpireTime(int ms) {
@@ -31,11 +33,11 @@ public class Drop extends Entity {
     }
 
     @Override
-    public void update(Player player, World world, int delta_ms) {
-        super.update(player, world, delta_ms);
+    public void update(World world, int delta_ms) {
+        super.update(world, delta_ms);
 
         if (loc.getDistance(player.loc) < 0.5) {
-            pickup(player);
+            pickup();
             world.entities.remove(this);
         }
         else if (expire_ms - delta_ms <= 0) {
@@ -49,7 +51,7 @@ public class Drop extends Entity {
     public void expire() {
     }
 
-    public void pickup(Player player) {
+    public void pickup() {
 
     }
 

@@ -21,7 +21,7 @@ public class Entity {
     float health;
     float max_health = 1.0f;
 
-    public Entity(vec2 loc, Image image, vec2 render_offset) {
+    public Entity(vec2 loc, Image image, vec2 render_offset, Player player) {
         this.loc = loc;
         this.render_offset = render_offset;
         this.image = image;
@@ -41,7 +41,7 @@ public class Entity {
         }
     }
 
-    public void update(Player player, World world, int delta_ms) {
+    public void update(World world, int delta_ms) {
 
     }
 
