@@ -143,7 +143,7 @@ public class Map extends TiledMap {
     public int getObjectGroupIndex(String name) {
         int idx = 0;
 
-        for (int i=0;i<objectGroups.size();i++) {
+        for (int i = 0; i < objectGroups.size(); i++) {
             ObjectGroup group = (ObjectGroup) objectGroups.get(i);
 
             if (group.name.equals(name)) {

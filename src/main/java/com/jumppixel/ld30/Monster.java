@@ -20,6 +20,12 @@ public class Monster extends LivingEntity implements Mover {
     int recalc_ms = 0;
     int try_move_ms = 0;
 
+    float attack_strength = 0.075f;
+    float attack_distance = 1.1f;
+    int attack_duration = 1000;
+    //time since last attack
+    int attack_timer_ms = attack_duration;
+
     World world;
     Player player;
 
@@ -56,27 +62,6 @@ public class Monster extends LivingEntity implements Mover {
                 setVelocity(difference.getBasicDirection());
 
                 rotation = difference.getBasicDirection();
-            /*
-            switch (difference.getFloorX()) {
-                case 1: {
-                    setVelocity(velocity.add(vec2.RIGHT));
-                }
-                break;
-                case -1: {
-                    setVelocity(velocity.add(vec2.LEFT));
-                }
-                break;
-            }
-            switch (difference.getFloorY()) {
-                case -1: {
-                    setVelocity(velocity.add(vec2.UP));
-                }
-                break;
-                case 1: {
-                    setVelocity(velocity.add(vec2.DOWN));
-                }
-                break;
-            }*/
 
                 if (loc.getFloorX() == step.getX() && loc.getFloorY() == step.getY() && current_step < current_path.getLength() - 1) {
                     advanceStep();
@@ -87,6 +72,12 @@ public class Monster extends LivingEntity implements Mover {
             }else{
                 setVelocity(vec2.ZERO);
             }
+        }
+
+        attack_timer_ms = Math.max(attack_timer_ms + delta_ms, attack_duration);
+        if (attack_timer_ms >= attack_duration && loc.getDistance(player.loc) <= attack_distance && world == player.game.world) {
+            attack_timer_ms = 0;
+            player.takeDamage(attack_strength);
         }
     }
 
@@ -141,5 +132,10 @@ public class Monster extends LivingEntity implements Mover {
                 g.fillRect(pixel_location.x + render_offset.x + 3 + 12, pixel_location.y + render_offset.y + 4, 6, 1);
             }
         }
+    }
+
+    @Override
+    public void die() {
+        world.entities.remove(this);
     }
 }
