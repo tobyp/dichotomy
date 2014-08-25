@@ -1,6 +1,10 @@
 package com.jumppixel.ld30;
 
+import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by tobyp on 8/23/14.
@@ -23,6 +27,12 @@ public class Player extends LivingEntity {
     int keycards = 0;
 
     boolean debug_mode = false;
+
+    float attack_strength = 0.075f;
+    float attack_distance = 1.3f;
+    int attack_duration = 800;
+    //time since last attack
+    int attack_timer_ms = attack_duration;
 
     public Player(ld30 game, vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
         super(loc, sprites, render_offset, 1.0f, move_speed, num_ani_frames, null);
@@ -60,6 +70,32 @@ public class Player extends LivingEntity {
             this.charge_holding = false;
             this.charge_hold = 0;
         }
+
+        attack_timer_ms = Math.max(attack_timer_ms + delta_ms, attack_duration);
+    }
+
+    public Entity getTargetedEntity(World world) {
+        Entity candidate = null;
+        float rotangle = rotation.getRotAngle();
+        for (Entity e : world.entities) {
+            if (e.loc.getDistance(loc) <= attack_distance) {
+                if (candidate != null) {
+                    if (Math.abs(e.rotation.getRotAngle() - rotangle) > Math.abs(candidate.rotation.getRotAngle() - rotangle)) {
+                        continue;
+                    }
+                }
+                candidate = e;
+            }
+        }
+        return candidate;
+    }
+
+    public void doAttack(World world) {
+        if (attack_timer_ms < attack_duration) return;
+        Entity e = getTargetedEntity(world);
+        if (e == null || !(e instanceof LivingEntity)) return;
+        attack_timer_ms = 0;
+        ((LivingEntity)e).takeDamage(attack_strength);
     }
 
     @Override
@@ -74,7 +110,6 @@ public class Player extends LivingEntity {
 
     @Override
     public void die() {
-        charge = 0;
-        //TODO: Respawn code
+        game.reset();
     }
 }

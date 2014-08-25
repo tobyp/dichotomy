@@ -22,6 +22,8 @@ public class ld30 extends BasicGame implements InputListener {
     //RESOURCES
     SpriteSheet meta_sprites;
     SpriteSheet drop_sprites;
+    SpriteSheet player_sprites;
+    SpriteSheet zombie_sprites;
     Image dark_overlay;
     SpriteSheetFont font;
 
@@ -35,6 +37,8 @@ public class ld30 extends BasicGame implements InputListener {
 
     //PLAYER
     Player player;
+    vec2 player_spawn = null;
+    String player_spawn_world = null;
 
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
@@ -46,35 +50,43 @@ public class ld30 extends BasicGame implements InputListener {
     public void init(GameContainer gameContainer) throws SlickException {
         this.gameContainer = gameContainer;
         gameContainer.setTargetFrameRate(60);
-        gameContainer.getInput().addListener(this);
 
         font = new SpriteSheetFont(new SpriteSheet("src/main/resources/font.png", 15, 21), ' ');
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
+        player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
+        zombie_sprites = new SpriteSheet("src/main/resources/zombie.png", 24, 48);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
-        map = new Map("src/main/resources/tmx/lazers.tmx");
+
+        reset();
+
+        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 7500, Notification.Type.INFO));
+
+        gameContainer.getInput().addListener(this);
+    }
+
+    public void reset() {
+        try {
+            map = new Map("src/main/resources/tmx/lazers.tmx");
+        }
+        catch (SlickException e) {
+            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error loading map", e);
+        }
 
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
-        world = wgood;
 
-        String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
-        vec2 spawn_location = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
-        player = new Player(this, spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
-        player.has_device = true;
-        player.allow_charging = true;
-        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 7500, Notification.Type.INFO));
-
-        for (Handler h : logger.getParent().getHandlers()) {
-            h.setFormatter(new Formatter() {
-                @Override
-                public String format(LogRecord logRecord) {
-                    return "["+logRecord.getLevel().toString()+"] "+logRecord.getSourceClassName()+"."+logRecord.getSourceMethodName()+": "+logRecord.getMessage()+"\n";
-                }
-            });
+        if (player_spawn_world == null) player_spawn_world = "good";
+        world = player_spawn_world.equals("good") ? wgood : wevil;
+        if (player_spawn == null) {
+            String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
+            player_spawn = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
         }
 
-        wevil.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world, player));
+        player = new Player(this, player_spawn, player_sprites, new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+
+        wevil.addEntity(new Zombie(player.loc, zombie_sprites, new vec2(-12, -48), 4, wevil, player));
     }
 
     @Override
@@ -125,16 +137,9 @@ public class ld30 extends BasicGame implements InputListener {
     }
 
     @Override
-    public void mousePressed(int button, int x, int y) {
-        //0 = Left
-        //1 = Right
-        //2 = Middle (Refrain from use)
-    }
-
-    @Override
     public void mouseClicked(int button, int x, int y, int clickCount) {
         if (button == 0) { //attack
-
+            player.doAttack(world);
         }
     }
 
@@ -357,6 +362,10 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("narration-clear")) {
                 setCurrentNarrationQueue(null);
+            }
+            else if (aparts[0].equals("set-spawn")) {
+                player_spawn_world = world.name;
+                player_spawn = new vec2(Float.parseFloat(aparts[1]), Float.parseFloat(aparts[2]));
             }
         }
     }

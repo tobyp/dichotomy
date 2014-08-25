@@ -194,7 +194,6 @@ public class World implements TileBasedMap {
     }
 
     public void laserEmitterToggle(Map.MapObject object) {
-
         int beams = object.getPropertyBeams("beams", "0000");
         if (object.getType().equals("laser-emitter")) {
             int emitter_output = object.getPropertyBeams("output", "0000");
