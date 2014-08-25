@@ -8,11 +8,12 @@ import org.newdawn.slick.SpriteSheet;
  */
 public class DeviceDrop extends Drop {
     public DeviceDrop(vec2 loc, SpriteSheet dropsprites, Player player) {
-        super(loc, dropsprites.getSprite(0, 3), player);
+        super(loc, dropsprites.getSprite(3, 0), player, false);
     }
 
     @Override
     public void pickup() {
         player.has_device = true;
+        player.allow_charging = true;
     }
 }
