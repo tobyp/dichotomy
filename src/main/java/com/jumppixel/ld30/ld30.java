@@ -420,8 +420,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         //Health bar
         player.animations.get(player.rotation.getRotInt()).getImage(0).draw(20, 5, 1.5f, Color.red);
-        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 20, 20*8, 2*8);
-        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 20, Math.round(20*8*player.health/player.max_health), 2*8);
+        meta_sprites.getSubImage(19, 1, 20, 2).draw(60, 36, 20*8, 2*8);
+        meta_sprites.getSubImage(19, 4, 20, 2).draw(60, 36, Math.round(20*8*player.health/player.max_health), 2*8);
 
         //KEYCARDS
         int keycard_x = gameContainer.getWidth() - 60;
