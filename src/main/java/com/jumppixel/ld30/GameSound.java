@@ -13,6 +13,7 @@ import java.util.Random;
 public enum GameSound {
 
     MUSIC_CONSTANCE("music/constance"),
+    MUSIC_HITMAN("music/hitman"),
     PLAYER_HURT("player_hurt", "player_hurt_2", "player_hurt_3"),
     PLAYER_HIT("player_hit", "player_hit_2"),
     PLAYER_DIE("player_die"),

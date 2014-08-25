@@ -39,6 +39,9 @@ public class ld30 extends BasicGame implements InputListener {
     Player player;
     String checkpoint = null;
 
+    //MUSIC
+    Audio music;
+
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
     public ld30() {
@@ -48,8 +51,8 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void init(GameContainer gameContainer) throws SlickException {
 
-        Audio music = GameSound.MUSIC_CONSTANCE.getAudio();
-        music.playAsMusic(1, 1, true);
+        music = GameSound.MUSIC_CONSTANCE.getAudio();
+        music.playAsMusic(1, .5f, true);
 
         this.gameContainer = gameContainer;
         gameContainer.setTargetFrameRate(60);
