@@ -108,7 +108,6 @@ public class Map extends TiledMap {
             ObjectGroup group = (ObjectGroup) objectGroups.get(groupID);
             for (Object go : group.objects) {
                 GroupObject object = (GroupObject)go;
-
                 if (object.x == x && object.y == y) {
                     return new MapObject(group, object);
                 }

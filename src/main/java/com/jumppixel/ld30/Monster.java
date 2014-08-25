@@ -24,7 +24,7 @@ public class Monster extends LivingEntity implements Mover {
     float attack_distance = 1.1f;
     int attack_duration = 1000;
     //time since last attack
-    int attack_timer_ms = attack_duration;
+    int attack_timer_ms = 0;
 
     World world;
     Player player;

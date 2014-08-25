@@ -2,7 +2,7 @@
 
 """
 Usage:
-./map_merge.py <target_file> <target_width> <target_height> {<source_file> <offet_x> <offet_y>}...
+./map_merge.py <target_file> <target_width> <target_height> {<source_file> <source_x> <source_y> <source_w> <source_h> <dest_x> <dest_y>}...
 
 later maps overwrite former; layers with same names are merged; tileset of the first input is used
 actions set-tile, laser-dev-toggle and laser-dev-rotate have their coordinates transformed
@@ -43,10 +43,18 @@ def get_ogroup(n):
 	return og
 
 
-for i in range(4, len(argv), 3):
+for i in range(4, len(argv), 7):
 	et = ElementTree.parse(argv[i])
-	offset_x = int(argv[i+1])
-	offset_y = int(argv[i+2])
+	src_x = int(argv[i+1])
+	src_y = int(argv[i+2])
+	src_w = int(argv[i+3])
+	src_h = int(argv[i+4])
+	offset_x = int(argv[i+5])
+	offset_y = int(argv[i+6])
+	src_ox = src_x*24;
+	src_oy = src_y*24;
+	src_ow = src_w*24;
+	src_oh = src_h*24;
 	offset_ox = offset_x*24
 	offset_oy = offset_y*24
 	for e in et.getroot(): #<map>
@@ -66,20 +74,22 @@ for i in range(4, len(argv), 3):
 						layer[1].append((layer_prop.get('name'), layer_prop.get('value')))
 				elif layer_child.tag == "data":
 					data = decompress(b64decode(layer_child.text))
-					for y in range(0, layer_h):
-						for x in range(0, layer_w):
+					for y in range(src_y, src_h):
+						for x in range(src_x, src_w):
 							old_index = 4*((layer_w*y)+x)
-							new_index = 4*((new_map_width*(y+offset_y))+(x+offset_x))
+							new_index = 4*((new_map_width*(y-src_y+offset_y))+(x-src_x+offset_x))
 							if unpack('<I', data[old_index:old_index+4])[0] != 0:
 								layer[2][new_index:new_index+4] = data[old_index:old_index+4]
 		elif e.tag == "objectgroup":
 			og = get_ogroup(e.get('name'))
 			for obj in e:
 				oname = obj.get('name', None)
-				otype = obj.get('type')
+				otype = obj.get('type', None)
 				ox = int(obj.get('x')) + offset_ox
 				oy = int(obj.get('y')) + offset_oy
-				obj_n = (oname, otype, ox, oy, obj.get('gid'), [])
+				if ox < src_ox or ox >= src_ox+src_ow or oy < src_oy or oy > src_oy+src_oh:
+					continue
+				obj_n = (oname, otype, ox-src_ox+offset_ox, oy-src_oy+offset_oy, obj.get('gid'), [])
 				og[1].append(obj_n)
 				for obj_child in obj:
 					if obj_child.tag == 'properties':
@@ -87,16 +97,25 @@ for i in range(4, len(argv), 3):
 							prop_name = obj_prop.get('name')
 							prop_val = obj_prop.get('value')
 							if prop_name in ('enable', 'disable', 'lock', 'unlock'):
+								print(x, y, prop_val)
 								actions = prop_val.split(',')
 								for i, a in enumerate(actions):
 									parts = a.split(':')
-									if parts[0] in ('set-tile', 'laser-dev-toggle', 'laser-dev-rotate'):
-										parts[1] = str(int(parts[1]) + offset_x)
-										parts[2] = str(int(parts[2]) + offset_y)
+									if parts[0] in ('set-tile', 'door-open', 'door-close'):
+										parts[1] = str(int(parts[1]) - src_x + offset_x)
+										parts[2] = str(int(parts[2]) - src_y + offset_y)
+									elif parts[0] in ('laser-dev-toggle', 'laser-dev-rotate'):
+										parts[2] = str(int(parts[2]) - src_x + offset_x)
+										parts[3] = str(int(parts[3]) - src_y + offset_y)
+									elif parts[0] in ('device-drop', 'zombie-spawn', 'zombie-spawn-x'):
+										parts[2] = str(float(parts[2]) - src_x + offset_x)
+										parts[3] = str(float(parts[3]) - src_y + offset_y)
+									elif parts[0] in ('keycard-drop', 'health-drop'):
+										parts[3] = str(float(parts[3]) - src_x + offset_x)
+										parts[4] = str(float(parts[4]) - src_y + offset_y)
 									actions[i] = ":".join(parts)
 								prop_val = ",".join(actions)
 							obj_n[-1].append((prop_name, prop_val))
-
 
 new_map = ElementTree.Element('map', {'version': "1.0", 'orientation': 'orthogonal', 'width': str(new_map_width), 'height': str(new_map_height), 'tilewidth': "24", "tileheight": "24"})
 new_map.append(tileset)
@@ -124,10 +143,12 @@ for name, props, data in layers:
 for name, objects in ogroups:
 	e_ogroup = ElementTree.Element('objectgroup', {'name': name, 'width': str(new_map_width), 'height': str(new_map_height)})
 	for name, typ, x, y, gid, props in objects:
-		print("object: "+typ+"@("+str(x)+";"+str(y)+")")
-		e_obj = ElementTree.Element('object', {'type': typ, 'x': str(x), 'y': str(y), 'width': str(24), 'height': str(24)})
+		print("object: "+str(typ)+"@("+str(x)+";"+str(y)+")")
+		e_obj = ElementTree.Element('object', {'x': str(x), 'y': str(y), 'width': str(24), 'height': str(24)})
 		if name is not None:
 			e_obj.set('name', name)
+		if typ is not None:
+			e_obj.set('type', typ)
 		if gid is not None:
 			e_obj.set('gid', gid)
 		if props:
