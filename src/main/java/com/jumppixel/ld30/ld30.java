@@ -74,9 +74,9 @@ public class ld30 extends BasicGame implements InputListener {
         }
 
         current_narration_queue = new NarrationQueue();
-        current_narration_queue.add(new Narration("Hello there", null));
-        current_narration_queue.add(new Narration("How are yo-", null));
-        current_narration_queue.add(new Narration("oh... goodbye :(", null));
+        current_narration_queue.add(new Narration("Hello there", "meow1.ogg"));
+        current_narration_queue.add(new Narration("How are yo-", "meow2.ogg"));
+        current_narration_queue.add(new Narration("oh... goodbye :(", "meow3.ogg"));
 
         world.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world, player));
     }
@@ -103,6 +103,13 @@ public class ld30 extends BasicGame implements InputListener {
         world.update(player, delta_ms);
 
         checkMovements(gameContainer);
+
+        if (current_narration_queue != null) {
+            if (current_narration_queue.current() == null) {
+                current_narration_queue.next();
+                current_narration_queue.current().playSound();
+            }
+        }
     }
 
     public void checkMovements(GameContainer gameContainer) {
@@ -221,6 +228,20 @@ public class ld30 extends BasicGame implements InputListener {
             break;
             case Input.KEY_L: {
                 world = (world == wgood) ? wevil : wgood;
+            }
+            break;
+            case Input.KEY_SPACE: {
+                if (current_narration_queue != null) {
+                    if (current_narration_queue.current() != null) {
+                        current_narration_queue.current().stopSound();
+                        if (current_narration_queue.hasNext()) {
+                            current_narration_queue.next();
+                            current_narration_queue.current().playSound();
+                        }else{
+                            current_narration_queue = null;
+                        }
+                    }
+                }
             }
             break;
         }
@@ -425,14 +446,21 @@ public class ld30 extends BasicGame implements InputListener {
 
         //Narration
         if (current_narration_queue != null) {
-            Image nbg = meta_sprites.getSubImage(57, 26, 44, 12);
-            Image nsk = meta_sprites.getSubImage(103, 26, 25, 6);
-            int scale = 7;
+            if (current_narration_queue.current() != null) {
+                Image nbg = meta_sprites.getSubImage(57, 26, 44, 12);
+                Image nsk = meta_sprites.getSubImage(103, 26, 25, 6);
+                int scale = 7;
 
-            nbg.draw(gameContainer.getWidth()/2 + nbg.getWidth()*scale/2 - 12, gameContainer.getHeight() + nbg.getHeight()*scale - 10, nbg.getWidth()*scale, nbg.getHeight()*scale);
-            int nsk_width = Math.round((float)nsk.getWidth()*scale/2);
-            int nsk_height = Math.round((float)nsk.getHeight()*scale/2);
-            nsk.draw(gameContainer.getWidth() / 2 + nbg.getWidth() * scale / 2 - nsk_width - 2 * scale, gameContainer.getHeight() + nbg.getHeight() * scale - nsk_height - 2 * scale, nsk_width, nsk_height);
+                nbg.draw(gameContainer.getWidth()/2 - (nbg.getWidth() * scale) / 2, gameContainer.getHeight() - nbg.getHeight()*scale - 10, nbg.getWidth()*scale, nbg.getHeight()*scale);
+                int nsk_width = Math.round((float)nsk.getWidth()*scale/3);
+                int nsk_height = Math.round((float)nsk.getHeight()*scale/3);
+                nsk.draw(gameContainer.getWidth() / 2 + (nbg.getWidth() * scale) / 2 - nsk_width - 4 * scale, gameContainer.getHeight() - 10 - nsk_height - 3 * scale, nsk_width, nsk_height);
+
+                int text_width = graphics.getFont().getWidth(current_narration_queue.current().text);
+                int text_height = graphics.getFont().getHeight(current_narration_queue.current().text);
+                graphics.setColor(Color.black);
+                graphics.drawString(current_narration_queue.current().text, gameContainer.getWidth()/2 - text_width / 2, gameContainer.getHeight() - (nbg.getHeight()*scale)/2 - text_height / 2 - 10);
+            }
         }
 
         //DEBUG
