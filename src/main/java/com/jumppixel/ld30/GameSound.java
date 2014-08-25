@@ -20,10 +20,13 @@ public enum GameSound {
     BUTTON_UP("button_up"),
     KEYCARD_LOCK("keycard_lock"),
     KEYCARD_UNLOCK("keycard_unlock"),
-    LASER_CREATE("laser_create"),
     WORLD_CHANGE("world_change"),
-    LASER_RECEIVE("laser_receive"),
-    CHARGE_COMPLETE("charge_complete");
+    LASER_ON("laser_on"),
+    LASER_OFF("laser_off"),
+    LASER_CATCH("laser_catch"),
+    ROTATE("rotate"),
+    CHARGE_COMPLETE("charge_complete"),
+    CHARGE_INCOMPLETE("charge_incomplete");
 
     private Random random = new Random();
     private String[] sound;

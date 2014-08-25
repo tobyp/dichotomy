@@ -85,6 +85,8 @@ public class World implements TileBasedMap {
                 logger.info("\tRECEIVER enable");
                 object.setPropertyBool("state", true);
                 game.executeActions(object.getProperty("enable", ""));
+
+                GameSound.LASER_CATCH.play(1, 1);
             }
             else if ((new_beams & input) == 0 && state) {
                 logger.info("\tRECEIVER disable");
@@ -191,6 +193,8 @@ public class World implements TileBasedMap {
         int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
         map.setTileId(object.getX(), object.getY(), ldevs, device_rotated_id);
         laserUpdate(object, 0x0, 0x0, false);
+
+        GameSound.ROTATE.play(1, 1);
     }
 
     public void laserEmitterToggle(Map.MapObject object) {
@@ -202,6 +206,9 @@ public class World implements TileBasedMap {
             logger.info("TOGGLE "+object.toString()+" to "+ !state);
             object.setPropertyBool("state", !state);
             laserUpdate(object, 0x0, 0x0, false);
+
+            if (state) GameSound.LASER_ON.play(1, 1);
+            else GameSound.LASER_OFF.play(1, 1);
         }
     }
 

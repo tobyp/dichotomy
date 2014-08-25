@@ -52,7 +52,7 @@ public class ld30 extends BasicGame implements InputListener {
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
-        map = new Map("src/main/resources/tmx/lazers.tmx");
+        map = new Map("src/main/resources/tmx/lasers1.tmx");
 
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
@@ -63,7 +63,6 @@ public class ld30 extends BasicGame implements InputListener {
         player = new Player(this, spawn_location, new SpriteSheet("src/main/resources/protagonist.png", 24, 48), new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
         player.has_device = true;
         player.allow_charging = true;
-        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 7500, Notification.Type.INFO));
 
         for (Handler h : logger.getParent().getHandlers()) {
             h.setFormatter(new Formatter() {
@@ -221,9 +220,10 @@ public class ld30 extends BasicGame implements InputListener {
                 gameContainer.exit();
             }
             break;
-            case Input.KEY_LALT:
-            case Input.KEY_Q: {
+            case Input.KEY_LSHIFT:
+            case Input.KEY_RSHIFT: {
                 if (player.charge == player.max_charge && player.has_device) player.charge_holding = true;
+                else if (player.has_device) GameSound.CHARGE_INCOMPLETE.play(1, 1);
             }
             break;
             case Input.KEY_L: {
@@ -250,8 +250,8 @@ public class ld30 extends BasicGame implements InputListener {
     @Override
     public void keyReleased(int key, char c) {
         switch (key) {
-            case Input.KEY_LALT:
-            case Input.KEY_Q: {
+            case Input.KEY_LSHIFT:
+            case Input.KEY_RSHIFT: {
                 player.charge_holding = false;
             }
             break;
