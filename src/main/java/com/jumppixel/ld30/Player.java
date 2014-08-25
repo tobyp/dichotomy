@@ -1,10 +1,8 @@
 package com.jumppixel.ld30;
 
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.newdawn.slick.openal.Audio;
+import org.newdawn.slick.util.Log;
 
 /**
  * Created by tobyp on 8/23/14.
@@ -19,12 +17,16 @@ public class Player extends LivingEntity {
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
-    boolean allow_charging = false;
+    boolean allow_charging = true;
     boolean charge_holding = false;
-    boolean has_device = false;
+    boolean has_device = true;
     int charge_ms = 0;
     int charge_interval = 100; //+0.01 charge every interval
     int keycards = 0;
+
+    int fade_ms = 0;
+
+    Audio charge_hold_sound;
 
     boolean debug_mode = false;
 
@@ -37,11 +39,19 @@ public class Player extends LivingEntity {
     public Player(ld30 game, vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
         super(loc, sprites, render_offset, 1.0f, move_speed, num_ani_frames, null);
         this.game = game;
+        this.charge_hold_sound = GameSound.CHARGE_HOLD.getAudio();
     }
 
     @Override
     public void update(World world, int delta_ms) {
         super.update(world, delta_ms);
+
+        if (fade_ms > 0) {
+            fade_ms = fade_ms - delta_ms;
+            if (fade_ms < 0) {
+                fade_ms = 0;
+            }
+        }
 
         if (this.allow_charging) {
             charge_ms = charge_ms + delta_ms;
@@ -59,15 +69,22 @@ public class Player extends LivingEntity {
         }
 
         if (this.charge_holding && this.charge == this.max_charge) {
+            if (this.charge_hold == 0) {
+                this.charge_hold_sound.playAsSoundEffect(1, 1, false);
+            }
             if (this.charge_hold + ((float)delta_ms)/1000 > 1) {
                 this.charge_hold = 1.0f;
                 this.charge_holding = false;
                 this.charge = 0.f;
+                this.fade_ms = 1000;
                 game.switchWorld();
             }else{
                 this.charge_hold = this.charge_hold + ((float) delta_ms)/1000;
             }
         }else{
+            if (this.charge_hold_sound.isPlaying() && this.charge_hold > 0) {
+                charge_hold_sound.stop();
+            }
             this.charge_holding = false;
             this.charge_hold = 0;
         }
