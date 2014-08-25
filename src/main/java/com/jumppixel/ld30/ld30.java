@@ -73,7 +73,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     public void reset() {
         try {
-            map = new Map("src/main/resources/tmx/lazers.tmx");
+            map = new Map("src/main/resources/tmx/world_merge.tmx");
         }
         catch (SlickException e) {
             e.printStackTrace();
@@ -284,6 +284,8 @@ public class ld30 extends BasicGame implements InputListener {
         return null;
     }
 
+    int DOOR_BASE = 961;
+
     public void executeActions(String actions_string) {
         for (String a : actions_string.split(",")) {
             if (a.isEmpty()) continue;
@@ -297,6 +299,34 @@ public class ld30 extends BasicGame implements InputListener {
                 logger.info("ACTION: set tile ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+";"+Integer.toString(tile_l)+") to "+Integer.toString(tile_id));
                 map.setTileId(tile_x, tile_y, tile_l, tile_id);
             }
+            if (aparts[0].equals("door-open")) {
+                int tile_x = Integer.parseInt(aparts[1]);
+                int tile_y = Integer.parseInt(aparts[2]);
+                int top_l = map.getLayerIndex(aparts[3]);
+                int bot_l = map.getLayerIndex(aparts[4]);
+                int walk_l = map.getLayerIndex(aparts[5]);
+                logger.info("ACTION: opening door ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+")");
+                int tile_id = map.getTileId(tile_x, tile_y, top_l) - DOOR_BASE;
+                int variant = (tile_id / 2) * 2 + 1;
+                map.setTileId(tile_x, tile_y, top_l, DOOR_BASE + variant);
+                map.setTileId(tile_x, tile_y+1, bot_l, DOOR_BASE + variant + 40);
+                map.setTileId(tile_x, tile_y, walk_l, 881);
+                map.setTileId(tile_x, tile_y+1, walk_l, 881);
+            }
+            if (aparts[0].equals("door-close")) {
+                int tile_x = Integer.parseInt(aparts[1]);
+                int tile_y = Integer.parseInt(aparts[2]);
+                int top_l = map.getLayerIndex(aparts[3]);
+                int bot_l = map.getLayerIndex(aparts[4]);
+                int walk_l = map.getLayerIndex(aparts[5]);
+                logger.info("ACTION: opening door ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+")");
+                int tile_id = map.getTileId(tile_x, tile_y, top_l) - DOOR_BASE;
+                int variant = (tile_id / 2) * 2;
+                map.setTileId(tile_x, tile_y, top_l, DOOR_BASE + variant);
+                map.setTileId(tile_x, tile_y+1, bot_l, DOOR_BASE + variant + 40);
+                map.setTileId(tile_x, tile_y, walk_l, 881+15);
+                map.setTileId(tile_x, tile_y+1, walk_l, 881+15);
+            }
             else if (aparts[0].equals("notify")) {
                 Notification.Type notify_type = Notification.Type.valueOf(aparts[1]);
                 addNotification(new Notification(aparts[2], notify_type));
@@ -308,6 +338,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("laser-dev-toggle")) {
                 World w = getWorld(aparts[1]);
+                if (w == null) continue;
                 int le_x = Integer.parseInt(aparts[2]);
                 int le_y = Integer.parseInt(aparts[3]);
 
@@ -319,6 +350,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("laser-dev-rotate")) {
                 World w = getWorld(aparts[1]);
+                if (w == null) continue;
                 int le_x = Integer.parseInt(aparts[2]);
                 int le_y = Integer.parseInt(aparts[3]);
 
@@ -343,6 +375,7 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("keycard-drop")) {
                 int cards = Integer.parseInt(aparts[1], 2);
                 World w = getWorld(aparts[2]);
+                if (w == null) continue;
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
                 logger.info("ACTION: Dropping Keycard in " + w.name + " " + loc.toString());
                 w.addEntity(new KeycardDrop(loc, drop_sprites, player, cards));
@@ -350,12 +383,14 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("health-drop")) {
                 float health = Float.parseFloat(aparts[1]);
                 World w = getWorld(aparts[2]);
+                if (w == null) continue;
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
                 logger.info("ACTION: Dropping Healthpack in "+w.name+" "+loc.toString());
                 w.addEntity(new HealthDrop(loc, drop_sprites, player, health));
             }
             else if (aparts[0].equals("device-drop")) {
                 World w = getWorld(aparts[1]);
+                if (w == null) continue;
                 vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
                 logger.info("ACTION: Dropping Device in "+w.name+" "+loc.toString());
                 w.addEntity(new DeviceDrop(loc, drop_sprites, player));
@@ -367,6 +402,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("set-prop")) {
                 World w = getWorld(aparts[1]);
+                if (w == null) continue;
                 Map.MapObject mo = w.getObject(aparts[2]);
                 if (mo != null) {
                     logger.info("ACTION: Setting "+mo.toString()+"."+aparts[3]+"="+aparts[4]);
@@ -400,6 +436,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("zombie-spawn")) {
                 World w = getWorld(aparts[1]);
+                if (w == null) continue;
                 Zombie z = new Zombie(
                         new vec2(Float.parseFloat(aparts[2]), Float.parseFloat(aparts[3])),
                         zombie_sprites,
@@ -413,6 +450,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("zombie-spawn-x")) {
                 World w = getWorld(aparts[1]);
+                if (w == null) continue;
                 Zombie z = new Zombie(
                         new vec2(Float.parseFloat(aparts[2]), Float.parseFloat(aparts[3])),
                         zombie_sprites,
