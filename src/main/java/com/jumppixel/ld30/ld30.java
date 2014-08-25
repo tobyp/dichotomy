@@ -52,7 +52,7 @@ public class ld30 extends BasicGame implements InputListener {
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
-        map = new Map("src/main/resources/tmx/lasers1.tmx");
+        map = new Map("src/main/resources/tmx/lazers.tmx");
 
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
