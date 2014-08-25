@@ -137,6 +137,12 @@ public class vec2 {
         return x == 0.f && y == 0.f;
     }
 
+    public vec2 getBasicDirection() {
+        int new_x = (x == 0 ? 0 : (x > 0 ? 1 : -1));
+        int new_y = (y == 0 ? 0 : (y > 0 ? 1 : -1));
+        return new vec2(new_x, new_y);
+    }
+
     @Override
     public String toString() {
         return "vec2("+Float.toString(x)+"; "+Float.toString(y)+")";

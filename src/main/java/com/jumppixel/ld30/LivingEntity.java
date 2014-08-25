@@ -21,8 +21,8 @@ public class LivingEntity extends Entity {
     float health;
     float max_health = 1.0f;
 
-    public LivingEntity(vec2 loc, SpriteSheet sprites, vec2 render_offset, float max_health, float move_speed, int num_ani_frames) {
-        super(loc, sprites, render_offset);
+    public LivingEntity(vec2 loc, SpriteSheet sprites, vec2 render_offset, float max_health, float move_speed, int num_ani_frames, Player player) {
+        super(loc, sprites, render_offset, player);
         this.max_health = max_health;
         this.move_speed = move_speed;
         this.health = max_health;
@@ -38,7 +38,7 @@ public class LivingEntity extends Entity {
     }
 
     @Override
-    public void update(Player player, World world, int delta_ms) {
+    public void update(World world, int delta_ms) {
         Animation rot_ani = animations.get(rotation.getRotInt());
         if (velocity.isZero()) {
             rot_ani.setCurrentFrame(0);

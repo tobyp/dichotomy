@@ -203,7 +203,7 @@ public class World implements TileBasedMap {
 
     public void update(Player player, int delta_ms) {
         for (Entity entity : new ArrayList<Entity>(entities)) {
-            entity.update(player, this, delta_ms);
+            entity.update(this, delta_ms);
         }
     }
 

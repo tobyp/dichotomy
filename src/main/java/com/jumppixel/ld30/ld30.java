@@ -70,7 +70,7 @@ public class ld30 extends BasicGame implements InputListener {
             });
         }
 
-        world.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world));
+        world.addEntity(new Zombie(player.loc, new SpriteSheet("src/main/resources/zombie.png", 24, 48), new vec2(-12, -14), 4, world, player));
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
         }
 
-        player.update(player, world, delta_ms);
+        player.update(world, delta_ms);
 
         world.update(player, delta_ms);
 
@@ -176,8 +176,8 @@ public class ld30 extends BasicGame implements InputListener {
             }
             break;
             case Input.KEY_F3: { //debug
-                if (gameContainer.isShowingFPS()) gameContainer.setShowFPS(false);
-                else gameContainer.setShowFPS(true);
+                if (player.debug_mode) player.debug_mode = false;
+                else player.debug_mode = true;
                 addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
             }
             break;
@@ -250,10 +250,10 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("add-drop")) {
                 vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
                 if (aparts[1].equals("health-1")) {
-                    world.addEntity(new HealthDrop(loc, drop_sprites));
+                    world.addEntity(new HealthDrop(loc, drop_sprites, player));
                 }else
                 if (aparts[1].equals("health-2")) {
-                    world.addEntity(new MegaHealthDrop(loc, drop_sprites));
+                    world.addEntity(new MegaHealthDrop(loc, drop_sprites, player));
                 }
             }
             else if (aparts[0].equals("notify")) {
@@ -351,6 +351,13 @@ public class ld30 extends BasicGame implements InputListener {
 
                 sprite_offset_y = sprite_offset_y + 82;
             }
+        }
+
+        //DEBUG
+
+        if (player.debug_mode) {
+            graphics.setColor(Color.white);
+            graphics.drawString("FPS: " + gameContainer.getFPS(), gameContainer.getWidth() - 150, gameContainer.getHeight() - 30);
         }
     }
 

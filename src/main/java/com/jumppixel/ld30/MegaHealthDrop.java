@@ -7,12 +7,12 @@ import org.newdawn.slick.SpriteSheet;
  */
 public class MegaHealthDrop extends Drop {
 
-    public MegaHealthDrop(vec2 loc, SpriteSheet sheet) {
-        super(loc, sheet.getSprite(1, 0));
+    public MegaHealthDrop(vec2 loc, SpriteSheet sheet, Player player) {
+        super(loc, sheet.getSprite(1, 0), player);
     }
 
     @Override
-    public void pickup(Player player) {
+    public void pickup() {
         if (player.health + 0.4 > player.max_health) {
             player.health = player.max_health;
         }else{
