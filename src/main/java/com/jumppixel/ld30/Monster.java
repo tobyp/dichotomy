@@ -81,9 +81,9 @@ public class Monster extends LivingEntity implements Mover {
         current_path = path_finder.findPath(this, loc.getFloorX(), loc.getFloorY(), tx, ty);
         if (current_path != null) {
             int length = current_path.getLength();
-            System.out.println("Path " + length);
+            //System.out.println("Path " + length);
             for(int i = 0; i < length; i++) {
-                System.out.println("\t" + current_path.getX(i) + "," + current_path.getY(i));
+                //System.out.println("\t" + current_path.getX(i) + "," + current_path.getY(i));
             }
         }
     }

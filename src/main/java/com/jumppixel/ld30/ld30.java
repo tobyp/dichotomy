@@ -31,8 +31,6 @@ public class ld30 extends BasicGame implements InputListener {
 
     //PLAYER
     Player player;
-    int charge_ms = 0;
-    int charge_interval = 100; //+0.01 charge every interval
 
     //NOTIFICATIONS
     TrueTypeFont font;
@@ -52,7 +50,7 @@ public class ld30 extends BasicGame implements InputListener {
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
-        map = new Map("src/main/resources/tmx/lazers.tmx");
+        map = new Map("src/main/resources/tmx/lasersWithAnS.tmx");
 
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
@@ -92,48 +90,11 @@ public class ld30 extends BasicGame implements InputListener {
             }
         }
 
-        world.update(player, delta_ms);
         player.update(player, world, delta_ms);
-        for (Entity entity : new ArrayList<Entity>(world.entities)) {
-            if (entity instanceof Drop) {
-                Drop drop = (Drop) entity;
-                if (drop.loc.getDistance(player.loc) < 0.5) {
-                    drop.pickup(player);
-                    world.entities.remove(drop);
-                }
-            }
-        }
 
-        if (player.allow_charging) {
-            charge_ms = charge_ms + delta_ms;
-            if (charge_ms >= charge_interval) {
-                if (player.charge + 0.01f > player.max_charge && player.charge != player.max_charge) {
-                    player.charge = player.max_charge;
-                } else if (player.charge < player.max_charge) {
-                    player.charge = player.charge + 0.01f;
-                }
-                charge_ms = charge_ms - charge_interval;
-            }
-        }else{
-            charge_ms = 0;
-        }
-
-        if (player.charge_holding && player.charge == player.max_charge) {
-            if (player.charge_hold + ((float)delta_ms)/1000 > 1) {
-                player.charge_hold = 1.0f;
-                player.charge_holding = false;
-                //TODO: Teleport player
-            }else{
-                player.charge_hold = player.charge_hold + ((float) delta_ms)/1000;
-            }
-        }else{
-            player.charge_holding = false;
-            player.charge_hold = 0;
-        }
+        world.update(player, delta_ms);
 
         checkMovements(gameContainer);
-
-        //TODO entities here!
     }
 
     public void checkMovements(GameContainer gameContainer) {
@@ -299,10 +260,10 @@ public class ld30 extends BasicGame implements InputListener {
 
     @Override
     public void render(GameContainer gameContainer, Graphics graphics) throws SlickException {
-        render(true, gameContainer, graphics);
+        render(world, gameContainer, graphics);
     }
 
-    void render(boolean good, GameContainer gameContainer, Graphics graphics) throws SlickException {
+    void render(World w, GameContainer gameContainer, Graphics graphics) throws SlickException {
         if (graphics.getFont() != font)
         graphics.setFont(font);
 
@@ -322,20 +283,20 @@ public class ld30 extends BasicGame implements InputListener {
 
         for (int i=0; i<map.getLayerCount(); i++) {
             String layer_type = map.getLayerProperty(i, "type", "both");
-            if (layer_type.equals("both")  || layer_type.equals(good ? "good" : "bad")) {
+            if (layer_type.equals("both")  || layer_type.equals(w.name)) {
                 map.render(render_offset_x, render_offset_y, tileOffsetX, tileOffsetY, render_tile_w, render_tile_h, i, false);
             }
             else if (layer_type.equals("player")) {
                 player.render(tileOffset.add(0.f, -1.f), gameContainer, graphics);
             }
             else if (layer_type.equals("mobs")) {
-                world.renderEntities(tileOffset, gameContainer, graphics);
+                w.renderEntities(tileOffset, gameContainer, graphics);
             }
         }
 
         graphics.scale(.5f, .5f);
 
-        if (!good) dark_overlay.draw(0, 0);
+        if (w != wgood) dark_overlay.draw(0, 0);
 
         //GUI
 

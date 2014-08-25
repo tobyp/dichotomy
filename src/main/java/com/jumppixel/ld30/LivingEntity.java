@@ -8,6 +8,7 @@ import org.newdawn.slick.util.pathfinding.Mover;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Tom on 24/08/2014.

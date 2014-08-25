@@ -197,15 +197,6 @@ public class World implements TileBasedMap {
 
     public void update(Player player, int delta_ms) {
         for (Entity entity : new ArrayList<Entity>(entities)) {
-            if (entity instanceof Drop) {
-                Drop drop = (Drop) entity;
-                if (drop.expire_ms - delta_ms <= 0) {
-                    drop.expire();
-                    entities.remove(drop);
-                }else{
-                    drop.expire_ms = drop.expire_ms - delta_ms;
-                }
-            }
             entity.update(player, this, delta_ms);
         }
     }

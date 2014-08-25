@@ -42,6 +42,7 @@ public class Entity {
     }
 
     public void update(Player player, World world, int delta_ms) {
+
     }
 
     public vec2 getFaced() {

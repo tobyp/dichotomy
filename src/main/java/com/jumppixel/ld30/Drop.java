@@ -30,15 +30,27 @@ public class Drop extends Entity {
             image.draw(pixel_location.x + render_offset.x, pixel_location.y + render_offset.y);
     }
 
+    @Override
+    public void update(Player player, World world, int delta_ms) {
+        super.update(player, world, delta_ms);
+
+        if (loc.getDistance(player.loc) < 0.5) {
+            pickup(player);
+            world.entities.remove(this);
+        }
+        else if (expire_ms - delta_ms <= 0) {
+            expire();
+            world.entities.remove(this);
+        }else{
+            expire_ms -= delta_ms;
+        }
+    }
+
     public void expire() {
     }
 
     public void pickup(Player player) {
-        if (player.health + 0.2 > player.max_health) {
-            player.health = player.max_health;
-        }else{
-            player.health = player.health + .2f;
-        }
+
     }
 
 
