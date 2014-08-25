@@ -3,7 +3,6 @@ package com.jumppixel.ld30;
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.util.Log;
 
 import java.awt.Font;
 import java.util.ArrayList;
@@ -54,7 +53,8 @@ public class ld30 extends BasicGame implements InputListener {
         meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
         drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
         dark_overlay = new Image("src/main/resources/dark_overlay.png");
-        map = new Map("src/main/resources/tmx/lasersWithAnS.tmx");
+        map = new Map("src/main/resources/tmx/lazers.tmx");
+
         objects_group = map.getObjectGroupIndex("objects");
         laser_beam_layer = map.getLayerIndex("laser-beam");
         laser_dev_layer = map.getLayerIndex("laser-dev");
@@ -94,8 +94,9 @@ public class ld30 extends BasicGame implements InputListener {
         map.update(delta_ms);
         player.update(map, delta_ms);
         for (Drop drop : new ArrayList<Drop>(map.drops)) {
-            if (drop.loc.getMagnitude(player.loc) < 0.5) {
+            if (drop.loc.getDistance(player.loc) < 0.5) {
                 drop.pickup(player);
+                map.drops.remove(drop);
             }
         }
 
@@ -283,7 +284,7 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification(aparts[3], notify_time, notify_type));
             }
             else if (aparts[0].equals("add-drop")) {
-                vec2 loc = new vec2(Integer.parseInt(aparts[2]),Integer.parseInt(aparts[3]));
+                vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
                 if (aparts[1].equals("health-1")) {
                     map.addDrop(new HealthDrop(loc, drop_sprites));
                 }else
@@ -305,184 +306,125 @@ public class ld30 extends BasicGame implements InputListener {
 
     int SIDES[] = new int[]{0x1, 0x2, 0x4, 0x8};
 
-    private static int complementBeam(int beam) {
-        return ((beam >> 2) | (beam << 2)) & 0xF;
-    }
-
-    int setBeams(int oid, int beams) {
-        map.setObjectProperty(objects_group, oid, "beams", Integer.toBinaryString(beams));
-        return beams;
-    }
-
-    //a south beam will get itself applied to x,y-1 because that's north, and there the beam enters from the south
-    public void laserUpdateTowards(int x, int y, int beam, boolean on) {
-        x += beam == 0x2 ? 1 : (beam == 0x8 ? -1 : 0);
-        y += beam == 0x1 ? -1 : (beam == 0x4 ? 1 : 0);
-        laserUpdate(x, y, beam, on);
-    }
-
     //update a laser device/block.
     //warning: recursive with exactly ZERO protection
-    public void laserUpdate(int x, int y, int beam, boolean on) {
+    //beam=0 for just a refresh
+    private void laserUpdate(int x, int y, int beam, boolean on) {
         int oid = map.getTileObject(objects_group, x, y);
         if (oid == -1) return;
+
         String device_type = map.getObjectType(objects_group, oid);
         int old_beams = Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2);
-        int new_beams = on ? old_beams | beam : old_beams & ~beam;
-        if (new_beams == old_beams) return;
+        int primaries = Integer.parseInt(map.getObjectProperty(objects_group, oid, "primaries", "0000"), 2);
 
-        setBeams(oid, new_beams);
+        int new_primaries = on ? primaries | beam : primaries & ~beam;
+        map.setObjectProperty(objects_group, oid, "primaries", Integer.toBinaryString(new_primaries));
 
-        logger.info("LASER update " + device_type + " '" + map.getObjectName(objects_group, oid) + "'@("+Integer.toString(x)+";"+Integer.toString(y)+")[turning " + Integer.toBinaryString(beam) + " " + (on ? "on" : "off") + "]: beams " +Integer.toBinaryString(old_beams)+"->"+Integer.toBinaryString(new_beams));
+        logger.info("LASER "+device_type+"("+map.getObjectName(objects_group, oid)+")@("+Integer.toString(x)+";"+Integer.toString(y)+") primaries="+Integer.toBinaryString(primaries)+"->"+Integer.toBinaryString(new_primaries)+", beams="+Integer.toBinaryString(old_beams));
 
         int base_tile = BEAM_BASE_TILE;
-        if (device_type.equals("laser-beam")) {
-            //a normal beam - for any component changed, also change the complementary one - north/south or east/west, and propagate
-            int complement_beam = complementBeam(beam);
+        int propagate_mask = 0xF;
 
-            new_beams = setBeams(oid, on ? new_beams | complement_beam : new_beams & ~complement_beam); //update the complimentary one as well
-            logger.info("\tBEAM: complement="+Integer.toBinaryString(complement_beam)+", ultimate="+Integer.toBinaryString(new_beams));
-            laserUpdateTowards(x, y, beam, on);
+        //primaries -> beams here
+        int new_beams = new_primaries;
+        if (device_type.equals("laser-beam")) {
+            new_beams = ((new_primaries & (0x1 | 0x4)) > 0 ? (0x1 | 0x4) : 0) | ((new_primaries & (0x2 | 0x8)) > 0 ? (0x2 | 0x8) : 0);
+            logger.info("\tBEAM beams->"+Integer.toBinaryString(new_beams));
+            propagate_mask &= ~beam;
         }
         else if (device_type.equals("laser-emitter")) {
-            int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            //a beam was turned on/off on an emitter. we need to propagate the laser changes to the beams appear/disappear
-            if (emitter_output == beam) { //check it's actually the beam in the direction this device "fires"
-                laserUpdateTowards(x, y, complementBeam(beam), on);
+            int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
+            String state = map.getObjectProperty(objects_group, oid, "state", "false");
+            if (state == "true") {
+                new_beams |= output;
             }
+            logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
         }
         else if (device_type.equals("laser-receiver")) {
-            int receiver_input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            if (receiver_input == beam) {
-                if (on) {
-                    executeActions(map.getObjectProperty(objects_group, oid, "enable", "")); //AC-TI-VATE!
-                }
-                else {
-                    executeActions(map.getObjectProperty(objects_group, oid, "disable", ""));
-                }
+            int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
+            String state = map.getObjectProperty(objects_group, oid, "state", "false");
+            if ((new_beams & input) > 0 && state.equals("false")) {
+                logger.info("\tRECEIVER enable");
+                map.setObjectProperty(objects_group, oid, "state", "true");
+                executeActions(map.getObjectProperty(objects_group, oid, "enable", ""));
             }
+            else if ((new_beams & input) == 0 && state.equals("true")) {
+                executeActions(map.getObjectProperty(objects_group, oid, "disable", ""));
+                map.setObjectProperty(objects_group, oid, "state", "false");
+                logger.info("\tRECEIVER disable");
+            }
+            propagate_mask = 0;
         }
         else if (device_type.equals("laser-io")) {
+            base_tile = BEAM_BASE_TILE;
             int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
             int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            int primaries = Integer.parseInt(map.getObjectProperty(objects_group, oid, "primaries", "0000"), 2);
 
-            int old_primaries = primaries;
-            primaries = on ? primaries | beam : primaries & ~beam;
-
-            map.setObjectProperty(objects_group, oid, "primaries", Integer.toBinaryString(primaries));
-
-            if ((primaries & input) > 0) { //we have a primary input, so let's put in the outputs!
-                new_beams = setBeams(oid, new_beams | output);
+            if ((new_primaries & input) > 0) { //we have a primary input, so let's put in the outputs!
+                new_beams |= output;
             }
-            else { //we have no primary inputs, remove all non-primary outputs!
-                new_beams = setBeams(oid, new_beams & ~output | primaries);
-            }
-
-            logger.info("\tIOlaser. "+Integer.toString(input)+"->" + Integer.toBinaryString(output) + " primaries="+Integer.toBinaryString(old_primaries)+"->"+Integer.toBinaryString(primaries)+", beams=->"+Integer.toBinaryString(new_beams));
-
-            for (int side : SIDES) {
-                if ((side & new_beams) > 0 && (side & old_beams) == 0 && side != beam) { //it was added
-                    laserUpdateTowards(x, y, complementBeam(side), true);
-                } else if ((side & new_beams) == 0 && (side & old_beams) > 0 && side != beam) { //it was removed
-                    laserUpdateTowards(x, y, complementBeam(side), false);
-                }
-            }
+            logger.info("\tEMITTER beams->"+Integer.toBinaryString(new_beams));
+            propagate_mask &= ~beam;
         }
         else if (device_type.equals("laser-blocker")) {
             base_tile = BLOCKER_BASE_TILE;
-            //the buck stops here.
+            propagate_mask = 0;
         }
 
+        map.setObjectProperty(objects_group, oid, "beams", Integer.toBinaryString(new_beams));
         map.setTileId(x, y, laser_beam_layer, base_tile+new_beams);
-    }
 
-    private int rotateBeams(int beams) {
-        return ((beams >> 3) | (beams << 1)) & 0xF;
-    }
+        for (int side : SIDES) {
+            if ((side & new_beams) > 0 && (side & old_beams) == 0 && (side & propagate_mask) > 0) { //it was added
+                //we find the complimentary beam, and the space it would be in, and turn that on too via update.
+                laserUpdate(x + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0)), y + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0)), ((side >> 2) | (side << 2)) & 0xF, true);
 
-    public int laserDeviceTileRotate(int tileid) {
-        int device_base_id = (tileid - DEVICE_BASE_TILE) / 4 * 4;
-        int device_variant_id = (tileid - DEVICE_BASE_TILE) % 4;
-        int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
-        return device_rotated_id;
+            } else if ((side & new_beams) == 0 && (side & old_beams) > 0 && (side & propagate_mask) > 0) { //it was removed
+                //we find the complimentary beam, and the space it would be in, and turn that off too via update.
+                laserUpdate(x + (side == 0x2 ? -1 : (side == 0x8 ? 1 : 0)), y + (side == 0x1 ? 1 : (side == 0x4 ? -1 : 0)), ((side >> 2) | (side << 2)) & 0xF, false);
+            }
+        }
     }
 
     public void laserDeviceRotate(int oid, int x, int y, String device_type, int beams) {
         if (device_type.equals("laser-emitter")) {
             int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            boolean was_on = (beams & emitter_output) > 0;
-            logger.info("\trotating emitter, beams="+Integer.toBinaryString(beams)+", output="+Integer.toBinaryString(emitter_output));
-            if (was_on) {
-                laserUpdate(x, y, emitter_output, false);
-            }
-            //ROTATIONS START
-            emitter_output = rotateBeams(emitter_output);
+            emitter_output = ((emitter_output >> 3) | (emitter_output << 1)) & 0xF;
             map.setObjectProperty(objects_group, oid, "output", Integer.toBinaryString(emitter_output));
-            map.setTileId(x, y, laser_dev_layer, laserDeviceTileRotate(map.getTileId(x, y, laser_dev_layer)));
-            //ROTATIONS END
-            if (was_on) {
-                laserUpdate(x, y, emitter_output, true);
-            }
-            logger.info("\trotated emitter, beams="+Integer.toBinaryString(Integer.parseInt(map.getObjectProperty(objects_group, oid, "beams", "0000"), 2))+", output="+Integer.toBinaryString(emitter_output));
+
+            logger.info("\trotated emitter, output="+Integer.toBinaryString(emitter_output));
         }
         else if (device_type.equals("laser-receiver")) {
             int receiver_input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
-            boolean was_on = (beams & receiver_input) > 0;
-            //ROTATIONS START
-            receiver_input = rotateBeams(receiver_input);
+            receiver_input = ((receiver_input >> 3) | (receiver_input << 1)) & 0xF;
             map.setObjectProperty(objects_group, oid, "input", Integer.toBinaryString(receiver_input));
-            map.setTileId(x, y, laser_dev_layer, laserDeviceTileRotate(map.getTileId(x, y, laser_dev_layer)));
-            //ROTATIONS END
-            boolean now_on = (beams & receiver_input) > 0;
-            if (now_on != was_on) {
-                if (now_on) {
-                    executeActions(map.getObjectProperty(objects_group, oid, "enable", ""));
-                }
-                else {
-                    executeActions(map.getObjectProperty(objects_group, oid, "disable", ""));
-                }
-            }
+
+            logger.info("\trotated receiver, input="+Integer.toBinaryString(receiver_input));
         }
         else if (device_type.equals("laser-io")) {
             int input = Integer.parseInt(map.getObjectProperty(objects_group, oid, "input", "0000"), 2);
             int output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            int primaries = Integer.parseInt(map.getObjectProperty(objects_group, oid, "primaries", "0000"), 2);
-
-            //ROTATIONS START
-            input = rotateBeams(input);
-            output = rotateBeams(output);
+            input = ((input >> 3) | (input << 1)) & 0xF;
+            output = ((output >> 3) | (output << 1)) & 0xF;
             map.setObjectProperty(objects_group, oid, "input", Integer.toBinaryString(input));
             map.setObjectProperty(objects_group, oid, "output", Integer.toBinaryString(output));
-            map.setTileId(x, y, laser_dev_layer, laserDeviceTileRotate(map.getTileId(x, y, laser_dev_layer)));
-            //ROTATIONS END
-
-            int new_beams = setBeams(oid, (primaries & input) > 0 ? primaries | output : primaries);
-
-            logger.info("Rotating IO "+Integer.toString(input)+"->"+Integer.toBinaryString(output)+" primaries="+Integer.toBinaryString(primaries)+", beams="+Integer.toBinaryString(beams)+"->"+Integer.toBinaryString(new_beams));
-
-            for (int side : SIDES) {
-                if ((side & new_beams) > 0 && (side & beams) == 0) { //it was added
-                    laserUpdateTowards(x, y, complementBeam(side), true);
-                } else if ((side & new_beams) == 0 && (side & beams) > 0) { //it was removed
-                    laserUpdateTowards(x, y, complementBeam(side), false);
-                }
-            }
-
-            map.setTileId(x, y, laser_beam_layer, BEAM_BASE_TILE+new_beams);
         }
+
+        int tileid = map.getTileId(x, y, laser_dev_layer);
+        int device_base_id = (tileid - DEVICE_BASE_TILE) / 4 * 4;
+        int device_variant_id = (tileid - DEVICE_BASE_TILE) % 4;
+        int device_rotated_id = DEVICE_BASE_TILE + device_base_id + (device_variant_id + 1) % 4;
+        map.setTileId(x, y, laser_dev_layer, device_rotated_id);
+        laserUpdate(x, y, 0, true);
     }
 
     public void laserEmitterToggle(int oid, int x, int y, String device_type, int beams) {
         if (device_type.equals("laser-emitter")) {
             int emitter_output = Integer.parseInt(map.getObjectProperty(objects_group, oid, "output", "0000"), 2);
-            logger.info("\tlaser-emitter beams="+Integer.toBinaryString(beams)+"; output="+Integer.toBinaryString(emitter_output));
-            if ((beams & emitter_output) > 0) {
-                laserUpdate(x, y, emitter_output, false);
-            }
-            else {
-                laserUpdate(x, y, emitter_output, true);
-            }
+            boolean state = map.getObjectProperty(objects_group, oid, "state", "false").equals("true") ? true : false;
+            logger.info("TOGGLE ("+Integer.toString(x)+";"+Integer.toString(y)+") to "+(state ? "false" : "true"));
+            map.setObjectProperty(objects_group, oid, "state", state ? "false" : "true");
+            laserUpdate(x, y, emitter_output, !state);
         }
     }
 
