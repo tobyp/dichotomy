@@ -341,9 +341,36 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             }
             else if (aparts[0].equals("narration-queue")) {
-                current_narration_queue.add(new Narration(aparts[2], aparts[1]));
+                NarrationQueue q = new NarrationQueue();
+                int i = 0;
+                for (String s : aparts) {
+                    if (i>0) {
+                        String[] split = s.split("|");
+                        String text = split[0];
+                        String sound = null;
+                        if (split.length == 2) {
+                            sound = split[1];
+                        }
+                        Narration narration = new Narration(text, sound);
+                        q.add(narration);
+                    }
+                    i++;
+                }
+                setCurrentNarrationQueue(q);
+            }
+            else if (aparts[0].equals("narration-clear")) {
+                setCurrentNarrationQueue(null);
             }
         }
+    }
+
+    public void setCurrentNarrationQueue(NarrationQueue queue) {
+        if (current_narration_queue != null) {
+            if (current_narration_queue.current() != null) {
+                current_narration_queue.current().stopSound();
+            }
+        }
+        current_narration_queue = queue;
     }
 
 
