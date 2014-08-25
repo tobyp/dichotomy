@@ -41,6 +41,10 @@ public class vec2 {
         return new vec2(x*f, y*f);
     }
 
+    public vec2 div(float f) {
+        return new vec2(x/f, y/f);
+    }
+
     public vec2 negate() {
         return new vec2(-this.x, -this.y);
     }
