@@ -1,19 +1,20 @@
 package com.jumppixel.ld30;
 
 import org.newdawn.slick.*;
+import org.newdawn.slick.util.Log;
 import org.newdawn.slick.util.pathfinding.AStarPathFinder;
 import org.newdawn.slick.util.pathfinding.Mover;
+import org.newdawn.slick.util.pathfinding.Path;
 import org.newdawn.slick.util.pathfinding.PathFinder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Tom on 24/08/2014.
  */
 public class Monster extends LivingEntity implements Mover {
 
-    PathFinder path_finder;
+    AStarPathFinder path_finder;
+    Path current_path;
+    int current_step = 0;
 
     int pathfinder_interval = 100;
     int pathfinder_ms = 0;
@@ -25,17 +26,59 @@ public class Monster extends LivingEntity implements Mover {
     }
 
     @Override
-    public void update(Map map, int delta_ms) {
-        super.update(map, delta_ms);
+    public void update(Player player, Map map, int delta_ms) {
+        super.update(player, map, delta_ms);
 
         pathfinder_ms = pathfinder_ms + delta_ms;
         if (pathfinder_ms >= pathfinder_interval) {
             pathfinder_ms = pathfinder_ms - pathfinder_interval;
-            updatePathFinder();
+            updatePathFinder(player.loc.getFloorX(), player.loc.getFloorY());
+        }
+
+        if (current_path != null) {
+            Path.Step step = current_path.getStep(current_step);
+
+            setVelocity(vec2.ZERO);
+
+            vec2 difference = loc.sub(new vec2(step.getX() + .5f, step.getY() + .5f));
+
+            Log.info(difference.x + ", " + difference.y);
+
+            switch (difference.getFloorX()) {
+                case 1: {
+                    setVelocity(velocity.add(vec2.RIGHT));
+                }
+                break;
+                case -1: {
+                    setVelocity(velocity.add(vec2.LEFT));
+                }
+                break;
+            }
+            switch (difference.getFloorY()) {
+                case 1: {
+                    setVelocity(velocity.add(vec2.UP));
+                }
+                break;
+                case -1: {
+                    setVelocity(velocity.add(vec2.DOWN));
+                }
+                break;
+            }
+
+            if (loc.getFloorX() == step.getX() && loc.getFloorY() == step.getY() && current_step < current_path.getLength() - 1) {
+                advanceStep();
+            }
         }
     }
 
-    public void updatePathFinder() {
+    public void updatePathFinder(int tx, int ty) {
+        current_step = 0;
+
+        current_path = path_finder.findPath(this, loc.getFloorX(), loc.getFloorY(), tx, ty);
+    }
+
+    public void advanceStep() {
+        current_step++;
     }
 
     @Override

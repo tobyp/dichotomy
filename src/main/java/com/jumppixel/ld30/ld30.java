@@ -93,8 +93,8 @@ public class ld30 extends BasicGame implements InputListener {
             }
         }
 
-        map.update(delta_ms);
-        player.update(map, delta_ms);
+        map.update(player, delta_ms);
+        player.update(player, map, delta_ms);
         for (Entity entity : new ArrayList<Entity>(map.entities)) {
             if (entity instanceof Drop) {
                 Drop drop = (Drop) entity;

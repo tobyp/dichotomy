@@ -41,7 +41,7 @@ public class Entity {
         }
     }
 
-    public void update(Map map, int delta_ms) {
+    public void update(Player player, Map map, int delta_ms) {
     }
 
     public void spawn() {

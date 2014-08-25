@@ -37,7 +37,7 @@ public class LivingEntity extends Entity {
     }
 
     @Override
-    public void update(Map map, int delta_ms) {
+    public void update(Player player, Map map, int delta_ms) {
         Animation rot_ani = animations.get(rotation.getRotInt());
         if (velocity.isZero()) {
             rot_ani.setCurrentFrame(0);

@@ -12,7 +12,7 @@ public class Notification {
     public int offset_x = 20;
 
     public Notification(String text, Type type) {
-        this.text = text;
+        this.text = text.toUpperCase();
         this.type = type;
     }
 

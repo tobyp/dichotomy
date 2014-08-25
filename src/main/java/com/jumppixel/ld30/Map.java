@@ -143,7 +143,7 @@ public class Map extends TiledMap implements TileBasedMap {
         entities.clear();
     }
 
-    public void update(int delta_ms) {
+    public void update(Player player, int delta_ms) {
         for (Entity entity : new ArrayList<Entity>(entities)) {
             if (entity instanceof Drop) {
                 Drop drop = (Drop) entity;
@@ -152,9 +152,9 @@ public class Map extends TiledMap implements TileBasedMap {
                     entities.remove(drop);
                 }else{
                     drop.expire_ms = drop.expire_ms - delta_ms;
-                    drop.update(this, delta_ms);
                 }
             }
+            entity.update(player, this, delta_ms);
         }
     }
 
@@ -188,12 +188,11 @@ public class Map extends TiledMap implements TileBasedMap {
 
     @Override
     public boolean blocked(PathFindingContext context, int tx, int ty) {
-        return (!(getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE));
+        return (getTileId(tx, ty, walk_layer_index) != WALKABLE_BASE);
     }
 
     @Override
     public float getCost(PathFindingContext context, int tx, int ty) {
-        if (getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE) return 0;
-        return 1;
+        return (getTileId(tx, ty, walk_layer_index) == WALKABLE_BASE ? 0 : 1);
     }
 }
