@@ -8,7 +8,7 @@ import java.util.List;
  * Created by Tom on 25/08/2014.
  */
 public class NarrationQueue implements Iterator {
-    int current = 0;
+    int current = -1;
     List<Narration> queue;
 
     public NarrationQueue() {
@@ -33,5 +33,10 @@ public class NarrationQueue implements Iterator {
     @Override
     public void remove() {
         queue.remove(current);
+    }
+
+    public Narration current() {
+        if (current > -1) return queue.get(current);
+        return null;
     }
 }
