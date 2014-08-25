@@ -71,6 +71,9 @@ public class Map extends TiledMap {
         public String toString() {
             return object.type + (object.name.isEmpty() ? "" : ("('"+object.name+"')")) + "@(" + getX() + ";" + getY() + ")";
         }
+        public vec2 getLocation() {
+            return new vec2(object.x, object.y);
+        }
     }
 
 

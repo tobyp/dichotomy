@@ -37,8 +37,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     //PLAYER
     Player player;
-    vec2 player_spawn = null;
-    String player_spawn_world = null;
+    String checkpoint = null;
 
     int darkness_ms = 0;
 
@@ -62,7 +61,7 @@ public class ld30 extends BasicGame implements InputListener {
 
         reset();
 
-        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 7500, Notification.Type.INFO));
+        addNotification(new TimedNotification("Controls: WASD to move, E to interact.", 6000, Notification.Type.INFO));
 
         gameContainer.getInput().addListener(this);
     }
@@ -79,16 +78,12 @@ public class ld30 extends BasicGame implements InputListener {
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
 
-        if (player_spawn_world == null) player_spawn_world = "good";
-        world = player_spawn_world.equals("good") ? wgood : wevil;
-        if (player_spawn == null) {
-            String[] spawn_location_string = map.getMapProperty("p-spawn", "0,0").split(",");
-            player_spawn = new vec2(Integer.parseInt(spawn_location_string[0]), Integer.parseInt(spawn_location_string[1]));
-        }
-
-        player = new Player(this, player_spawn, player_sprites, new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
-
-        wevil.addEntity(new Zombie(player.loc, zombie_sprites, new vec2(-12, -48), 4, wevil, player));
+        if (checkpoint == null) checkpoint = map.getMapProperty("start", "");
+        Map.MapObject cpo = map.getObject(map.getObjectGroupIndex("checkpoints"), checkpoint);
+        world = cpo.getProperty("world", "good").equals("good") ? wgood : wevil;
+        logger.info("Spawning at "+cpo.getLocation().div(24.f).toString()+" in "+world.name);
+        player = new Player(this, cpo.getLocation().div(24.f), player_sprites, new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
+        executeActions(cpo.getProperty("init", ""));
     }
 
     @Override
@@ -239,7 +234,7 @@ public class ld30 extends BasicGame implements InputListener {
             }
             break;
             case Input.KEY_L: {
-                switchWorld();
+                //switchWorld();
             }
             break;
             case Input.KEY_SPACE: {
@@ -325,32 +320,43 @@ public class ld30 extends BasicGame implements InputListener {
                 }
             }
             else if (aparts[0].equals("keycard-add")) {
+                logger.info("ACTION: Giving keycards "+aparts[1]);
                 player.keycards |= Integer.parseInt(aparts[1], 2);
             }
             else if (aparts[0].equals("keycard-remove")) {
+                logger.info("ACTION: Removing keycards "+aparts[1]);
                 player.keycards &= ~Integer.parseInt(aparts[1], 2);
             }
             else if (aparts[0].equals("keycards-clear")) {
+                logger.info("ACTION: Clearing keycards.");
                 player.keycards = 0;
             }
             else if (aparts[0].equals("keycard-drop")) {
                 int cards = Integer.parseInt(aparts[2], 2);
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
                 world.addEntity(new KeycardDrop(loc, drop_sprites, player, cards));
+                logger.info("ACTION: Dropping Keycard.");
             }
             else if (aparts[0].equals("health-drop")) {
                 float health = Float.parseFloat(aparts[2]);
                 vec2 loc = new vec2(Float.parseFloat(aparts[3]),Float.parseFloat(aparts[4]));
+                logger.info("ACTION: Dropping Healthpack.");
                 world.addEntity(new HealthDrop(loc, drop_sprites, player, health));
             }
             else if (aparts[0].equals("device-drop")) {
                 vec2 loc = new vec2(Float.parseFloat(aparts[2]),Float.parseFloat(aparts[3]));
+                logger.info("ACTION: Dropping Device.");
                 world.addEntity(new DeviceDrop(loc, drop_sprites, player));
+            }
+            else if (aparts[0].equals("device-give")) {
+                logger.info("ACTION: Giving Device.");
+                player.has_device = true;
+                player.allow_charging = true;
             }
             else if (aparts[0].equals("set-prop")) {
                 Map.MapObject mo = world.getObject(aparts[1]);
                 if (mo != null) {
-                    logger.info("Setting "+mo.toString()+"."+aparts[2]+"="+aparts[3]);
+                    logger.info("ACTION: Setting "+mo.toString()+"."+aparts[2]+"="+aparts[3]);
                     mo.setProperty(aparts[2], aparts[3]);
                 }
             }
@@ -375,9 +381,39 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("narration-clear")) {
                 setCurrentNarrationQueue(null);
             }
-            else if (aparts[0].equals("set-spawn")) {
-                player_spawn_world = world.name;
-                player_spawn = new vec2(Float.parseFloat(aparts[1]), Float.parseFloat(aparts[2]));
+            else if (aparts[0].equals("checkpoint")) {
+                checkpoint = aparts[1];
+                logger.info("ACTION: Checkpoint set to "+checkpoint);
+            }
+            else if (aparts[0].equals("zombie-spawn")) {
+                World w = getWorld(aparts[1]);
+                Zombie z = new Zombie(
+                        new vec2(Float.parseFloat(aparts[2]), Float.parseFloat(aparts[3])),
+                        zombie_sprites,
+                        new vec2(-12, -48),
+                        4,
+                        w,
+                        player
+                );
+                logger.info("ACTION: Spawning Zombie at "+z.world.name+" "+z.loc.toString());
+                w.addEntity(z);
+            }
+            else if (aparts[0].equals("zombie-spawn-x")) {
+                World w = getWorld(aparts[1]);
+                Zombie z = new Zombie(
+                        new vec2(Float.parseFloat(aparts[2]), Float.parseFloat(aparts[3])),
+                        zombie_sprites,
+                        new vec2(-12, -48),
+                        4,
+                        w,
+                        player
+                );
+                z.move_speed = Float.parseFloat(aparts[4]);
+                z.attack_duration = Integer.parseInt(aparts[5]);
+                z.attack_strength = Float.parseFloat(aparts[6]);
+                z.attack_distance = Integer.parseInt(aparts[7]);
+                logger.info("ACTION: Spawning Zombie at "+z.world.name+" "+z.loc.toString());
+                w.addEntity(z);
             }
         }
     }
