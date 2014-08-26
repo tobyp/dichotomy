@@ -301,6 +301,11 @@ public class ld30 extends BasicGame implements InputListener {
             if (a.isEmpty()) continue;
 
             String[] aparts = a.split(":");
+            for (int i=0; i<aparts.length; i++) {
+                aparts[i] = aparts[i].replace("#c", ",");
+                aparts[i] = aparts[i].replace("#d", ":");
+                aparts[i] = aparts[i].replace("#h", "#");
+            }
             if (aparts[0].equals("set-tile")) {
                 int tile_x = Integer.parseInt(aparts[1]);
                 int tile_y = Integer.parseInt(aparts[2]);
