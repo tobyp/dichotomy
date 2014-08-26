@@ -26,6 +26,8 @@ public class NarrationQueue implements Iterator {
                 queue.add(new Narration(string, (i == 0 ? n.sound : null)));
                 i++;
             }
+        }else{
+            queue.add(n);
         }
     }
 
