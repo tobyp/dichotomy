@@ -73,7 +73,7 @@ for i in range(4, len(argv), 7):
 					for layer_prop in layer_child:
 						layer[1].append((layer_prop.get('name'), layer_prop.get('value')))
 				elif layer_child.tag == "data":
-					data = decompress(b64decode(layer_child.text))
+					data = decompress(b64decode(layer_child.text))+b'\x00\x00\x00\x00'
 					for y in range(src_y, src_y+src_h):
 						for x in range(src_x, src_x+src_w):
 							old_index = 4*((layer_w*y)+x)
@@ -88,10 +88,11 @@ for i in range(4, len(argv), 7):
 				otype = obj.get('type', None)
 				ox = int(obj.get('x')) + offset_ox
 				oy = int(obj.get('y')) + offset_oy
-				if ox < src_ox or ox >= src_ox+src_ow or oy < src_oy or oy > src_oy+src_oh:
-					continue
-				obj_n = (oname, otype, ox-src_ox+offset_ox, oy-src_oy+offset_oy, obj.get('gid'), [])
+				#if ox < src_ox or ox >= src_ox+src_ow or oy < src_oy or oy > src_oy+src_oh:
+				#	continue
+				obj_n = (oname, otype, ox-src_ox, oy-src_oy, obj.get('gid'), [])
 				og[1].append(obj_n)
+				print(obj_n)
 				for obj_child in obj:
 					if obj_child.tag == 'properties':
 						for obj_prop in obj_child:
@@ -136,6 +137,7 @@ for name, props, data in layers:
 			e_props.append(ElementTree.Element('property', {'name': name, 'value': value}))
 		e_layer.append(e_props)
 	e_data = ElementTree.Element('data', {'encoding': 'base64', 'compression': 'gzip'})
+	data = data[0:new_map_width*new_map_height*4]
 	e_data.text = str(b64encode(compress(data)),'utf-8')
 	e_layer.append(e_data)
 	new_map.append(e_layer)
