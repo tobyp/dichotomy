@@ -224,6 +224,16 @@ public class ld30 extends BasicGame implements InputListener {
                 addNotification(new TimedNotification("Toggled debug mode", 2000, Notification.Type.INFO));
             }
             break;
+            case Input.KEY_F1: { //about
+                NarrationQueue q = new NarrationQueue();
+                q.add(new Narration("About Dichotomy", null));
+                q.add(new Narration("Dichotomy was made in 72 hours by", null));
+                q.add(new Narration("Tom, Toby, Felix & Lennart", null));
+                q.add(new Narration("for LD30.", null));
+                q.add(new Narration("\"Did you ever wonder where dropped pens go?\"", null));
+                setCurrentNarrationQueue(q);
+            }
+            break;
             case Input.KEY_M: { //music
                 if (!music.isPlaying()) music.playAsMusic(1, 0.5f, true);
                 else music.stop();
@@ -324,7 +334,7 @@ public class ld30 extends BasicGame implements InputListener {
                 int variant = (tile_id / 2) * 2;
                 map.setTileId(tile_x, tile_y, top_l, DOOR_BASE + variant);
                 map.setTileId(tile_x, tile_y+1, bot_l, DOOR_BASE + variant + 40);
-                map.setTileId(tile_x, tile_y, walk_l, 881+15);
+                map.setTileId(tile_x, tile_y, walk_l, 881 + 15);
                 map.setTileId(tile_x, tile_y+1, walk_l, 881+15);
             }
             else if (aparts[0].equals("notify")) {
