@@ -15,6 +15,27 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>com.googlecode.mavennatives</groupId>
+        <artifactId>maven-nativedependencies-plugin</artifactId>
+        <version>${natives.version}</version>
+        <executions>
+          <execution>
+            <id>unpacknatives</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.jumppixel.ld30.ld30</mainClass>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-shade-plugin</artifactId>
         <version>2.3</version>
         <executions>
@@ -39,7 +60,7 @@
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>com.jumppixel.ld30.Engine</mainClass>
+              <mainClass>com.jumppixel.ld30.ld30</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -56,11 +77,8 @@
   </repositories>
   <properties>
     <lwjgl.version>2.8.2</lwjgl.version>
-    <java.library.path>target/natives</java.library.path>
     <natives.version>0.0.6</natives.version>
-    <slick.version>2.1.0</slick.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <junit.version>4.10</junit.version>
   </properties>
 </project>
 

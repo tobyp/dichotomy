@@ -226,11 +226,11 @@ public class ld30 extends BasicGame implements InputListener {
             break;
             case Input.KEY_F1: { //about
                 NarrationQueue q = new NarrationQueue();
-                q.add(new Narration("About Dichotomy", null));
-                q.add(new Narration("Dichotomy was made in 72 hours by", null));
-                q.add(new Narration("Tom, Toby, Felix & Lennart", null));
-                q.add(new Narration("for LD30.", null));
-                q.add(new Narration("\"Did you ever wonder where dropped pens go?\"", null));
+                q.add(new Narration("About Dichotomy"));
+                q.add(new Narration("Dichotomy was made in 72 hours by"));
+                q.add(new Narration("Tom, Toby, Felix & Lennart"));
+                q.add(new Narration("for LD30."));
+                q.add(new Narration("\"Did you ever wonder where dropped pens go?\""));
                 setCurrentNarrationQueue(q);
             }
             break;
@@ -615,7 +615,7 @@ public class ld30 extends BasicGame implements InputListener {
                 nbg.draw(gameContainer.getWidth()/2 - (nbg.getWidth() * scale) / 2, gameContainer.getHeight() - nbg.getHeight()*scale - 10, nbg.getWidth()*scale, nbg.getHeight()*scale);
                 int nsk_width = Math.round((float)nsk.getWidth()*scale/3);
                 int nsk_height = Math.round((float)nsk.getHeight()*scale/3);
-                nsk.draw(gameContainer.getWidth() / 2 + (nbg.getWidth() * scale) / 2 - nsk_width - 4 * scale, gameContainer.getHeight() - 10 - nsk_height - 3 * scale, nsk_width, nsk_height);
+                nsk.draw(gameContainer.getWidth() / 2 + (nbg.getWidth() * scale) / 2 - nsk_width - 4 * scale, gameContainer.getHeight() - 10 - nsk_height - 3 * scale + Math.round((float)scale/2), nsk_width, nsk_height);
 
                 int text_width = graphics.getFont().getWidth(current_narration_queue.current().text);
                 int text_height = graphics.getFont().getHeight(current_narration_queue.current().text);
@@ -643,6 +643,7 @@ public class ld30 extends BasicGame implements InputListener {
             AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 800, 600));
             c.setDisplayMode(800, 600, false);
             c.setShowFPS(false);
+            c.setIcon("src/main/resources/logo24px.png");
             c.start();
         }
         catch (Exception e) {
