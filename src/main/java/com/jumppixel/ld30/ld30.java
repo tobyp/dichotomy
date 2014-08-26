@@ -83,6 +83,8 @@ public class ld30 extends BasicGame implements InputListener {
 
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
+        wgood.reset();
+        wevil.reset();
 
         if (checkpoint == null) checkpoint = map.getMapProperty("start", "");
         Map.MapObject cpo = map.getObject(map.getObjectGroupIndex("checkpoints"), checkpoint);
