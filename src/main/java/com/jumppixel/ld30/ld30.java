@@ -306,12 +306,13 @@ public class ld30 extends BasicGame implements InputListener {
                 int bot_l = map.getLayerIndex(aparts[4]);
                 int walk_l = map.getLayerIndex(aparts[5]);
                 logger.info("ACTION: opening door ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+")");
-                int tile_id = map.getTileId(tile_x, tile_y, top_l) - DOOR_BASE;
-                int variant = (tile_id / 2) * 2 + 1;
-                map.setTileId(tile_x, tile_y, top_l, DOOR_BASE + variant);
-                map.setTileId(tile_x, tile_y+1, bot_l, DOOR_BASE + variant + 40);
+                int tile_id = map.getTileId(tile_x, tile_y-1, top_l) - DOOR_BASE;
+                System.out.println("tile "+tile_id);
+                int variant = tile_id / 2 * 2 + 1;
+                map.setTileId(tile_x, tile_y-1, top_l, DOOR_BASE + variant);
+                map.setTileId(tile_x, tile_y, bot_l, DOOR_BASE + variant + 40);
+                map.setTileId(tile_x, tile_y-1, walk_l, 881);
                 map.setTileId(tile_x, tile_y, walk_l, 881);
-                map.setTileId(tile_x, tile_y+1, walk_l, 881);
             }
             if (aparts[0].equals("door-close")) {
                 int tile_x = Integer.parseInt(aparts[1]);
@@ -320,12 +321,12 @@ public class ld30 extends BasicGame implements InputListener {
                 int bot_l = map.getLayerIndex(aparts[4]);
                 int walk_l = map.getLayerIndex(aparts[5]);
                 logger.info("ACTION: opening door ("+Integer.toString(tile_x)+";"+Integer.toString(tile_y)+")");
-                int tile_id = map.getTileId(tile_x, tile_y, top_l) - DOOR_BASE;
-                int variant = (tile_id / 2) * 2;
-                map.setTileId(tile_x, tile_y, top_l, DOOR_BASE + variant);
-                map.setTileId(tile_x, tile_y+1, bot_l, DOOR_BASE + variant + 40);
+                int tile_id = map.getTileId(tile_x, tile_y-1, top_l) - DOOR_BASE;
+                int variant = tile_id / 2 * 2;
+                map.setTileId(tile_x, tile_y-1, top_l, DOOR_BASE + variant);
+                map.setTileId(tile_x, tile_y, bot_l, DOOR_BASE + variant + 40);
+                map.setTileId(tile_x, tile_y-1, walk_l, 881+15);
                 map.setTileId(tile_x, tile_y, walk_l, 881+15);
-                map.setTileId(tile_x, tile_y+1, walk_l, 881+15);
             }
             else if (aparts[0].equals("notify")) {
                 Notification.Type notify_type = Notification.Type.valueOf(aparts[1]);
@@ -433,6 +434,7 @@ public class ld30 extends BasicGame implements InputListener {
             else if (aparts[0].equals("checkpoint")) {
                 checkpoint = aparts[1];
                 logger.info("ACTION: Checkpoint set to "+checkpoint);
+                addNotification(new TimedNotification("Checkpoint!", 500, Notification.Type.INFO));
             }
             else if (aparts[0].equals("zombie-spawn")) {
                 World w = getWorld(aparts[1]);
