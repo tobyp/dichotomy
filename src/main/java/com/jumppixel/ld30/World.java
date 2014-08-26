@@ -235,6 +235,13 @@ public class World implements TileBasedMap {
             entity.expire();
         }
         entities.clear();
+
+        for (int o = 0; o<map.getObjectCount(ogroup); o++) {
+            Map.MapObject object = map.getObject(ogroup, o);
+            if (object.getType().equals("spawn-zombie")) {
+                addEntity(new Zombie(new vec2(object.getX(), object.getY()), game.zombie_sprites, new vec2(-12, -48), 4, this, game.player));
+            }
+        }
     }
 
     public void renderEntities(vec2 view_offset, GameContainer gameContainer, Graphics graphics) {
