@@ -83,8 +83,6 @@ public class ld30 extends BasicGame implements InputListener {
 
         wgood = new World(this, map, "good");
         wevil = new World(this, map, "evil");
-        wgood.reset();
-        wevil.reset();
 
         if (checkpoint == null) checkpoint = map.getMapProperty("start", "");
         Map.MapObject cpo = map.getObject(map.getObjectGroupIndex("checkpoints"), checkpoint);
@@ -92,6 +90,9 @@ public class ld30 extends BasicGame implements InputListener {
         logger.info("Spawning at "+cpo.getLocation().div(24.f).toString()+" in "+world.name);
         player = new Player(this, cpo.getLocation().div(24.f), player_sprites, new vec2(-12,-48), PLAYER_TILES_PER_MS, 4);
         executeActions(cpo.getProperty("init", ""));
+
+        wgood.reset();
+        wevil.reset();
     }
 
     @Override
