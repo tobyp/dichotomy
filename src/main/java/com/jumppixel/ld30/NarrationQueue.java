@@ -19,15 +19,11 @@ public class NarrationQueue implements Iterator {
     }
 
     public void add(Narration n) {
-        if (n.text.length() > 25) {
-            String[] s = WordUtils.wrap(n.text, 26, "@#@", true).split("@#@");
-            int i = 0;
-            for (String string : s) {
-                queue.add(new Narration(string, (i == 0 ? n.sound : null)));
-                i++;
-            }
-        }else{
-            queue.add(n);
+        String[] s = WordUtils.wrap(n.text, 26, "@#@", true).split("@#@");
+        int i = 0;
+        for (String string : s) {
+            queue.add(new Narration(string, (i == 0 ? n.sound : null)));
+            i++;
         }
     }
 

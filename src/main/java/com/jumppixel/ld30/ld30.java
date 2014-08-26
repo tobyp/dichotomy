@@ -4,6 +4,7 @@ import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.openal.Audio;
+import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -427,19 +428,16 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("narration-queue")) {
                 NarrationQueue q = new NarrationQueue();
-                int i = 0;
-                for (String s : aparts) {
-                    if (i>0) {
-                        String[] split = s.split("|");
-                        String text = split[0];
-                        String sound = null;
-                        if (split.length == 2) {
-                            sound = split[1];
-                        }
-                        Narration narration = new Narration(text, sound);
-                        q.add(narration);
+                for (String s : aparts[1].split(",")) {
+                    String text = s;
+                    String sound = null;
+                    String[] split = s.split("|");
+                    if (split.length == 2) {
+                        text = split[0];
+                        sound = split[1];
                     }
-                    i++;
+                    Narration narration = new Narration(text, sound);
+                    q.add(narration);
                 }
                 setCurrentNarrationQueue(q);
             }
@@ -622,7 +620,7 @@ public class ld30 extends BasicGame implements InputListener {
                 nbg.draw(gameContainer.getWidth()/2 - (nbg.getWidth() * scale) / 2, gameContainer.getHeight() - nbg.getHeight()*scale - 10, nbg.getWidth()*scale, nbg.getHeight()*scale);
                 int nsk_width = Math.round((float)nsk.getWidth()*scale/3);
                 int nsk_height = Math.round((float)nsk.getHeight()*scale/3);
-                nsk.draw(gameContainer.getWidth() / 2 + (nbg.getWidth() * scale) / 2 - nsk_width - 4 * scale, gameContainer.getHeight() - 10 - nsk_height - 3 * scale + Math.round((float)scale/2), nsk_width, nsk_height);
+                nsk.draw(gameContainer.getWidth() / 2 + (nbg.getWidth() * scale) / 2 - nsk_width - 4 * scale, gameContainer.getHeight() - 10 - nsk_height - 3 * scale + Math.round((float) scale / 2), nsk_width, nsk_height);
 
                 int text_width = graphics.getFont().getWidth(current_narration_queue.current().text);
                 int text_height = graphics.getFont().getHeight(current_narration_queue.current().text);
