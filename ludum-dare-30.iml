@@ -31,6 +31,7 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="Maven: org.jcraft:jorbis:0.0.17" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.3" level="project" />
   </component>
 </module>
 

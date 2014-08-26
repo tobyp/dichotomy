@@ -1,5 +1,8 @@
 package com.jumppixel.ld30;
 
+import org.apache.commons.lang.WordUtils;
+import org.newdawn.slick.util.Log;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +19,14 @@ public class NarrationQueue implements Iterator {
     }
 
     public void add(Narration n) {
-        queue.add(n);
+        if (n.text.length() > 25) {
+            String[] s = WordUtils.wrap(n.text, 26, "@#@", true).split("@#@");
+            int i = 0;
+            for (String string : s) {
+                queue.add(new Narration(string, (i == 0 ? n.sound : null)));
+                i++;
+            }
+        }
     }
 
     @Override

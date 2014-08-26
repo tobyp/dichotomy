@@ -25,6 +25,16 @@ public class Narration {
         }
     }
 
+    public Narration(String text) {
+        this.text = text;
+        this.sound = null;
+    }
+
+    public Narration(String text, Sound sound) {
+        this.text = text;
+        this.sound = sound;
+    }
+
     public void playSound() {
         if (sound != null)
         sound.play();
