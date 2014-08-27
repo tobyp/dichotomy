@@ -449,6 +449,10 @@ public class ld30 extends BasicGame implements InputListener {
             }
             else if (aparts[0].equals("checkpoint")) {
                 checkpoint = aparts[1];
+
+                Map.MapObject cpo = map.getObject(map.getObjectGroupIndex("checkpoints"), checkpoint);
+                executeActions(cpo.getProperty("init", ""));
+
                 logger.info("ACTION: Checkpoint set to "+checkpoint);
                 addNotification(new TimedNotification("Checkpoint!", 500, Notification.Type.INFO));
             }
