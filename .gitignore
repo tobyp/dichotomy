@@ -1,7 +1,6 @@
 # Maven excludes
 /target
 /log
-src/main/resources
 
 # OS generated files
 .DS_Store
