@@ -1,0 +1,673 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="50" height="97" tilewidth="24" tileheight="24">
+ <properties>
+  <property name="start" value="start"/>
+ </properties>
+ <tileset firstgid="1" name="atlas" tilewidth="24" tileheight="24">
+  <image source="../tileset/atlas.png" width="960" height="960"/>
+ </tileset>
+ <layer name="floor-ground" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2aC07DMAxA0yKQ4CbtxiS4HXB5MkGFZewkzcdxWj/JKmxdmjeniVPNOcMwpJh+Y+7dkUKO5LH4WHt3pBDz0IV56MI8dGEeujAPXWy11cj1FawRR/ZY3N+YGtnjjnno4mge27w7BUKaUF+myDnPPl4CR0lKPN58vAeOksQ8uAjlQWM+uAjlYaR8aLs/KFI9NOWDwvKhKx8cPde5mhzFYwExMuahjxEdXneEZo7mcfVxIeLqxvK49/mBiIszD0lae0jVB63vc/Moo/Y8ax5lmAdPj72MefwwgyMOSWrMs5TDiB5UmEcem8NT5udLPdaCwB43wiO1LU0ejwo9Us7HcGMq5TcO0h6hft12ng+R9lgKwjzO47GXo3hMTB/hdbn3Yu1y0QLuWlt/58z+SHp8+vhg3oMeHF/Ve1SfFI8RMA9dmIcuzugRW2dgO9J73BwPrn6B7VCv1QR/R7keeE84u//trq6dB/ztMfV/CKqm6elBjeOUa1FjCXtwjrXB4zZnDOMakLtvWnus4IjHQ2obkNDc1doj5dlNLPDcJJkPTMk+Ec4VW257PbOm8pP6/I1a8yT3uKVwa14sb9o4Y02mGfPQRa95CK+t3Dqbugb3ygfuH1zDYX2HaxZuLeg1n1L7htTag3p+2nNcUfX0nvqD+1sSrl9a11nDyOUb3pc3WchLAAA=
+  </data>
+ </layer>
+ <layer name="floor-deco" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3aywnCQBQF0GgLajVqCdqEulN3FqJW4NZfH3blAzciGNFIJhPOgbsIZHGH8GZgSFEAAAAAAE0x6aZu8D/Hl+dTybubzNd9Tl3gB8+dy74N9ZnGHKw/zMKhU0+Xf3k3G7fM1tFGr3s0AJRZxtm9iqwzP8O30X8X2We+DgAAAMhZL9KPDFIXqWgYGUXGqYtUNIvMI4vURQAAAACgZS7F41/qa+oiX3KH2yzucCEvd8ayaAzISwAA
+  </data>
+ </layer>
+ <layer name="floor-guide" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3Z0QqCQBAFUKHv9YcqCwr/UwWDJUxXhW3Qc2Ce9GHGXXy4U1UAAAAAkOd6+f2sLtfGbo+ZOSKY+86ptn/vFniWob/3WPfAfa4R/e7kSs/meZCZAAAAACDHJxuLnK3CK8lwpypi5j6122gW+oyYuW/p6axz5O6z9igxR4nz27KXaRf+A99l3wMAAAAAAAD/1QEbPVaGyEsAAA==
+  </data>
+ </layer>
+ <layer name="wall-low" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2aQU7DMBBFE3rCpjt6ElLYwI4dZcNx2HAYkBASJ8BGRLGisTsOtsee/Cd9pU3ddn4bx2OPuw5oZjS6MTpJB/JPtPgAAAAAAAAAAKCHaa5K6US06Tznfe8tRayP912dPtZyKx1AIlrz0Vq8Ptb6+L5KGsYmGIz2jg6y4axGi4+z0dNCoC6GiHb7C5K8Tqn4DkRMg6dtLT6mPrOGZV97ThUU+IXKZz927ea2ALSElvqvFh9ge7i5ky9P4rSRRosPd47ly/c4bUC9UHmnu87aEm+9dARp+FTiA4TrFCFx+x/n81vsywBQOZK93ql1Easvz3l3PMu9/m3jQ38DqRilA0hAaE281rkPmAn9fy5b/Y9rrvkAUJrcc55SxPp4/FMOH1rW9bX4KEHpfWq5vk+LD2ls37k3evAcW4F7X53m+drvFS/9rByUqjW99rNy0ELNjMOyZmZ9XRsdGceavXP28XHmRdL7Aam9pSH56p7SPlLB+T1S1H5948Ly/j8GXquBkI+ReEw9t7rr6vRnCeXxlP9afQCQi9jxUGJc4KxdavERO66nHt84XIpRao/VD2TIo73ISwAA
+  </data>
+ </layer>
+ <layer name="wall-low-shading" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3bSwqAIBAAUPctjO5/2AgKIszPpjLfAxfiiDALB2EMAQAAAAD6NhXGOSbu87lhL8+Q73fIOwAAAAAAAAAA3Cv1mKX61PSf5cnReJafn0ebrYe3dKfGSywAfF3tv5Se3wxHXY6ZtVQ9BxjFCj8ewqHISwAA
+  </data>
+ </layer>
+ <layer name="wall-low-deco" width="50" height="97" opacity="0.78">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3bPUoDQRTA8dnNDRTT2KjHULRI9B6ilabwACqm1kpTCEIa10q9gyBY2fh1CsHKJokKvmG2WAaXhCWTyYz/HzzeLCTDe7Bh9mOiFAAAAAAAACatmyj1JnlP8mueG6kJH44K48OSz7Tz3MvzvtT8IPEt43PJX3neTU2EIpOaPxIzvivks9QEUOY98V2BOxeR9HYfSR8AAAAAACBsXZ5R4B9qpia0dckbPG8HgtMvjDP5DQ+8VaLUj4r7vQwAAMC4+Nx/VuZJruOerXgZcm3ncv+Zvld9rDB3T2ruWzEY0ofL/WctmfezwtwL8p1FK5ZK5tnRewElWg6vxTsTOF9P9V5AiU6g9xSbNaUOAq3ddhVAH/M13xWMR/OPPjiPpksWSR+XkfQRqhvfBSA4M7I+zI641t26LaUy/R+WZelhxepjTo7rAa3jeh3Yknq3rZpX5XgtoD60Y6n3ZISar92XAgBT4RdRwdp/yEsAAA==
+  </data>
+ </layer>
+ <layer name="evil-laser-dev" width="50" height="97">
+  <properties>
+   <property name="world" value="evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3TsQ2AIAAEQAIbyTa4puM4DIUkUFuIkLvm2//iQwAAAACA/eT05BV7Hmlen7fO1vmOPcuCO/in8R8rG/8BAAAAAAAAAAAAAAAA8KUKBH0ewchLAAA=
+  </data>
+ </layer>
+ <layer name="good-laser-dev" width="50" height="97">
+  <properties>
+   <property name="world" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3ZwQ2CMBiAUYIb6TY6IujJSYyygIuYHogNlAMehL9579SUHmi/kDShaQAAAACgDn37HR8P8+enbO7Wzp/vxSN7t3NhH5dsbtjxPgAAatFVcud6VbIPAAC2da3kXvkOvo974f1Lc3tX6hCtTX7u43hNi76wdot/GPm5j+M1LZ6FtaW5f5m2iPh9JNMW0b6PXGoQvUeSGkTu0VXQIIncYLTUIFqbpQaR2wAAAAAAAPziAyCgz+rISwAA
+  </data>
+ </layer>
+ <layer name="evil-laser-beam" width="50" height="97">
+  <properties>
+   <property name="world" value="evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BMQEAAADCoPVPbQZ/oAAAAAAAAAAAAAAAAAAAAAAAAIDXALeXNHLISwAA
+  </data>
+ </layer>
+ <layer name="good-laser-beam" width="50" height="97">
+  <properties>
+   <property name="world" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BMQEAAADCoPVPbQZ/oAAAAAAAAAAAAAAAAAAAAAAAAIDXALeXNHLISwAA
+  </data>
+ </layer>
+ <layer name="object" width="50" height="97">
+  <properties>
+   <property name="type" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3WsQ3CUAwEUCeTQLYLTBPoGIeSCpgGqPiFkVDKNMHiPen6O8mFIwAAAACAaxdxy9y7tdss92jdn5lX4R2bPmKbGfq12/yvsd3QLrMvfE9T637IHHPHWHzXKXtPs10VXL66ngv1BgCYq/5TflT8KQEAAAAAAAAAAAB+yRt7I56xyEsAAA==
+  </data>
+ </layer>
+ <layer name="object-2" width="50" height="97">
+  <properties>
+   <property name="type" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3WwQ2CQBAFULAJrAGpBu3DC6EVLoRmTOzBGmzCf6ACYkJ2817y7/Nn9zBNAwAAAABM7dkT/MeaHvPeZauk07uSHiXqs/tbMiTPy9nTHDdm/nvySJa9x6uSf/VNjy6drgW/DwBAyT6V3JWtexIAAAAAAAAAAADgsB95zULqyEsAAA==
+  </data>
+ </layer>
+ <layer name="mobs" width="50" height="97">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BMQEAAADCoPVPbQZ/oAAAAAAAAAAAAAAAAAAAAAAAAIDXALeXNHLISwAA
+  </data>
+ </layer>
+ <layer name="player" width="50" height="97">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BMQEAAADCoPVPbQZ/oAAAAAAAAAAAAAAAAAAAAAAAAIDXALeXNHLISwAA
+  </data>
+ </layer>
+ <layer name="wall-high" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3aUQqCQBQFUMkVVqupdtNO6idoVTlQNNhLFJVBPQfuzyAy4/hweFhVAAAAAMztVpeeAVt23ZWewTSeK1kHwNwOTfatHN+JroWhzk1Ordzr37FLsRkCALAG0bkz9VmdM2G8qL76pG/99bm/WmaJ8r7bp9eW3veoL5Ly+DOef8/avbyohzdGmp96g6+ofz5X/TG9rv3LbXWPu57PFtYPADBW9P8DAAAADPECGE0xUchLAAA=
+  </data>
+ </layer>
+ <layer name="wall-high-deco" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3YMU4CQRTG8dml1MJOCtGeE9irodLCc2hpoVZo9BZq5CoQCTQoxhNoZ2eCGG18m33JTMzGlajDzuT/SyZvA7PJ+5ZlFsYYAAAAAAAAzGqS5PVV61TrZmrMVmrnjZxzbr10NpuG9rqqdU3rntR9J8fUOefNS2cA8P8eZe1+Subdxe8tyHq9mJbP8+kwgusKAAAAAMBfueB/MgBEa7tgb/ZOxoG+3pI6dt7b8byX+6A9AAAAID6TQPYbutJnL7HHmSun90Ygv1efpefrxB5n+oF8Bl8NtO9lufb1guu/VLPHzUAzZtadHLsB54hVp4Lf/VMZK3rfjL+daQ0lx30F768NzfH+w/kvkuOjgjmKHJf0GUqOo0hylIklB1B1JyZ/jrVlnMk4n2873lxGssbcRJIDAJD7BAOs8x/ISwAA
+  </data>
+ </layer>
+ <layer name="wall-trimmings" width="50" height="97">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2aDU7DMAyFW27BAAmQOMiYkOBMXB6QmDSM09j5cV6696RpW5vY+dIktZsuCyX1uC7L68XnaR3dojId1u3/s4gcWCIHlsiBJXJgiRxYIgeWyIElcmCJHP0lc27tc/z9PonjL4a6UTm8pU9TZWrqtlZNW553wtHKfgtZ/Fj6vcZ+C/X2Qw6f3ivWyjegeV7jG2ndrfFNjhhpc0abN3eGuOQDKAY7CzlO9GhWDkssPMP+lLe/Ua8PObBEDpui9rF7c0St4+QoK0+Obcl4Uc5DOU+9MeGoOKe1X3KM9SvHoXzOejsJR678LNeDHG01msOb16XyvBSH1X7u/tL7eh0yHK3GAzl89pE5tLF9FP9P4jt3XNa35kkejvvv3w+rfs5q70efN/721I6brfOlHCX+yJE/PxNH6vl56t6EytGqHbX1ozms+x+peCQVf+wlTtwa35F7PrPuf0iRA0vXyOHJ3bS4sucenYfDc616xBSXkn0qny/NwpHrf3L8lfaeWk8O6a8VR4/6Hlt74diKl2TO7l1PIzl62iTHf+X21Uo0gqOHbQSOXB5kmdcIHCWS7bG8CxiZG1p1jbF+S+XyhvN418pp69koDus9XBu/2jogy6FwoNuP8kMOLD8oHLV72FH3N5RnsBQVoS/Vq7g3yEsAAA==
+  </data>
+ </layer>
+ <layer name="good-walkability" width="50" height="97">
+  <properties>
+   <property name="type" value="walk"/>
+   <property name="world" value="none"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2ai2rDMAxFC/njtaP0xfbpwxAzT0iyvPhx7epASMmS2Gd+KbZPJ8fB52P7PWblRvJ+ntTFPbBwDyzcAwv3wMI9sHAPLNwDC/fAYhWPwGvP+xXQIf3m5o70nvt+viTXtXf0Iq0r38Lvx8b/PV5/KvntVfdoned4CPc8iVd6RGbwSOE8whnJQ6s3OZA8jtCzb/7c/h4vYz362uR2ERk5xljag3Zf6jWjx2rlkTI6dqFthms3Z+YeeiCySpy4ikcAOd7VoPHrfc//ZWBsW0rpWI9az9wDC84DNZbSWNlD4z8ePfq71h69xtVVPAJanHg9GBOOinNqp+seeOmOiDtreOTmWXtw1CM+H+fD6Fg6S73K9eOzeXAxzcg51BHlkVvjyK1/5Dws77lv/NpEPOc8bkJ8yl3jiO+XPGrNEVs8ary/pgctC0v70NKhMRKNpej4ZLkuzcnl5r9LPGhMJz0rzYuk45Z03ZKPQOmaT/o8bbvcs7XqYel7j9SrER60beSes+RrpvIIlMyHt/SQ+voW4zlyeZRi6TelPlZilTgxgLDms8r6h3tg4R5Y1PLQ9qn1WKOr4cGNIdx+gtplnf6PSj2kb1tKaw+ab5qelpY1ton7A+n60GweAW6fWksPml4tD46WHqVp0e98yzd6j3pF4fY05PY/WMqp9rdIi72LsU2n9NhnWrpvMQfnQWk911ujfKx7gVvHPLn9b7lvSBSPUrgYwOKPhsfIWIz0sKzpWEFZI6dYxnAtTkfxOIp7lPEuHtq6Gdr4hpIPB5cfequjwshLAAA=
+  </data>
+ </layer>
+ <layer name="evil-walkability" width="50" height="97">
+  <properties>
+   <property name="type" value="walk"/>
+   <property name="world" value="none"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3YDauCMBiGYWH/OA3JD9pPD0nxdcxhRfps3BcMIcbBm1y9p6oC9N3cunL1CO69zrSFDi10aKFDCx1a6NBChxY6tNChpZSOyTjfeyvYYP/nji27p5uvjXk99TfOEj4rC+/Wa+/eVx/s7d12b8xZz95eh9Xv7BnM695t1yKHDivWMV2VOoYf7kWlwx84Aylnfjbf3XaNB5+jp9s/F4srv2OOnIfUPtuVY0dp74d19ewSnpnYuakje8KlqJQ5sZSOifK8mxLOr918/82Fs+2njswslupzRoeWWIfqLJVSckcKHf9VSsckNSe2GcyEMaXMV3RooUMLHVro0EKHlvA36W9/gwcAAAAAAAAAAAAA5OMFUv6U4shLAAA=
+  </data>
+ </layer>
+ <objectgroup name="good-objects" width="50" height="97">
+  <object type="button" gid="777" x="408" y="672" width="24" height="24">
+   <properties>
+    <property name="disable" value="laser-dev-toggle:good:11:24,set-tile:17:27:wall-low-deco:490"/>
+    <property name="enable" value="laser-dev-toggle:good:11:24,set-tile:17:27:wall-low-deco:489"/>
+   </properties>
+  </object>
+  <object type="laser-emitter" gid="777" x="264" y="600" width="24" height="24">
+   <properties>
+    <property name="output" value="1000"/>
+   </properties>
+  </object>
+  <object type="laser-portal" gid="777" x="336" y="600" width="24" height="24">
+   <properties>
+    <property name="target" value="evil"/>
+   </properties>
+  </object>
+  <object type="laser-receiver" gid="777" x="528" y="600" width="24" height="24">
+   <properties>
+    <property name="disable" value="door-close:21:23:wall-high:wall-low:good-walkability,door-close:21:23:wall-high:wall-low:evil-walkability"/>
+    <property name="enable" value="door-open:21:23:wall-high:wall-low:good-walkability,door-open:21:23:wall-high:wall-low:evil-walkability"/>
+    <property name="input" value="0010"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="864" width="24" height="24">
+   <properties>
+    <property name="actions" value="door-close:21:73:wall-high:wall-low:evil-walkability,door-close:21:37:wall-high:wall-low:good-walkability"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="288" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="312" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="480" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="504" y="600" width="24" height="24"/>
+  <object type="laser-emitter" gid="777" x="888" y="1488" width="24" height="24">
+   <properties>
+    <property name="output" value="0100"/>
+   </properties>
+  </object>
+  <object type="button" gid="777" x="120" y="1464" width="24" height="24">
+   <properties>
+    <property name="disable" value="laser-dev-toggle:good:2:56"/>
+    <property name="enable" value="laser-dev-toggle:good:2:56"/>
+   </properties>
+  </object>
+  <object type="laser-receiver" gid="777" x="168" y="1368" width="24" height="24">
+   <properties>
+    <property name="disable" value="door-close:27:59:wall-high:wall-low:good-walkability,laser-dev-toggle:good:37:61"/>
+    <property name="enable" value="door-open:27:59:wall-high:wall-low:good-walkability,laser-dev-toggle:good:37:61"/>
+    <property name="input" value="0010"/>
+   </properties>
+  </object>
+  <object type="keycard-reader" gid="777" x="528" y="1440" width="24" height="24">
+   <properties>
+    <property name="card" value="00100"/>
+    <property name="unlock" value="door-open:21:59:wall-high:wall-low:good-walkability"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="1008" y="1248" width="24" height="24"/>
+  <object type="laser-receiver" gid="777" x="984" y="1248" width="24" height="24">
+   <properties>
+    <property name="enable" value="notify-timed:1000:INFO:MY VEGETABLE GARDEN!,door-open:41:50:wall-high:wall-low:good-walkability"/>
+    <property name="input" value="0001"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="960" y="1248" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1248" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1248" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1272" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1296" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1296" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1296" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1296" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1296" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1320" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1344" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1344" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1344" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1344" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1392" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1392" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1392" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1392" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1416" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1440" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1440" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1440" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1440" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1464" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1488" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1488" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1488" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1488" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1488" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1512" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1536" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1536" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1536" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1536" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1536" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="1560" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="1560" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="1560" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="1560" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="1560" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="1560" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="1560" width="24" height="24"/>
+  <object type="laser-io" gid="777" x="888" y="1296" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="1296" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="984" y="1344" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="936" y="1344" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="864" y="1344" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="912" y="1392" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="960" y="1392" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="1392" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="1440" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="960" y="1440" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="936" y="1440" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="936" y="1488" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="864" y="1536" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="1536" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="144" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="96" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="120" y="1368" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="72" y="1368" width="24" height="24"/>
+  <object type="laser-emitter" gid="777" x="48" y="1368" width="24" height="24">
+   <properties>
+    <property name="output" value="1000"/>
+   </properties>
+  </object>
+  <object type="laser-receiver" gid="777" x="936" y="1248" width="24" height="24">
+   <properties>
+    <property name="disable" value=""/>
+    <property name="enable" value="keycard-drop:00100:good:37.5:52.5"/>
+    <property name="input" value="0001"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="1368" width="24" height="24">
+   <properties>
+    <property name="actions" value="checkpoint:cp0"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="1368" width="24" height="24">
+   <properties>
+    <property name="actions" value="checkpoint:cp0,door-close:21:59:wall-low:wall-high:good-walkability"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="1368" width="24" height="24">
+   <properties>
+    <property name="actions" value="checkpoint:cp0"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="960" y="1104" width="24" height="24">
+   <properties>
+    <property name="actions" value="set-tile:41:43:object-2:0,set-tile:41:42:object-2:0"/>
+   </properties>
+  </object>
+  <object type="laser-portal" gid="777" x="456" y="600" width="24" height="24"/>
+  <object type="trigger" gid="777" x="984" y="1104" width="24" height="24">
+   <properties>
+    <property name="actions" value="set-tile:41:43:object-2:0,set-tile:41:42:object-2:0"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="1008" y="1104" width="24" height="24">
+   <properties>
+    <property name="actions" value="set-tile:41:43:object-2:0,set-tile:41:42:object-2:0"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="2184" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Four months ago a scientist in this facility discovered another world. A world of opposites."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="792" y="2160" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:They discovered that our world and#cthis other world are linked. For every achievement in our world a catastrophe happens in the other. Together the worlds achieve balance."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="1800" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:After many arguments about who would go first we decided to send everyone. I was left behind as a failsafe. Hours later I recieved a message#c[WE HAVE BEEN CORRUPTED]."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="1224" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:We feared this might happen. The evil of the other world corrupting the very soul of those who stay in it for long. I cannot let them leave. I must shut down the machine."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="672" y="1992" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:We began to build a machine that could open a door between the worlds.#cAfter two months we could open a hole stable enough to reflect a laser beam. After two more we could send a person."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="1008" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:3000:OBJECTIVE:Picked up machine remote!"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="1224" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:We feared this might happen. The evil of the other world corrupting the very soul of those who stay in it for long. I cannot let them leave. I must shut down the machine."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="1224" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:We feared this might happen. The evil of the other world corrupting the very soul of those who stay in it for long. I cannot let them leave. I must shut down the machine."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="1800" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:After many arguments about who would go first we decided to send everyone. I was left behind as a failsafe. Hours later I recieved a message#c[WE HAVE BEEN CORRUPTED]."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="1800" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:After many arguments about who would go first we decided to send everyone. I was left behind as a failsafe. Hours later I recieved a message#c[WE HAVE BEEN CORRUPTED]."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="672" y="1968" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:We began to build a machine that could open a door between the worlds.#cAfter two months we could open a hole stable enough to reflect a laser beam. After two more we could send a person."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="672" y="1944" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:We began to build a machine that could open a door between the worlds.#cAfter two months we could open a hole stable enough to reflect a laser beam. After two more we could send a person."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="816" y="2160" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:They discovered that our world and#cthis other world are linked. For every achievement in our world a catastrophe happens in the other. Together the worlds achieve balance."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="840" y="2160" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:They discovered that our world and#cthis other world are linked. For every achievement in our world a catastrophe happens in the other. Together the worlds achieve balance."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="2208" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Four months ago a scientist in this facility discovered another world. A world of opposites."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="2232" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Four months ago a scientist in this facility discovered another world. A world of opposites."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="408" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Those who seek to destroy all evil#c often forget the are not wholly innocent themselves."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="408" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Those who seek to destroy all evil#c often forget the are not wholly innocent themselves."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="288" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:1000:INFO:End of Act I."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="288" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:1000:INFO:End of Act I."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="288" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:1000:INFO:End of Act I."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="408" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Those who seek to destroy all evil#c often forget the are not wholly innocent themselves."/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="evil-objects" width="50" height="97">
+  <object type="laser-portal" gid="777" x="456" y="600" width="24" height="24">
+   <properties>
+    <property name="target" value="good"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="432" y="600" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="432" y="696" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="384" y="696" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="384" y="600" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="360" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="648" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="408" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="648" width="24" height="24"/>
+  <object type="trigger" gid="777" x="504" y="408" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Those who seek to destroy all evil#c often forget the are not wholly innocent themselves."/>
+   </properties>
+  </object>
+  <object type="laser-portal" gid="777" x="336" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="528" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="480" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="336" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="504" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="456" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="384" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="432" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="360" y="696" width="24" height="24"/>
+  <object type="trigger" gid="777" x="480" y="408" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Those who seek to destroy all evil#c often forget the are not wholly innocent themselves."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="408" width="24" height="24">
+   <properties>
+    <property name="actions" value="narration-queue:Those who seek to destroy all evil#c often forget the are not wholly innocent themselves."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="480" y="288" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:1000:INFO:End of Act I."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="288" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:1000:INFO:End of Act I."/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="288" width="24" height="24">
+   <properties>
+    <property name="actions" value="notify-timed:1000:INFO:End of Act I."/>
+   </properties>
+  </object>
+  <object type="spawn-zombie" gid="628" x="240" y="648" width="24" height="24"/>
+  <object type="spawn-zombie" gid="628" x="744" y="624" width="24" height="24"/>
+  <object type="spawn-zombie" gid="628" x="624" y="744" width="24" height="24"/>
+  <object type="spawn-zombie" gid="628" x="504" y="816" width="24" height="24"/>
+  <object type="spawn-zombie" gid="628" x="504" y="1152" width="24" height="24"/>
+  <object type="spawn-zombie" gid="628" x="480" y="384" width="24" height="24"/>
+  <object type="trigger" gid="777" x="504" y="864" width="24" height="24">
+   <properties>
+    <property name="actions" value="door-close:21:73:wall-high:wall-low:evil-walkability,door-close:21:37:wall-high:wall-low:good-walkability"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="checkpoints" width="50" height="97">
+  <object name="start" gid="777" x="336" y="2208" width="24" height="24">
+   <properties>
+    <property name="init" value="narration-queue:Those who say technology is the great enabler#c forget it is a means#c not an end."/>
+    <property name="world" value="good"/>
+   </properties>
+  </object>
+  <object name="cp0" gid="777" x="504" y="1296" width="24" height="24">
+   <properties>
+    <property name="init" value="device-drop:good:21:40"/>
+    <property name="world" value="good"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
