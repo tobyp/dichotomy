@@ -1,4 +1,4 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 /**
  * Created by Tom on 24/08/2014.

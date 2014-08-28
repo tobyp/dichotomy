@@ -1,10 +1,9 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.newdawn.slick.*;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.openal.Audio;
-import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +12,8 @@ import java.util.logging.*;
 /**
  * Created by tobyp on 8/23/14.
  */
-public class ld30 extends BasicGame implements InputListener {
-    Logger logger = Logger.getLogger("ld30");
+public class Dichotomy extends BasicGame implements InputListener {
+    Logger logger = Logger.getLogger("dichotomy");
 
     float PLAYER_TILES_PER_MS = 0.005f;
 
@@ -45,7 +44,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     public List<Notification> notification_buffer  = new ArrayList<Notification>();
 
-    public ld30() {
+    public Dichotomy() {
         super("Dichotomy");
     }
 
@@ -58,12 +57,12 @@ public class ld30 extends BasicGame implements InputListener {
         this.gameContainer = gameContainer;
         gameContainer.setTargetFrameRate(60);
 
-        font = new SpriteSheetFont(new SpriteSheet("src/main/resources/font.png", 15, 21), ' ');
-        meta_sprites = new SpriteSheet("src/main/resources/meta.png", 24, 24);
-        drop_sprites = new SpriteSheet("src/main/resources/drops.png", 24, 24);
-        player_sprites = new SpriteSheet("src/main/resources/protagonist.png", 24, 48);
-        zombie_sprites = new SpriteSheet("src/main/resources/zombie.png", 24, 48);
-        dark_overlay = new Image("src/main/resources/dark_overlay.png");
+        font = new SpriteSheetFont(new SpriteSheet("src/main/resources/font/font.png", 15, 21), ' ');
+        meta_sprites = new SpriteSheet("src/main/resources/sprite/meta.png", 24, 24);
+        drop_sprites = new SpriteSheet("src/main/resources/sprite/drops.png", 24, 24);
+        player_sprites = new SpriteSheet("src/main/resources/sprite/protagonist.png", 24, 48);
+        zombie_sprites = new SpriteSheet("src/main/resources/sprite/zombie.png", 24, 48);
+        dark_overlay = new Image("src/main/resources/overlay/dark_overlay.png");
 
         reset();
 
@@ -74,7 +73,7 @@ public class ld30 extends BasicGame implements InputListener {
 
     public void reset() {
         try {
-            map = new Map("src/main/resources/tmx/world_merge.tmx");
+            map = new Map("src/main/resources/level/world_merge.tmx");
         }
         catch (SlickException e) {
             e.printStackTrace();
@@ -652,10 +651,10 @@ public class ld30 extends BasicGame implements InputListener {
     public static void main(String [] args) {
         Logger logger = Logger.getGlobal();
         try {
-            AppGameContainer c = new AppGameContainer(new ScalableGame(new ld30(), 800, 600));
+            AppGameContainer c = new AppGameContainer(new ScalableGame(new Dichotomy(), 800, 600));
             c.setDisplayMode(800, 600, false);
             c.setShowFPS(false);
-            c.setIcon("src/main/resources/logo24px.png");
+            c.setIcon("src/main/resources/icon/icon.png");
             c.start();
         }
         catch (Exception e) {

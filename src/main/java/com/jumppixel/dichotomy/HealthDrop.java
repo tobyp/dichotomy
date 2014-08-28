@@ -1,8 +1,5 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
 
 /**

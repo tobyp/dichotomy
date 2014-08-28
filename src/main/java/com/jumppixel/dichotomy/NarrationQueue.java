@@ -1,7 +1,6 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.apache.commons.lang.WordUtils;
-import org.newdawn.slick.util.Log;
 
 import java.util.ArrayList;
 import java.util.Iterator;

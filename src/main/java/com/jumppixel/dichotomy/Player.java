@@ -1,4 +1,4 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.openal.Audio;
@@ -12,7 +12,7 @@ public class Player extends LivingEntity {
     public final static int KEYCARD_ORANGE = 0x4;
     public final static int KEYCARD_PINK = 0x8;
     public final static int KEYCARD_BLUE = 0x10;
-    ld30 game;
+    Dichotomy game;
     float charge = 0.0f;
     float max_charge = 1.0f;
     float charge_hold = 0.0f;
@@ -35,7 +35,7 @@ public class Player extends LivingEntity {
     //time since last attack
     int attack_timer_ms = attack_duration;
 
-    public Player(ld30 game, vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
+    public Player(Dichotomy game, vec2 loc, SpriteSheet sprites, vec2 render_offset, float move_speed, int num_ani_frames) {
         super(loc, sprites, render_offset, 1.0f, move_speed, num_ani_frames, null);
         this.game = game;
         this.charge_hold_sound = GameSound.CHARGE_HOLD.getAudio();

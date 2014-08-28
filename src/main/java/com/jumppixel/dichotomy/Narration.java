@@ -1,10 +1,7 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Sound;
-
-import java.io.File;
-import java.util.Iterator;
 
 /**
  * Created by Tom on 25/08/2014.

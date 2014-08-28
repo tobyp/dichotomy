@@ -1,4 +1,4 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  * Created by tobyp on 8/25/14.
  */
 public class World implements TileBasedMap {
-    ld30 game;
+    Dichotomy game;
     Logger logger;
     String name;
     Map map;
@@ -23,7 +23,7 @@ public class World implements TileBasedMap {
     int ogroup; //object group
     public List<Entity> entities = new ArrayList<Entity>();
 
-    public World(ld30 game, Map map, String name) {
+    public World(Dichotomy game, Map map, String name) {
         this.game = game;
         this.logger = Logger.getLogger(name);
         this.name = name;

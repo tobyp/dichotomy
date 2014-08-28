@@ -1,4 +1,4 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.newdawn.slick.*;
 

@@ -1,11 +1,6 @@
-package com.jumppixel.ld30;
+package com.jumppixel.dichotomy;
 
 import org.newdawn.slick.*;
-import org.newdawn.slick.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by tobyp on 8/23/14.
