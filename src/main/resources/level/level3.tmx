@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="200" tilewidth="24" tileheight="24" backgroundcolor="#414141">
+ <properties>
+  <property name="" value=""/>
+  <property name="start" value="checkpointbob"/>
+ </properties>
+ <tileset firstgid="1" name="atlas" tilewidth="24" tileheight="24">
+  <image source="../tileset/atlas.png" width="960" height="960"/>
+ </tileset>
+ <layer name="floor-ground" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3XwQqCQBSG0ZllvYnLev+HS2ojgaNOMf7FOXAZwY3weRFLAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAID/VhfD+fTIokcWPbLokUWPLHpk0SOLHln0yKJHnro4W8MY9e1aj+/a856v3bvMc22cHPdJj9s898bJcVs91qa1F/ajX2+P1l7Yj369PXw/xtnbw36MYT+y2I/f4H8vix5ZpvJqMZ39IAAAAAAAAAAAAMDTA+LkjPKAOAEA
+  </data>
+ </layer>
+ <layer name="floor-deco" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3WsQmAQAwF0HiTqAM6mDqMOpHNFSIo2njCvQcp0n0CIYkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoGbjqZ+KpOCNuXSAih1nf7UrSxOx5tqaL1Jxp00RXa4+lU5Tp8Hcf8HtgGfOvzEAAAAAAAAAAAAAETu/H08bgDgBAA==
+  </data>
+ </layer>
+ <layer name="floor-guide" width="100" height="200">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3VMQ0AIAwAwaYmwBBy8L8yEkamQnKn4LePAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2EZ1AIdZHQBwoWVEz+oKAH7lIQAAAAAAAAAAAAAAb1pqIQ6UgDgBAA==
+  </data>
+ </layer>
+ <layer name="wall-low" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3RSwqAMAwFwF5Rexo/F/RWuhUbRNRWcAayKSmE91ICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADgSeM2QzBTYWcJ3qO/1DG3PoAdfbQh92/RBwDAPf2Fve5k8hsH/kwp55yO2fbBrj4AAAAAAAAAAACgnhWqxd8mgDgBAA==
+  </data>
+ </layer>
+ <layer name="wall-low-shading" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3TIQ4AMAgEMDxi+/9rZxBzZHa0yQkScEcEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/Cub3Dur5v1wCxPpP/gDAAAAAAAAAAAAAABgjgOoD7W0gDgBAA==
+  </data>
+ </layer>
+ <layer name="wall-low-deco" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3UOwoCMRQF0DezEnV36hr8bEGnczmuQF2GpdVoZYoUNmMhgwnDOXBJ4EEI3JAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgCjYjnbMd6Rwidh/7oX72ee0H5vqow6WJuObcmtK3oU8dPHNe+ihu1kbMcxZt6dtM2/3H9/7Qy9+c/ElVOX/pY5lmq5S1zqpwSD0cUzp9AAAAAAAAAAAAAABU6Q0CVM+QgDgBAA==
+  </data>
+ </layer>
+ <layer name="evil-laser-dev" width="100" height="200">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3VwQnAIBAEQNGOtJukTcuxGB8GtICAgjOf/R57jw0BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA7lLSyBpn5rTvntu9X/ctznz8AzjYuh/st+4HAAAAAAAAAAAAAADwvw7M1WRpgDgBAA==
+  </data>
+ </layer>
+ <layer name="good-laser-dev" width="100" height="200">
+  <properties>
+   <property name="world" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3RwQnAIBAEQDEdJd0kLUqK8WE9Pj0wT0EIM69j93ebEgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPxfyeM+j7m/QvbmuWetGn58f+zxhKzZAwAAAAAAAAAAAAAAAGCbDlCgXbGAOAEA
+  </data>
+ </layer>
+ <layer name="evil-laser-beam" width="100" height="200">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlTH+AKVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBtmAymRgDgBAA==
+  </data>
+ </layer>
+ <layer name="good-laser-beam" width="100" height="200">
+  <properties>
+   <property name="world" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlTH+AKVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBtmAymRgDgBAA==
+  </data>
+ </layer>
+ <layer name="object" width="100" height="200">
+  <properties>
+   <property name="type" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlTH+AKVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBtmAymRgDgBAA==
+  </data>
+ </layer>
+ <layer name="object-2" width="100" height="200">
+  <properties>
+   <property name="type" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlTH+AKVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBtmAymRgDgBAA==
+  </data>
+ </layer>
+ <layer name="mobs" width="100" height="200">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlTH+AKVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBtmAymRgDgBAA==
+  </data>
+ </layer>
+ <layer name="player" width="100" height="200">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlTH+AKVQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwBtmAymRgDgBAA==
+  </data>
+ </layer>
+ <layer name="wall-high" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3L0QnAIAxAQVdsnaZ2GjdVMB9SKvjbcgePQEhSAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvq70rkV3zPmmxn7nFwAAAOAPzt7xKEdvtwAAAAAAAAAAAAAMDY3nHNuAOAEA
+  </data>
+ </layer>
+ <layer name="wall-high-deco" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3TwSpEYRgG4HPOlitQ2OMqxAW4DZGUlOQmbKaEMjeiiJgNxcaanZQNs2Dh1fxlFigLJs3z1Nt7Tuecmv5vvqoCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+u6e6qrbSz3Xvvlt6rqmq+ebjvYtkrNxf9n2/l/ev0yvpq9KzTS/83Hg5t4nSk6WX0st9Z9r95NvNnP1J8prrVvql9GLTC3+rnbN/SNaSw7JX773d9MJg7GYG68lNsl/m0jaPgaszg9Myj455MOSmswszyVSyah8GbqH+SCvzOEuOc32b3NWD/nXD6aCc+076MfO4T4+kR+3Lr9j45n/eybPz8vzIPgAAAAAAAAAAAAAAX3gDR4bqo4A4AQA=
+  </data>
+ </layer>
+ <layer name="wall-trimmings" width="100" height="200">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3YTQrCMBRG0boNnfizEhVB978hOxAEiZoQUz7kHJCitB28G0npNAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADA/1qvPn9nWXpk0SOLHln0yKJHFj2y6JFFjyx6jLedZ3r68jk+jueX3w8V1+40a1Kzxt+d03MtZT0z3evxc6PXuB5tauZV8z/ouT9Po+elRxs9slw7nlEv9vNF1M7Q8+4y9MiiR5bSnlLaVzYV70tuegzjfWIWPQAAAAAAAAAAACDPHWGn582AOAEA
+  </data>
+ </layer>
+ <layer name="good-walkability" width="100" height="200" visible="0">
+  <properties>
+   <property name="type" value="walk"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3Y0QqCMBiAUWFvnHRRGfXo0YWwZLONkfzEOTCynDf70oHTBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/65I+v8+pPI9j6BGLHrHoEYsesegRix6x6BGLHrHoEYsesehxjFPaH+uca6FHfr52Le3y//yzcnxL5fPr78vOuruH+myfQSW3ypxl0ycfKz36jPTIlXq8P/Xo09Jj73n0jR59WnqM0KPfOX2Oe+MaPlJ931jpMa71nqntK3kfPcaN9sjpMU6PeLZ7SmlfmQtztoPf8f4KAAAAAAAAAAAA4nkBsoK0moA4AQA=
+  </data>
+ </layer>
+ <layer name="evil-walkability" width="100" height="200" visible="0">
+  <properties>
+   <property name="type" value="walk"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3Y7QqCMBiA0WB3nPSjLPLSI0qa4vxoFS9xDgyR3v742AbtdgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwv45peN+k6Tl+Q49Y9IhFj1j0iEWPWPSIRY9Y9IhFj1j0iEWP39in+dXPnCZ65J+Xvst643e+16XXtU2PazeabZ/355nn7je0TalHri3M5B26NFw9Pbap6ZHT4zPW9Jjbj5bosc1Sj/wceYce2x3ScF1WPsNrKu9TPT3qrdnD7krnSt5Hj3q1PXJ61NMjnvGZMnWuNBMz48X3+P8KAAAAAAAAAAAA4rkBdcy47YA4AQA=
+  </data>
+ </layer>
+ <objectgroup name="good-objects" width="100" height="200">
+  <object type="button" gid="777" x="1104" y="4032" width="24" height="24">
+   <properties>
+    <property name="disable" value="laser-dev-toggle:good:40:164,set-tile:46:167:wall-low-deco:490"/>
+    <property name="enable" value="laser-dev-toggle:good:40:164,set-tile:46:167:wall-low-deco:489"/>
+   </properties>
+  </object>
+  <object type="laser-emitter" gid="777" x="960" y="3960">
+   <properties>
+    <property name="output" value="1000"/>
+   </properties>
+  </object>
+  <object type="laser-portal" gid="777" x="1032" y="3960">
+   <properties>
+    <property name="target" value="evil"/>
+   </properties>
+  </object>
+  <object type="laser-receiver" gid="777" x="1224" y="3960" width="24" height="24">
+   <properties>
+    <property name="disable" value="door-close:50:163:wall-high:wall-low:good-walkability"/>
+    <property name="enable" value="door-open:50:163:wall-high:wall-low:good-walkability"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="984" y="3960"/>
+  <object type="laser-beam" gid="777" x="1008" y="3960"/>
+  <object type="laser-beam" gid="777" x="1176" y="3960"/>
+  <object type="laser-beam" gid="777" x="1200" y="3960"/>
+ </objectgroup>
+ <objectgroup name="evil-objects" width="100" height="200">
+  <object type="laser-portal" gid="777" x="1152" y="3960">
+   <properties>
+    <property name="target" value="good"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1128" y="3960" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1128" y="4056" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1080" y="4056" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1080" y="3960" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="1056" y="3960"/>
+  <object gid="777" x="1080" y="3984"/>
+  <object gid="777" x="1128" y="3984"/>
+  <object gid="777" x="1080" y="4008"/>
+  <object gid="777" x="1080" y="4032"/>
+  <object gid="777" x="1104" y="4056"/>
+  <object gid="777" x="1128" y="4032"/>
+  <object gid="777" x="1128" y="4008"/>
+ </objectgroup>
+ <objectgroup name="checkpoints" width="100" height="200"/>
+</map>

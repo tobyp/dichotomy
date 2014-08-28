@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="45" height="36" tilewidth="24" tileheight="24">
+ <properties>
+  <property name="" value=""/>
+  <property name="start" value="start"/>
+ </properties>
+ <tileset firstgid="1" name="atlas" tilewidth="24" tileheight="24">
+  <image source="../tileset/atlas.png" width="960" height="960"/>
+ </tileset>
+ <layer name="floor-ground" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3W2w5EMBSF4SK8i+P74eURkZTslure2sb6k5W5ofNdzAilUK0tlWD+rti9vcNiKWVzt64l1ql4zZuvINYqmDmSNmfauJL+D8JMx/1sg5kO5j1J79Yfzbn2eZ1UHM82yhu7mRrM5w5v9fJ+F3Pjsat5IMxPzwplLgObTdmuMf0ubOcdSZpthsHxej1Jc+0xmNMyu5aiOXthffIebDJzvNvZzr5bCPO0bvS4f/b8fvRNCzsOomRQGQAA
+  </data>
+ </layer>
+ <layer name="floor-deco" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3OwQ2AIBAF0aUGpRqlGuSm9iI0zC9B4mFDnJfMfcwAAH9wBrNL3cH75L1Hr1W1iZ4BAAAAAN8talXRe2TApnaVvEcGZHWo4j0CTKIDi3l4CVAZAAA=
+  </data>
+ </layer>
+ <layer name="floor-guide" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3TSwqAMAxF0Qfd/wb8gpJ96sBBKZUWFQPtPZBp8iCJBAAAAABokQVpP2sM3knQku26q7uanO9tyMyfC5kW58xP5veQObfLN/7I/PVeLPqttbK3FX40rdq+AADpAPYPUSBQGQAA
+  </data>
+ </layer>
+ <layer name="wall-low" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3XWwqAIBAFUMMVVqvJ1tdiCqItpKAwmIlWoGP3wPz4MUzp7SEEADhK1+TVJq9rc7EJAerh8sIpDxxnBgBoUeiba5X1P5+XrvQE+XaGM7csdPZTKjUbKf1rzxm0YdDV2xrtmjmfof9rU8fNOn030J607xNmFmQBKFV6gEx+Hr7KBrwT2xfqD3sXuxfcr/UEg06uWlAZAAA=
+  </data>
+ </layer>
+ <layer name="wall-low-shading" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <layer name="wall-low-deco" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3VsQkAIAwEwOj+K1i5nRsoCFpaW2hzBw/p/rtEAAAAvFXS7wUA/NaPu+aI8ah37jR/CIALC1mg6fBQGQAA
+  </data>
+ </layer>
+ <layer name="evil-laser-dev" width="45" height="36">
+  <properties>
+   <property name="world" value="evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <layer name="good-laser-dev" width="45" height="36">
+  <properties>
+   <property name="world" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3WuwnAMAxFUZP9N8mnyijJBFkkqDAYIxVOEevBPZVRJV9cuBQAX6zL7A3G3YI7AwAAZLML/qkeoZ1PZ1dvlonXN3Pztmc9R403Z35MuFvbs56jxpcz92Z/6Rtnf8+mb5z5PbesrVJnY21VOq9ibY1K2ypqm7l51FalOTDqBWH+A3ZQGQAA
+  </data>
+ </layer>
+ <layer name="evil-laser-beam" width="45" height="36">
+  <properties>
+   <property name="world" value="evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <layer name="good-laser-beam" width="45" height="36">
+  <properties>
+   <property name="world" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <layer name="object" width="45" height="36">
+  <properties>
+   <property name="type" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3OsQ2AMBAEwftyMdUYGuZLcIYMM9LmmwDAPxyVjO6st0/WzX69unujZwAAAIAvegBAcj9XUBkAAA==
+  </data>
+ </layer>
+ <layer name="object-2" width="45" height="36">
+  <properties>
+   <property name="type" value="good"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3OMQEAAAQAMPQvqI0MLoctwSIA4I/O68Fe1vUAAAAAgAGEJtSWUBkAAA==
+  </data>
+ </layer>
+ <layer name="mobs" width="45" height="36">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <layer name="player" width="45" height="36">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <layer name="wall-high" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3XTQqAIBCGYcETVqcpT1ebrpWCi8EmkX7R3ge+zSwGS4fMGOAZk8+YZLH7mvtshQAAAPXT7lyz5Y6F9mlnvySls1HSnznDG3qfLmaItXA+tf/rkPWgLr8Nsqfse0ZYC7OAmqXzcNds4Jrcvkh/2Lvcu2jtWWuwAbDSDJNQGQAA
+  </data>
+ </layer>
+ <layer name="wall-high-deco" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3OzQmAMAwG0NbletJtPDlLh1JwH3PwIOjR+gPvwUcgCSEpAQAAPKvmtz8A+K++O/fmyLj3p6jLYTZc7N9ljZSG9wHgSzbLs2S3UBkAAA==
+  </data>
+ </layer>
+ <layer name="wall-trimmings" width="45" height="36">
+  <properties>
+   <property name="world" value="good,evil"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2XUQ6DMAiG8RiambijqC/z/hfaHg0rUhRWMv8/MbGGwmdbaEsEZdfUES2G59m1JiYajAxW+wiB+TcC87d4jnvkcDQzt/eYJzDr9ndlfik5wnNoS8AcHQPMMTH4WlpZu0/IrNlnHGcwn4sZyWy9b0j3D4m51r9Wv/f+vWqSxOw1p2Au+2nFXFqLs1D7+R4gfef9a8/0EvPj8z4q/+O9J9f6rR1nMB/3/3dmfnbX6nwGZq+YV/tHMkvzUpJlj25xRrqqozV65j4J3U9vVCzu81AZAAA=
+  </data>
+ </layer>
+ <layer name="good-walkability" width="45" height="36">
+  <properties>
+   <property name="world" value="none"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+2XAQuDIBCFg/vHqxEbC/rpI0hmb748S+0CH4jL5vlxnefZdU1300u2z72E/2dN08o5GuZ9yLa9V9ZB/t9ZEMZCTBZipTHXUWOuoxrMufNOaeYSZ9QdmRc95dcmsDnK9n2qatQCuddozPXWKF1z5WB2Oc2vuZZ+MMrs5n/Wfr5BbMRyp2Vm9K8bs8zMhPbwTpHSNMwaO8t+833sfru+h7XY99DI2WLMqWd8bJ0cNkswo48xnvdsYs2AtQXmes14yF6oXkExZqxn2D5i92v/DGDjTOi7WXR+xn0VYs4VS6l2tbFxBTPGcmieNWbtPLYvjtiOaY+Z5dez56AVP6dKk6tYXmO6okbKIRajR+6TTef0BbhyL/ZQGQAA
+  </data>
+ </layer>
+ <layer name="evil-walkability" width="45" height="36">
+  <properties>
+   <property name="world" value="none"/>
+  </properties>
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA+3BgQAAAADDoPlT3+AEVQEAAAAAAPAMZfGJglAZAAA=
+  </data>
+ </layer>
+ <objectgroup name="good-objects" width="45" height="36">
+  <object type="laser-emitter" gid="777" x="888" y="696" width="24" height="24">
+   <properties>
+    <property name="output" value="0100"/>
+   </properties>
+  </object>
+  <object type="button" gid="777" x="120" y="672" width="24" height="24">
+   <properties>
+    <property name="disable" value="laser-dev-toggle:good:2:23"/>
+    <property name="enable" value="laser-dev-toggle:good:2:23"/>
+   </properties>
+  </object>
+  <object type="laser-receiver" gid="777" x="168" y="576" width="24" height="24">
+   <properties>
+    <property name="disable" value="door-close:27:26:wall-high:wall-low:good-walkability,laser-dev-toggle:good:37:28"/>
+    <property name="enable" value="door-open:27:26:wall-high:wall-low:good-walkability,laser-dev-toggle:good:37:28"/>
+    <property name="input" value="0010"/>
+   </properties>
+  </object>
+  <object type="keycard-reader" gid="777" x="528" y="648" width="24" height="24">
+   <properties>
+    <property name="card" value="00100"/>
+    <property name="unlock" value="door-open:21:26:wall-high:wall-low:good-walkability"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="1008" y="456" width="24" height="24"/>
+  <object type="laser-receiver" gid="777" x="984" y="456" width="24" height="24">
+   <properties>
+    <property name="enable" value="notify-timed:1000:INFO:MY VEGETABLE GARDEN!,door-open:41:17:wall-high:wall-low:good-walkability"/>
+    <property name="input" value="0001"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="960" y="456" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="456" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="456" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="480" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="504" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="504" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="504" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="504" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="504" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="528" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="552" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="552" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="552" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="552" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="600" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="624" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="648" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="648" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="648" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="648" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="672" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="696" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="720" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="744" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="1008" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="960" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="984" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="912" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="936" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="864" y="768" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="888" y="768" width="24" height="24"/>
+  <object type="laser-io" gid="777" x="888" y="504" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="504" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="984" y="552" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="936" y="552" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="864" y="552" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="912" y="600" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="960" y="600" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="600" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="648" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="960" y="648" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="936" y="648" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="936" y="696" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="864" y="744" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-io" gid="777" x="1008" y="744" width="24" height="24">
+   <properties>
+    <property name="input" value="1100"/>
+    <property name="output" value="1100"/>
+    <property name="rotateable" value="true"/>
+   </properties>
+  </object>
+  <object type="laser-beam" gid="777" x="144" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="96" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="120" y="576" width="24" height="24"/>
+  <object type="laser-beam" gid="777" x="72" y="576" width="24" height="24"/>
+  <object type="laser-emitter" gid="777" x="48" y="576" width="24" height="24">
+   <properties>
+    <property name="output" value="1000"/>
+   </properties>
+  </object>
+  <object type="laser-receiver" gid="777" x="936" y="456" width="24" height="24">
+   <properties>
+    <property name="disable" value=""/>
+    <property name="enable" value="keycard-drop:00100:good:37.5:19.5"/>
+    <property name="input" value="0001"/>
+   </properties>
+  </object>
+  <object name="cp0" gid="777" x="504" y="480" width="24" height="24"/>
+  <object type="trigger" gid="777" x="480" y="576" width="24" height="24">
+   <properties>
+    <property name="actions" value="checkpoint:cp0"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="504" y="576" width="24" height="24">
+   <properties>
+    <property name="actions" value="checkpoint:cp0"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="528" y="576" width="24" height="24">
+   <properties>
+    <property name="actions" value="checkpoint:cp0"/>
+    <property name="onetime" value="true"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="960" y="312" width="24" height="24">
+   <properties>
+    <property name="actions" value="set-tile:41:9:object-2:0,set-tile:41:10:object-2:0"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="984" y="312" width="24" height="24">
+   <properties>
+    <property name="actions" value="set-tile:41:9:object-2:0,set-tile:41:10:object-2:0"/>
+   </properties>
+  </object>
+  <object type="trigger" gid="777" x="1008" y="312" width="24" height="24">
+   <properties>
+    <property name="actions" value="set-tile:41:9:object-2:0,set-tile:41:10:object-2:0"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup name="evil-objects" width="45" height="36"/>
+ <objectgroup name="checkpoints" width="45" height="36">
+  <object name="start" gid="777" x="504" y="744" width="24" height="24">
+   <properties>
+    <property name="init" value="door-open:21:26:wall-high:wall-low:good-walkability"/>
+    <property name="world" value="good"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
